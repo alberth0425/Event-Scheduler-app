@@ -1,4 +1,4 @@
-package src;
+package src.Controllers;
 
 public class UserController {
     public static void main(String[] args) {
