@@ -14,4 +14,8 @@ public class User {
         this.id = numUser;
     }
 
+    public void setPassword(String newPassword){
+        this.password = newPassword;
+    }
+
 }
