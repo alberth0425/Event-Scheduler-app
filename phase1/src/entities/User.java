@@ -14,4 +14,7 @@ public class User {
         this.id = numUser;
     }
 
+    public String get_password(){
+        return this.password;
+    }
 }
