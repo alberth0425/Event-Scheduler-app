@@ -1,4 +1,4 @@
 package src.entities;
 
-public class Attendee {
+public class Attendee extends User{
 }

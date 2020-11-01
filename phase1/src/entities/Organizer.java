@@ -1,4 +1,4 @@
 package src.entities;
 
-public class Organizer {
+public class Organizer extends User{
 }

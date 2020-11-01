@@ -1,4 +1,4 @@
 package src.entities;
 
-public class Speaker {
+public class Speaker extends User{
 }
