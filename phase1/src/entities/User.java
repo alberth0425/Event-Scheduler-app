@@ -1,5 +1,7 @@
 package src.entities;
 
+import java.util.Map;
+
 public class User {
 
     protected int id;
@@ -15,7 +17,24 @@ public class User {
     }
 
     public void setPassword(String newPassword){
-        password = newPassword;
+        this.password = newPassword;
     }
+
+    public String getPassword(){
+        return password;
+    }
+
+    public String getUsername(){
+        return username;
+    }
+
+    public void setUsername(String newUsername){
+        this.username = newUsername;
+    }
+
+    public int getId(){
+        return id;
+    }
+
 
 }
