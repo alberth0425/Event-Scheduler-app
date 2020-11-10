@@ -4,37 +4,55 @@ import java.util.Map;
 
 public class User {
 
+    protected static int numUser;
+
     protected int id;
     protected String password;
-    protected static int numUser;
     protected String username;
 
-    public User(String username, String password){
+    protected String firstName;
+    protected String lastName;
+
+    public User(String username, String password, String firstName, String lastName) {
         this.username = username;
         this.password = password;
-        numUser += 1;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.id = numUser;
+
+        numUser += 1;
     }
 
-    public void setPassword(String newPassword){
-        this.password = newPassword;
-    }
-
-    public String getPassword(){
-        return password;
-    }
-
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(String newUsername){
+    public String getPassword() {
+        return password;
+    }
+
+    public String getFullname() {
+        return firstName + lastName;
+    }
+
+    public void setUsername(String newUsername) {
         this.username = newUsername;
     }
 
-    public int getId(){
-        return id;
+    public void setPassword(String newPassword) {
+        this.password = newPassword;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public int getId() {
+        return id;
+    }
 
 }
