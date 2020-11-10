@@ -3,12 +3,11 @@ package src.entities;
 import java.util.Map;
 
 public class User {
-
     protected static int numUser;
 
-    protected int id;
     protected String password;
     protected String username;
+    protected final int id;
 
     protected String firstName;
     protected String lastName;
