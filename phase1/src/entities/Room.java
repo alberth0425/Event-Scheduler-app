@@ -2,11 +2,11 @@ package src.entities;
 
 public class Room {
 
-    private int capacity;
-    private int roomNumber;
+    private final int capacity;
+    private final int roomNumber;
 
-    public Room(int roomNumber){
-        this.capacity = 2;
+    public Room(int capacity, int roomNumber) {
+        this.capacity = capacity;
         this.roomNumber = roomNumber;
     }
 

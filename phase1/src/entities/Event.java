@@ -4,39 +4,38 @@ import java.util.List;
 
 public class Event {
     private String title;
-    private int speakerId;
-    private int roomNumber;
+    private final int speakerId;
     private int startingTime;
-    private List<Integer> eventAttendees;
 
-    public Event(String title, int speakerId, int roomNumber, int startingTime){
+    public Event(String title, int speakerId, int startingTime) {
         this.title = title;
         this.speakerId = speakerId;
-        this.roomNumber = roomNumber;
-        this.startingTime = startingTime;
+
+        // Check if start time is valid
+        if (startingTime < 9 || startingTime >= 17) {
+            throw new RuntimeException("Invalid event starting time: " + startingTime);
+        } else {
+            this.startingTime = startingTime;
+        }
     }
 
     public String getTitle() {
         return this.title;
     }
 
-    public void setTitle(String title){
-        this.title = title;
-    }
-
-    public int getSpeakerId(){
+    public int getSpeakerId() {
         return this.speakerId;
     }
 
-    public int getRoomNumber(){
-        return this.roomNumber;
-    }
-
-    public int getStartingTime(){
+    public int getStartingTime() {
         return this.startingTime;
     }
 
-    public List<Integer> getEventAttendees(){
-        return eventAttendees;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setStartingTime(int startingTime) {
+        this.startingTime = startingTime;
     }
 }
