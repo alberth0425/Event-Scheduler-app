@@ -1,9 +1,12 @@
 package src.entities;
 
 public class Event implements Savable {
+    private static int eventCount;
+
     private String title;
-    private final int speakerId;
     private int startingTime;
+    private final int speakerId;
+    private final int id;
 
     public Event(String title, int speakerId, int startingTime) {
         this.title = title;
@@ -15,13 +18,23 @@ public class Event implements Savable {
         } else {
             this.startingTime = startingTime;
         }
+
+        id = eventCount;
+        eventCount += 1;
     }
 
     public Event(String dataEntry) {
         String[] entries = dataEntry.split(",");
-        this.title = entries[0];
+        this.id = Integer.parseInt(entries[0]);
+        this.title = entries[1];
         this.speakerId = Integer.parseInt(entries[1]);
         this.startingTime = Integer.parseInt(entries[2]);
+
+        eventCount += 1;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -46,6 +59,6 @@ public class Event implements Savable {
 
     @Override
     public String toSavableString() {
-        return getTitle() + "," + getSpeakerId() + "," + getStartingTime();
+        return getId() + "," + getTitle() + "," + getSpeakerId() + "," + getStartingTime();
     }
 }

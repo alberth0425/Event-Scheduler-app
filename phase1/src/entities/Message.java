@@ -34,6 +34,8 @@ public class Message implements Savable {
         this.senderID = Integer.parseInt(entries[2]);
         this.receiverID = Integer.parseInt(entries[3]);
         this.timeStamp = Long.parseLong(entries[4]);
+
+        messageCount += 1;
     }
 
     public String getText() {

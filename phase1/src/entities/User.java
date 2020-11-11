@@ -27,6 +27,8 @@ public class User implements Savable {
         this.password = entries[2];
         this.firstName = entries[3];
         this.lastName = entries[4];
+
+        numUser += 1;
     }
 
     public String getUsername() {
