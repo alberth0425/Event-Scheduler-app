@@ -3,7 +3,7 @@ package src.entities;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public class Message {
+public class Message implements Savable {
     private static int messageCount;
 
     private final String text;
@@ -25,6 +25,15 @@ public class Message {
         // Set id
         id = messageCount;
         messageCount += 1;
+    }
+
+    public Message(String dataEntry) {
+        String[] entries = dataEntry.split(",");
+        this.id = Integer.parseInt(entries[0]);
+        this.text = entries[1];
+        this.senderID = Integer.parseInt(entries[2]);
+        this.receiverID = Integer.parseInt(entries[3]);
+        this.timeStamp = Long.parseLong(entries[4]);
     }
 
     public String getText() {
@@ -56,5 +65,10 @@ public class Message {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String toSavableString() {
+        return id + "," + text + "," + senderID + "," + receiverID + "," + timeStamp;
     }
 }

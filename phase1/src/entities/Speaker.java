@@ -7,7 +7,10 @@ public class Speaker extends User {
 
     public Speaker(String username, String password, String firstName, String lastName) {
         super(username, password, firstName, lastName);
-        allSpeakers.add(this);
+    }
+
+    public Speaker(String dataEntry) {
+        super(dataEntry);
     }
 
     public List<Speaker> getAllSpeakers() {

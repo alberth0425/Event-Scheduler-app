@@ -7,7 +7,10 @@ public class Attendee extends User {
 
     public Attendee(String username, String password, String firstName, String lastName) {
         super(username, password, firstName, lastName);
-        allAttendees.add(this);
+    }
+
+    public Attendee(String dataEntry) {
+        super(dataEntry);
     }
 
     public List<Attendee> getAllAttendees() {

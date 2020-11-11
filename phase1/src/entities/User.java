@@ -1,8 +1,6 @@
 package src.entities;
 
-import java.util.Map;
-
-public class User {
+public class User implements Savable {
     protected static int numUser;
 
     protected String password;
@@ -22,6 +20,15 @@ public class User {
         numUser += 1;
     }
 
+    public User(String dataEntry) {
+        String[] entries = dataEntry.split(",");
+        this.id = Integer.parseInt(entries[0]);
+        this.username = entries[1];
+        this.password = entries[2];
+        this.firstName = entries[3];
+        this.lastName = entries[4];
+    }
+
     public String getUsername() {
         return username;
     }
@@ -31,7 +38,7 @@ public class User {
     }
 
     public String getFullname() {
-        return firstName + lastName;
+        return firstName + " " + lastName;
     }
 
     public void setUsername(String newUsername) {
@@ -54,4 +61,8 @@ public class User {
         return id;
     }
 
+    @Override
+    public String toSavableString() {
+        return id + "," + username + "," + password + "," + firstName + "," + lastName;
+    }
 }

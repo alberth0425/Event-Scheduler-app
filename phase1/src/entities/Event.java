@@ -1,8 +1,6 @@
 package src.entities;
 
-import java.util.List;
-
-public class Event {
+public class Event implements Savable {
     private String title;
     private final int speakerId;
     private int startingTime;
@@ -17,6 +15,13 @@ public class Event {
         } else {
             this.startingTime = startingTime;
         }
+    }
+
+    public Event(String dataEntry) {
+        String[] entries = dataEntry.split(",");
+        this.title = entries[0];
+        this.speakerId = Integer.parseInt(entries[1]);
+        this.startingTime = Integer.parseInt(entries[2]);
     }
 
     public String getTitle() {
@@ -37,5 +42,10 @@ public class Event {
 
     public void setStartingTime(int startingTime) {
         this.startingTime = startingTime;
+    }
+
+    @Override
+    public String toSavableString() {
+        return getTitle() + "," + getSpeakerId() + "," + getStartingTime();
     }
 }
