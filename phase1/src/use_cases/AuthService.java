@@ -9,9 +9,9 @@ public class AuthService {
     private static final int PASSWORD_MINIMUM_LENGTH = 6;
     
     HashMap<String, User> users = new HashMap<>();
-    
-    public AuthService() {
-    }
+
+    public static AuthService shared = new AuthService();
+    private AuthService() {}
 
     /**
      * Create a new user with given username, password, first name, and last name.
@@ -43,6 +43,21 @@ public class AuthService {
         // Create the new user
         User user = new User(username, password, firstName, lastName);
         users.put(username, user);
+    }
+
+    /**
+     * Find and return a User by username.
+     *
+     * @param username the username of the user
+     * @return the user
+     * @throws AuthException if the user with the specified username does not exist
+     */
+    public User getUserByUsername(String username) throws AuthException {
+        // Check that the user with given username exists
+        if (!users.containsKey(username)) {
+            throw new UserDoesNotExistException();
+        }
+        return users.get(username);
     }
     
     /**

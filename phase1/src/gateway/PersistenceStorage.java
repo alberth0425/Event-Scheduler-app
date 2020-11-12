@@ -15,7 +15,7 @@ public class PersistenceStorage {
      * Path constants for different Savable classes
      */
     private static final String ATTENDEE_STORAGE_PATH = "attendees.csv";
-    private static final String SPEAKR_STORAGE_PATH = "speakers.csv";
+    private static final String SPEAKER_STORAGE_PATH = "speakers.csv";
     private static final String ORGANIZER_STORAGE_PATH = "organizers.csv";
     private static final String EVENT_STORAGE_PATH = "events.csv";
     private static final String ROOM_STORAGE_PATH = "rooms.csv";

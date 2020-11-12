@@ -8,7 +8,7 @@ public class Event implements Savable {
     private final String speakerUN;
     private final int id;
 
-    public Event(String title, int speakerId, int startingTime) {
+    public Event(String title, String speakerUN, int startingTime) {
         this.title = title;
         this.speakerUN = speakerUN;
 
@@ -55,6 +55,15 @@ public class Event implements Savable {
 
     public void setStartingTime(int startingTime) {
         this.startingTime = startingTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "title='" + title + '\'' +
+                ", speakerId=" + speakerUN +
+                ", startingTime=" + startingTime +
+                '}';
     }
 
     @Override
