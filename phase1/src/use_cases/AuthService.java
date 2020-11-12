@@ -124,4 +124,39 @@ public class AuthService {
             return field;
         }
     }
+    /**
+     * Create a new user with given username, password, first name, and last name.
+     * @param username username of the user
+     * @param password password of the user
+     */
+    public void loginUser(String username, String password){
+        //Check if the username exists in the hashmap.
+        if (!users.containsKey(username))
+        {
+            System.out.println("This username does not exist.");
+            System.exit(0);   //The system terminates.
+        }
+        //If the username is in the hashmap,
+        //check if the user's password matches the password store in the hashmap.
+        User user = users.get(username);
+        if (user.getPassword().equals(password)){
+            System.out.println("This user logged in successfully.");
+        }
+        else
+            //If the passwords do not match, the login failed.
+            System.out.println("The password is incorrect, failed user login");
+    }
+    // keep track of the user that has logged in,
+    // so that I can reference it in other classes.
+    public static class CurrentUser {
+        public String loggedInUserName;
+
+        CurrentUser(String username){
+            this.loggedInUserName = username;
+        }
+        public String getCurrentUser(){
+            return this.loggedInUserName;
+        }
+
+    }
 }
