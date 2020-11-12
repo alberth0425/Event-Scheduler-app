@@ -5,12 +5,12 @@ public class Event implements Savable {
 
     private String title;
     private int startingTime;
-    private final int speakerId;
+    private final String speakerUN;
     private final int id;
 
     public Event(String title, int speakerId, int startingTime) {
         this.title = title;
-        this.speakerId = speakerId;
+        this.speakerUN = speakerUN;
 
         // Check if start time is valid
         if (startingTime < 9 || startingTime >= 17) {
@@ -27,7 +27,7 @@ public class Event implements Savable {
         String[] entries = dataEntry.split(",");
         this.id = Integer.parseInt(entries[0]);
         this.title = entries[1];
-        this.speakerId = Integer.parseInt(entries[1]);
+        this.speakerUN = entries[1];
         this.startingTime = Integer.parseInt(entries[2]);
 
         eventCount += 1;
@@ -41,8 +41,8 @@ public class Event implements Savable {
         return this.title;
     }
 
-    public int getSpeakerId() {
-        return this.speakerId;
+    public String getSpeakerUsername() {
+        return this.speakerUN;
     }
 
     public int getStartingTime() {
@@ -59,6 +59,6 @@ public class Event implements Savable {
 
     @Override
     public String toSavableString() {
-        return getId() + "," + getTitle() + "," + getSpeakerId() + "," + getStartingTime();
+        return getId() + "," + getTitle() + "," + getSpeakerUsername() + "," + getStartingTime();
     }
 }
