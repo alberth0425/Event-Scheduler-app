@@ -9,6 +9,8 @@ public class AuthService {
     
     HashMap<String, User> users = new HashMap<>();
 
+    private User currentUser;
+
     public static AuthService shared = new AuthService();
     private AuthService() {}
 
@@ -126,9 +128,37 @@ public class AuthService {
     private static boolean validatePassword(String password) {
         return Savable.isStringSavable(password) && password.length() >= PASSWORD_MINIMUM_LENGTH;
     }
-
-    // Custom Exception Classes
     
+    /**
+     * Login a user using username and password.
+     *
+     * @param username username of the user
+     * @param password password of the user
+     * @return true if the login was successful, otherwise false
+     */
+    public boolean loginUser(String username, String password) {
+        //Check if the username exists in the hashmap.
+        if (!users.containsKey(username))  {
+            return false;
+        }
+        //If the username is in the hashmap,
+        //check if the user's password matches the password store in the hashmap.
+        User user = users.get(username);
+        if (user.getPassword().equals(password)) {
+            currentUser = user;
+            return true;
+        } else {
+            //If the passwords do not match, the login failed.
+            return false;
+        }
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+    
+    // Custom Exception Classes
+
     public static class AuthException extends Exception {}
     public static class UserDoesNotExistException extends AuthException {}
     public static class UsernameAlreadyTakenException extends AuthException {}
