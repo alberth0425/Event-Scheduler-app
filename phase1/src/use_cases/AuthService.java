@@ -14,6 +14,10 @@ public class AuthService {
     public static AuthService shared = new AuthService();
     private AuthService() {}
 
+    public void setUsers(HashMap<String, User> users) {
+        this.users = users;
+    }
+
     /**
      * Create a new user with given username, password, first name, and last name.
      * 

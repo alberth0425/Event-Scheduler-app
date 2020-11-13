@@ -8,9 +8,9 @@ public class Event implements Savable {
     private static int eventCount;
 
     private final String title;
-    private final int roomNumber;
+    private int roomNumber;
     private final int startingTime;
-    private final String speakerUN;
+    private String speakerUN;
     private List<String> attendeeUNs = new ArrayList<>();
     private final int id;
 
@@ -72,6 +72,14 @@ public class Event implements Savable {
 
     public void removeAttendee(String attendeeUN) {
         attendeeUNs.remove(attendeeUN);
+    }
+
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public void setSpeakerUN(String speakerUN) {
+        this.speakerUN = speakerUN;
     }
 
     @Override

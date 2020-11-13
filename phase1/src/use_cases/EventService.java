@@ -9,15 +9,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// TODO: double check this
+
 public class EventService {
 
     public static EventService shared = new EventService();
     private EventService() {}
 
-    private final HashMap<Integer, List<Attendee>> eventToAttendee = new HashMap<>();
-    private final HashMap<Integer, Room> eventToRoom = new HashMap<>();
-    private final HashMap<Integer, Speaker> eventToSpeaker = new HashMap<>();
-    private final List<Event> allEvents = new ArrayList<>();
+    private List<Event> allEvents = new ArrayList<>();
+
+    public void setAllEvents(List<Event> allEvents) {
+        this.allEvents = allEvents;
+    }
+
+    private Room getRoom(int roomNumber) {
+        return RoomService.shared.getRoom(roomNumber);
+    }
 
     /**
      * Add an attendee to an event.
@@ -30,27 +37,22 @@ public class EventService {
         // Check that the event exists, i.e., is in allEvents List
         validateEvent(event);
 
+        Room room = getRoom(event.getRoomNumber());
+
         // Check if event room is already full
-        int capacity = eventToRoom.get(event.getId()).getCapacity();
-        int occupancy = eventToAttendee.get(event.getId()).size();
+        int capacity = room.getCapacity();
+        int occupancy = event.getAttendeeUNs().size();
         if (capacity <= occupancy) throw new RoomFullException();
 
         // Check if attendee has another event at the same time
         for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
             if (e.getId() != event.getId()) {
-                for (Attendee a : eventToAttendee.get(event.getId())) {
-                    if (a.getUsername().equals(attendee.getUsername())) throw new AttendeeScheduleConflictException();
+                for (String a : event.getAttendeeUNs()) {
+                    if (a.equals(attendee.getUsername())) throw new AttendeeScheduleConflictException();
                 }
             }
         }
 
-        if (eventToAttendee.containsKey(event.getId())) {
-            eventToAttendee.get(event.getId()).add(attendee);
-        } else {
-            List<Attendee> listOfAttendee = new ArrayList<>();
-            listOfAttendee.add(attendee);
-            eventToAttendee.put(event.getId(), listOfAttendee);
-        }
         event.addAttendee(attendee.getUsername());
     }
 
@@ -65,22 +67,7 @@ public class EventService {
         // Check that the event exists, i.e., is in allEvents List
         validateEvent(event);
 
-        eventToAttendee.get(event.getId()).remove(attendee);
         event.removeAttendee(attendee.getUsername());
-    }
-
-    /**
-     * Get all attendees of an event.
-     *
-     * @param event the event
-     * @return a list of attendees of the input event
-     * @throws EventException if the event does not exists, i.e., is not in allEvents List
-     */
-    public List<Attendee> getEventAttendees(Event event) throws EventException {
-        // Check that the event exists, i.e., is in allEvents List
-        validateEvent(event);
-
-        return eventToAttendee.get(event.getId());
     }
 
     /**
@@ -96,24 +83,11 @@ public class EventService {
 
         // Check for double booking
         for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
-            if (eventToRoom.get(e.getId()).getRoomNumber() == newRoom.getRoomNumber() && e.getId() != event.getId())
+            if (e.getRoomNumber() == newRoom.getRoomNumber() && e.getId() != event.getId())
                 throw new RoomDoubleBookException();
         }
 
-        eventToRoom.put(event.getId(), newRoom);
-    }
-
-    /**
-     * Get the room associated to the input event.
-     * @param event the event
-     * @return the room associated to the input event
-     * @throws EventException if the event does not exists, i.e., is not in allEvents List
-     */
-    public Room getEventRoom(Event event) throws EventException {
-        // Check that the event exists, i.e., is in allEvents List
-        validateEvent(event);
-
-        return eventToRoom.get(event.getId());
+        event.setRoomNumber(newRoom.getRoomNumber());
     }
 
     /**
@@ -132,21 +106,7 @@ public class EventService {
             if (e.getSpeakerUsername().equals(newSpeaker.getUsername()) && e.getId() != event.getId()) throw new SpeakerDoubleBookException();
         }
 
-        eventToSpeaker.put(event.getId(), newSpeaker);
-    }
-
-    /**
-     * Get the speaker associated to the input event.
-     *
-     * @param event the event
-     * @return the speaker associated to the input event
-     * @throws EventException if the event does not exists, i.e., is not in allEvents List
-     */
-    public Speaker getEventSpeaker(Event event) throws EventException {
-        // Check that the event exists, i.e., is in allEvents List
-        validateEvent(event);
-
-        return eventToSpeaker.get(event.getId());
+        event.setSpeakerUN(newSpeaker.getUsername());
     }
 
     /**
@@ -203,12 +163,10 @@ public class EventService {
         // Check double booking exceptions (both speaker and room)
         for (Event event : this.getEventsByStartTime(startingTime)) {
             if (event.getSpeakerUsername().equals(speaker.getUsername())) throw new SpeakerDoubleBookException();
-            if (this.getEventRoom(event).getRoomNumber() == room.getRoomNumber()) throw new RoomDoubleBookException();
+            if (getRoom(event.getRoomNumber()).getRoomNumber() == room.getRoomNumber()) throw new RoomDoubleBookException();
         }
 
         Event event = new Event(title, speaker.getUsername(), startingTime, room.getRoomNumber());
-        eventToRoom.put(event.getId(), room);
-        eventToSpeaker.put(event.getId(),speaker);
         allEvents.add(event);
 
         return event;
@@ -221,10 +179,8 @@ public class EventService {
      * @return number of seats that are empty in the event's room
      */
     public int getEventAvailability(Event event) throws EventException {
-        Room room = this.getEventRoom(event);
-        // Get current occupency. If event does not have any attendees, occupency is 0.
-        int occupency = this.getEventAttendees(event) == null ? 0 : this.getEventAttendees(event).size();
-        return room.getCapacity() - occupency;
+        Room room = getRoom(event.getRoomNumber());
+        return room.getCapacity() - event.getAttendeeUNs().size();
     }
 
     // --- Private helpers ---
