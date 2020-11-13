@@ -9,8 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MessageService {
-    public HashMap<String, List<String>> contactBook = new HashMap<>();
-    public HashMap<String, List<Message>> messageRepository = new HashMap<>();
+    public final HashMap<String, List<String>> contactBook = new HashMap<>();
+    private final HashMap<String, List<Message>> messageRepository = new HashMap<>();
+
+    public static MessageService shared = new MessageService();
+    private MessageService() {}
 
     /**
      * Add user2 to user1's contact book.

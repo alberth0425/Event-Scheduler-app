@@ -1,14 +1,12 @@
 package src.gateway;
 
 import src.entities.*;
+import src.use_cases.AuthService;
+import src.use_cases.MessageService;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class PersistenceStorage {
     /**
@@ -20,6 +18,7 @@ public class PersistenceStorage {
     private static final String EVENT_STORAGE_PATH = "events.csv";
     private static final String ROOM_STORAGE_PATH = "rooms.csv";
     private static final String MESSAGE_STORAGE_PATH = "messages.csv";
+    public static final String CONTACT_BOOK_PATH = "contact_book.csv";
 
     /**
      * Save input entries as a csv/txt file to the input path.
@@ -27,11 +26,9 @@ public class PersistenceStorage {
      * @param entries to-be-saved entries, need to implement `Savable`
      * @param path path of the saved file
      */
-    public static void saveEntries(List<Savable> entries, String path) {
+    public static void saveEntities(List<Savable> entries, String path) {
         try {
-            FileWriter fw = new FileWriter(path, false);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw = new PrintWriter(bw);
+            PrintWriter pw = getPrinterWriter(path);
 
             for (Savable e : entries) {
                 pw.println(e.toSavableString());
@@ -54,7 +51,7 @@ public class PersistenceStorage {
      * @return an `ArrayList` of fetched `T`s
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> readEntries(String path, Class<T> returnType) {
+    public static <T> List<T> readEntities(String path, Class<T> returnType) {
         List<T> res = new ArrayList<>();
         try {
             File eventFile = new File(path);
@@ -82,6 +79,64 @@ public class PersistenceStorage {
             System.out.println(e.getMessage());
             return res;
         }
+    }
+
+    /**
+     * Save input contact book as a csv/txt file to the input path.
+     *
+     * @param contactBook to-be-saved contact book
+     * @param path path of the saved file
+     */
+    public static void saveContactBook(HashMap<String, List<String>> contactBook, String path) {
+        try {
+            PrintWriter pw = getPrinterWriter(path);
+
+            for (Map.Entry<String, List<String>> me : contactBook.entrySet()) {
+                pw.println(me.getKey() + "," + String.join(",", me.getValue()));
+            }
+            pw.flush();
+            pw.close();
+            System.out.println("All entries saved to path: " + path);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Fetch all contacts from a csv/txt file and return the contact book as an `HashMap<String, List<String>>`.
+     *
+     * @param path path of the file
+     * @return a `HashMap<String, List<String>>` representing the fetched contact book
+     */
+    public static HashMap<String, List<String>> readContactBook(String path) {
+        HashMap<String, List<String>> res = new HashMap<>();
+
+        try {
+            File eventFile = new File(path);
+            Scanner eventScanner = new Scanner(eventFile);
+
+            while (eventScanner.hasNext()) {
+                String[] usernames = eventScanner.nextLine().trim().split(",");
+                List<String> contacts = Arrays.asList(Arrays.copyOfRange(usernames, 1, usernames.length));
+                String user = usernames[0];
+                res.put(user, contacts);
+            }
+            return res;
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return res;
+        }
+    }
+
+
+    // --- Private Helpers ---
+    private static PrintWriter getPrinterWriter(String path) throws IOException {
+        FileWriter fw = new FileWriter(path, false);
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        return new PrintWriter(bw);
     }
     
 }
