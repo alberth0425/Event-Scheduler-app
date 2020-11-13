@@ -37,6 +37,9 @@ public class MessageService {
      * @return true if the message is sent, otherwise false
      */
     public boolean sendMessage(String text, User sender, User receiver) {
+        // Check if sender is in the contact book
+        if (!contactBook.containsKey(sender.getUsername())) return false;
+
         // Check whether receiver is in the contact book of sender
         if (contactBook.get(sender.getUsername()).contains(receiver.getUsername())) {
             Message newMessage = new Message(text, sender.getUsername(), receiver.getUsername());
