@@ -7,15 +7,15 @@ public class Message implements Savable {
     private static int messageCount;
 
     private final String text;
-    private final int senderID;
-    private final int receiverID;
+    private final String senderUsername;
+    private final String receiverUsername;
     private final long timeStamp;  // message send time in millisecond
     private final int id;
 
-    public Message(String text, int senderID, int receiverID) {
+    public Message(String text, String senderUsername, String receiverUsername) {
         this.text = text;
-        this.senderID = senderID;
-        this.receiverID = receiverID;
+        this.senderUsername = senderUsername;
+        this.receiverUsername = receiverUsername;
 
         // Set time stamp to current time
         Date date = new Date();
@@ -31,8 +31,8 @@ public class Message implements Savable {
         String[] entries = dataEntry.split(",");
         this.id = Integer.parseInt(entries[0]);
         this.text = entries[1];
-        this.senderID = Integer.parseInt(entries[2]);
-        this.receiverID = Integer.parseInt(entries[3]);
+        this.senderUsername = entries[2];
+        this.receiverUsername = entries[3];
         this.timeStamp = Long.parseLong(entries[4]);
 
         messageCount += 1;
@@ -42,12 +42,12 @@ public class Message implements Savable {
         return text;
     }
 
-    public int getSenderID() {
-        return senderID;
+    public String getSenderUsername() {
+        return senderUsername;
     }
 
-    public int getReceiverID() {
-        return receiverID;
+    public String getReceiverUsername() {
+        return receiverUsername;
     }
 
     public long getTimeStamp() {
@@ -71,6 +71,6 @@ public class Message implements Savable {
 
     @Override
     public String toSavableString() {
-        return id + "," + text + "," + senderID + "," + receiverID + "," + timeStamp;
+        return id + "," + text + "," + senderUsername + "," + receiverUsername + "," + timeStamp;
     }
 }

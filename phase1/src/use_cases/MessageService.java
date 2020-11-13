@@ -9,52 +9,53 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MessageService {
-    public static HashMap<Integer, List<Integer>> contactBook;
-    public static HashMap<Integer, List<Message>> messageRepository;
-    private User thisUser;
+    public HashMap<String, List<String>> contactBook = new HashMap<>();
+    public HashMap<String, List<Message>> messageRepository = new HashMap<>();
 
-    public static void main(String[] args) {
-
-    }
-
-    public MessageService(User thisUser) {
-        this.thisUser = thisUser;
-        contactBook = new HashMap<Integer, List<Integer>>();
-        messageRepository = new HashMap<Integer, List<Message>>();
-    }
-
-    public void addUserToConTact(User user) {
-        if (contactBook.containsKey(thisUser.getId()))
-            contactBook.get(thisUser.getId()).add(user.getId());
+    /**
+     * Add user2 to user1's contact book.
+     *
+     * @param user1 the user whose contact book to add
+     * @param user2 the user to add to user1's contact book
+     */
+    public void addUserToContact(User user1, User user2) {
+        if (contactBook.containsKey(user1.getUsername()))
+            contactBook.get(user1.getUsername()).add(user2.getUsername());
         else {
-            List contact = new ArrayList<Integer>(user.getId());
-            contact.add(user.getId());
-            contactBook.put(thisUser.getId(), contact);
+            List<String> contact = new ArrayList<>();
+            contact.add(user2.getUsername());
+            contactBook.put(user1.getUsername(), contact);
         }
     }
 
-    private Message createMessage(String text, int receiverId) {
-        Message newMessage = new Message(text, thisUser.getId(), receiverId);
-        return newMessage;
-    }
+    /**
+     * Send a message from sender to receiver.
+     *
+     * @param text the text content of the message
+     * @param sender the username of the sender
+     * @param receiver the username of the receiver
+     * @return true if the message is sent, otherwise false
+     */
+    public boolean sendMessage(String text, User sender, User receiver) {
+        // Check whether receiver is in the contact book of sender
+        if (contactBook.get(sender.getUsername()).contains(receiver.getUsername())) {
+            Message newMessage = new Message(text, sender.getUsername(), receiver.getUsername());
 
-    private boolean messageRepositoryContains(int userId){
-        return messageRepository.containsKey(userId);
-    }
-
-    public boolean messageTo(String text, User receiver) {
-        if (contactBook.get(thisUser.getId()).contains(receiver.getId())) {
-            Message newMessage = createMessage(text, receiver.getId());
-            if (messageRepositoryContains(receiver.getId()))
-                messageRepository.get(receiver.getId()).add(newMessage);
-            else{
-                List messageList = new ArrayList();
+            // Check if there are existing messages from sender to receiver
+            if (messageRepository.containsKey(receiver.getUsername()))
+                // Add to the existing list
+                messageRepository.get(receiver.getUsername()).add(newMessage);
+            else {
+                // Create new list
+                List<Message> messageList = new ArrayList<>();
                 messageList.add(newMessage);
-                messageRepository.put(receiver.getId(), messageList);
+                messageRepository.put(receiver.getUsername(), messageList);
             }
             return true;
-        }
-        return false;
-    }
 
+        } else {
+            // Not in the contact book
+            return false;
+        }
+    }
 }
