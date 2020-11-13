@@ -16,15 +16,14 @@ public class SignupService {
      * @return a String representing all events; events are seperated by new lines
      */
     public String fetchAllEvents() {
-        EventService es = new EventService();
-        List<Event> allEvents = es.getAllEvents();
+        List<Event> allEvents = EventService.shared.getAllEvents();
 
         StringBuilder sb = new StringBuilder();
         for (Event event : allEvents) {
             try {
                 String eStr = "Title: " + event.getTitle() +
                         ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
-                        ", Remaining Seats: " + es.getEventAvailability(event) + "\n";
+                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
                 sb.append(eStr);
             } catch (AuthService.AuthException e) {
                 System.out.println("Speaker of event <" + event.getTitle() +
@@ -46,10 +45,8 @@ public class SignupService {
      */
     @SuppressWarnings("UnusedReturnValue")
     public boolean addAttendeeToEvent(Attendee attendee, Event event) {
-        EventService es = new EventService();
-
         try {
-            es.addEventAttendee(attendee, event);
+            EventService.shared.addEventAttendee(attendee, event);
         } catch (EventService.EventDoesNotExistException e) {
             System.out.println("Event <" + event.getTitle() + "> does not exist.");
             return false;
@@ -69,10 +66,8 @@ public class SignupService {
      */
     @SuppressWarnings("UnusedReturnValue")
     public boolean removeAttendeeFromEvent(Attendee attendee, Event event) {
-        EventService es = new EventService();
-
         try {
-            es.removeEventAttendee(attendee, event);
+            EventService.shared.removeEventAttendee(attendee, event);
         } catch (EventService.EventDoesNotExistException e) {
             System.out.println("Event <" + event.getTitle() + "> does not exist.");
             return false;

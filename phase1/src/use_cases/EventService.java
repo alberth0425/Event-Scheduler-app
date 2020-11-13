@@ -11,10 +11,13 @@ import java.util.List;
 
 public class EventService {
 
-    private static final HashMap<Integer, List<Attendee>> eventToAttendee = new HashMap<>();
-    private static final HashMap<Integer, Room> eventToRoom = new HashMap<>();
-    private static final HashMap<Integer, Speaker> eventToSpeaker = new HashMap<>();
-    private static final List<Event> allEvents = new ArrayList<>();
+    public static EventService shared = new EventService();
+    private EventService() {}
+
+    private final HashMap<Integer, List<Attendee>> eventToAttendee = new HashMap<>();
+    private final HashMap<Integer, Room> eventToRoom = new HashMap<>();
+    private final HashMap<Integer, Speaker> eventToSpeaker = new HashMap<>();
+    private final List<Event> allEvents = new ArrayList<>();
 
     /**
      * Add an attendee to an event.
@@ -26,6 +29,20 @@ public class EventService {
     public void addEventAttendee(Attendee attendee, Event event) throws EventException {
         // Check that the event exists, i.e., is in allEvents List
         validateEvent(event);
+
+        // Check if event room is already full
+        int capacity = eventToRoom.get(event.getId()).getCapacity();
+        int occupancy = eventToAttendee.get(event.getId()).size();
+        if (capacity <= occupancy) throw new RoomFullException();
+
+        // Check if attendee has another event at the same time
+        for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
+            if (e.getId() != event.getId()) {
+                for (Attendee a : eventToAttendee.get(event.getId())) {
+                    if (a.getUsername().equals(attendee.getUsername())) throw new AttendeeScheduleConflictException();
+                }
+            }
+        }
 
         if (eventToAttendee.containsKey(event.getId())) {
             eventToAttendee.get(event.getId()).add(attendee);
@@ -75,6 +92,12 @@ public class EventService {
         // Check that the event exists, i.e., is in allEvents List
         validateEvent(event);
 
+        // Check for double booking
+        for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
+            if (eventToRoom.get(e.getId()).getRoomNumber() == newRoom.getRoomNumber() && e.getId() != event.getId())
+                throw new RoomDoubleBookException();
+        }
+
         eventToRoom.put(event.getId(), newRoom);
     }
 
@@ -101,6 +124,11 @@ public class EventService {
     public void setEventSpeaker(Speaker newSpeaker, Event event) throws EventException {
         // Check that the event exists, i.e., is in allEvents List
         validateEvent(event);
+
+        // Check for double booking
+        for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
+            if (e.getSpeakerUsername().equals(newSpeaker.getUsername()) && e.getId() != event.getId()) throw new SpeakerDoubleBookException();
+        }
 
         eventToSpeaker.put(event.getId(), newSpeaker);
     }
@@ -215,5 +243,7 @@ public class EventService {
     public static class EventDoesNotExistException extends EventException {}
     public static class RoomDoubleBookException extends EventException {}
     public static class SpeakerDoubleBookException extends EventException {}
+    public static class RoomFullException extends EventException {}
+    public static class AttendeeScheduleConflictException extends EventException {}
 
 }
