@@ -1,7 +1,6 @@
 package src.use_cases;
 
-import src.entities.Savable;
-import src.entities.User;
+import src.entities.*;
 
 import java.util.HashMap;
 
@@ -23,7 +22,7 @@ public class AuthService {
      * @throws UsernameAlreadyTakenException if the username is already taken by another user
      * @throws InvalidFieldException if one of the fields are invalid
      */
-    public void createUser(String username, String password, String firstName, String lastName) throws AuthException {
+    public void createUser(String username, String password, String firstName, String lastName, UserType userType) throws AuthException {
         // Validate user fields
         if (!validateUsername(username)) {
             throw new InvalidFieldException(UserField.USERNAME);
@@ -41,8 +40,21 @@ public class AuthService {
         }
         
         // Create the new user
-        User user = new User(username, password, firstName, lastName);
-        users.put(username, user);
+        //noinspection EnhancedSwitchMigration
+        switch (userType) {
+            case SPEAKER:
+                Speaker speaker = new Speaker(username, password, firstName, lastName);
+                users.put(username, speaker);
+                break;
+            case ORGANIZER:
+                Organizer organizer = new Organizer(username, password, firstName, lastName);
+                users.put(username, organizer);
+                break;
+            case ATTENDEE:
+                Attendee attendee = new Attendee(username, password, firstName, lastName);
+                users.put(username, attendee);
+                break;
+        }
     }
 
     /**
@@ -126,6 +138,12 @@ public class AuthService {
         PASSWORD,
         FIRST_NAME,
         LAST_NAME,
+    }
+
+    public enum UserType {
+        ATTENDEE,
+        ORGANIZER,
+        SPEAKER
     }
 
     public static class InvalidFieldException extends AuthException {
