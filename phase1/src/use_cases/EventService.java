@@ -51,6 +51,7 @@ public class EventService {
             listOfAttendee.add(attendee);
             eventToAttendee.put(event.getId(), listOfAttendee);
         }
+        event.addAttendee(attendee.getUsername());
     }
 
     /**
@@ -65,6 +66,7 @@ public class EventService {
         validateEvent(event);
 
         eventToAttendee.get(event.getId()).remove(attendee);
+        event.removeAttendee(attendee.getUsername());
     }
 
     /**
@@ -204,7 +206,7 @@ public class EventService {
             if (this.getEventRoom(event).getRoomNumber() == room.getRoomNumber()) throw new RoomDoubleBookException();
         }
 
-        Event event = new Event(title, speaker.getUsername(), startingTime);
+        Event event = new Event(title, speaker.getUsername(), startingTime, room.getRoomNumber());
         eventToRoom.put(event.getId(), room);
         eventToSpeaker.put(event.getId(),speaker);
         allEvents.add(event);
