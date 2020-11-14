@@ -4,6 +4,7 @@ import src.entities.Attendee;
 import src.entities.Event;
 import src.entities.Message;
 import src.entities.User;
+import src.gateway.PersistenceStorage;
 import src.use_cases.AuthService;
 import src.use_cases.EventService;
 import src.use_cases.MessageService;
@@ -85,7 +86,35 @@ public class AttendeeController extends UserController {
     }
 
     private void cancelEvent() {
-        // TODO
+        String username = AuthService.shared.getCurrentUser().getUsername();
+        List<Event> events = EventService.shared.getEventsWithAttendee(username);
+
+        System.out.println("The events you signed up for:");
+        for (Event event : events) {
+            try {
+                String eventStr = "ID: " + event.getId() + ", Title: " + event.getTitle() +
+                        ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
+                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                System.out.println(eventStr);
+            } catch (Exception e) {
+                System.out.println("Unknown error: " + e.getMessage());
+            }
+        }
+
+        System.out.println("Enter the ID of the event to cancel:");
+
+        try {
+            int eventId = Integer.parseInt(scanner.nextLine());
+            Event event = EventService.shared.getEventById(eventId);
+            EventService.shared.removeEventAttendee((Attendee) AuthService.shared.getCurrentUser(), event);
+
+        } catch (EventService.EventDoesNotExistException e) {
+            System.out.println("The event with given ID does not exist.");
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid event ID: must be an integer.");
+        } catch (Exception e) {
+            System.out.println("Unknown error: " + e.getMessage());
+        }
     }
 
     private void sendMessages() {
