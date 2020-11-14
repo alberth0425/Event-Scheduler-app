@@ -2,6 +2,7 @@ package src.use_cases;
 
 import src.entities.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AuthService {
@@ -16,6 +17,15 @@ public class AuthService {
 
     public void setUsers(HashMap<String, User> users) {
         this.users = users;
+    }
+
+    public ArrayList<User> getAllUsers() throws AuthException {
+        ArrayList<User> allUsers = new ArrayList<>();
+        for (HashMap.Entry UN : users.entrySet()) {
+            allUsers.add(getUserByUsername((String) UN.getValue()));
+        }
+        return allUsers;
+        // TODO: implement exception
     }
 
     /**
