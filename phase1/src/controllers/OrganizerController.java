@@ -7,8 +7,10 @@ import src.use_cases.AuthService;
 import src.use_cases.EventService;
 import src.use_cases.MessageService;
 import src.use_cases.RoomService;
+import src.entities.Room;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class OrganizerController extends UserController {
     @Override
@@ -302,6 +304,99 @@ public class OrganizerController extends UserController {
         }
     }
 
+
+    private void createSpeaker()  {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter your username: ");
+        String username = scan.nextLine();
+
+        System.out.println("Please enter your password: ");
+        String password = scan.nextLine();
+
+        System.out.println("Please enter your first name: ");
+        String firstName = scan.nextLine();
+
+        System.out.println("PLease enter your last name: ");
+        String lastName = scan.nextLine();
+
+        try{
+            AuthService.shared.createUser(username, password, firstName,
+                    lastName, AuthService.UserType.SPEAKER);}
+        catch (AuthService.UserDoesNotExistException e) {
+            System.out.println("User with username " + username + " does not exist.");
+        } catch (Exception e) {
+            System.out.println("Unknown exception: " + e.toString());
+        }
+
+
+
+    }
+
+    private void createEvent() {
+
+        System.out.println("Please enter the Event title: ");
+        String title = scanner.nextLine();
+
+
+        System.out.println("Please enter the starting time: ");
+        String startingTime = scanner.nextLine();
+
+        System.out.println("Please enter the speaker username: ");
+        String speaker = scanner.nextLine();
+
+        System.out.println("PLease enter the room number: ");
+        String roomNumber = scanner.nextLine();
+
+        try {
+            int st = Integer.parseInt(startingTime);
+            int rm = Integer.parseInt(roomNumber);
+            Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);
+            Room room = RoomService.shared.getRoom(rm);
+
+            try {
+                EventService.shared.createEvent(title, st, sp, room);
+
+            } catch (EventService.EventDoesNotExistException e) {
+                System.out.println("Event does not exist.");
+            } catch (EventService.RoomFullException e) {
+                System.out.println("The event is full.");
+            } catch (Exception e) {
+                System.out.println("Unknown Exception: " + e.toString());
+            }
+        } catch (NumberFormatException | AuthService.AuthException e) {
+            System.out.println("starting time must be a number.");
+            System.out.println("room number must be a number");
+            System.out.println("User with username " + speaker + " does not exist.");
+        }
+    }
+
+
+
+    private void createRoom(){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter the room number: ");
+        String roomNumber = scan.nextLine();
+
+        System.out.println("Please enter the room capacity: ");
+        String roomCapacity = scan.nextLine();
+
+        try{
+            int rn = Integer.parseInt(roomNumber);
+            int rc = Integer.parseInt(roomCapacity);
+            try{
+                RoomService.shared.createRoom(rn, rc);
+            }catch(RoomService.RoomDoesNotExistException e){
+                System.out.println("Room does not exist.");
+            }
+
+        }catch (NumberFormatException e){
+            System.out.println("room number must be a number.");
+            System.out.println("room capacity must be a number.");
+        }
+
+    }
 }
+
+
 
 
