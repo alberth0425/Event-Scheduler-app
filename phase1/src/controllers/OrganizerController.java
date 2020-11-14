@@ -260,50 +260,6 @@ public class OrganizerController extends UserController {
 
     }
 
-    // --- Private helpers ---
-
-    private void sendMessagesAllUsers() {
-        System.out.println("Enter message to send:");
-        String messageContent = scanner.nextLine();
-
-        for (User user : AuthService.shared.getAllUsers()) {
-            MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
-        }
-    }
-
-    private void sendMessagesAllSpeakers() {
-        System.out.println("Enter message to send:");
-        String messageContent = scanner.nextLine();
-
-        for (User user : AuthService.shared.getAllUsers()) {
-            if (user)
-                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
-        }
-    }
-
-    private void sendMessagesAllAttendees() {
-        System.out.println("Enter message to send:");
-        String messageContent = scanner.nextLine();
-
-        for (User user : AuthService.shared.getAllUsers()) {
-            if (user)
-                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
-        }
-    }
-
-    private void sendMessagesAllAttendeesSpecificRoom(String message, int eventId) {
-
-        try {
-            for (String attendeeUN : EventService.shared.getEventById(eventId).getAttendeeUNs()) {
-                MessageService.shared.sendMessage(message, AuthService.shared.getCurrentUser(),
-                        AuthService.shared.getUserByUsername(attendeeUN));
-            }
-
-        } catch (Exception e) {
-            System.out.println("Unknown exception: " + e.toString());
-        }
-    }
-
 
     private void createSpeaker()  {
         Scanner scan = new Scanner(System.in);
@@ -394,6 +350,50 @@ public class OrganizerController extends UserController {
             System.out.println("room capacity must be a number.");
         }
 
+    }
+
+    // --- Private helpers ---
+
+    private void sendMessagesAllUsers() {
+        System.out.println("Enter message to send:");
+        String messageContent = scanner.nextLine();
+
+        for (User user : AuthService.shared.getAllUsers()) {
+            MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+        }
+    }
+
+    private void sendMessagesAllSpeakers() {
+        System.out.println("Enter message to send:");
+        String messageContent = scanner.nextLine();
+
+        for (User user : AuthService.shared.getAllUsers()) {
+            if (user)
+                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+        }
+    }
+
+    private void sendMessagesAllAttendees() {
+        System.out.println("Enter message to send:");
+        String messageContent = scanner.nextLine();
+
+        for (User user : AuthService.shared.getAllUsers()) {
+            if (user)
+                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+        }
+    }
+
+    private void sendMessagesAllAttendeesSpecificRoom(String message, int eventId) {
+
+        try {
+            for (String attendeeUN : EventService.shared.getEventById(eventId).getAttendeeUNs()) {
+                MessageService.shared.sendMessage(message, AuthService.shared.getCurrentUser(),
+                        AuthService.shared.getUserByUsername(attendeeUN));
+            }
+
+        } catch (Exception e) {
+            System.out.println("Unknown exception: " + e.toString());
+        }
     }
 }
 
