@@ -50,7 +50,7 @@ public class MessageService {
     public boolean sendMessage(String text, User sender, User receiver) {
         Message newMessage = new Message(text, sender.getUsername(), receiver.getUsername());
 
-        if (canSendMessage(sender, receiver)) return false;
+        if (!canSendMessage(sender, receiver)) return false;
 
         // Check if there are existing messages from sender to receiver
         if (messageRepository.containsKey(receiver.getUsername()))
