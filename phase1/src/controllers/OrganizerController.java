@@ -92,13 +92,16 @@ public class OrganizerController extends UserController {
         System.out.println("PLease enter your last name: ");
         String lastName = scan.nextLine();
 
-        try{
+        try {
             AuthService.shared.createUser(username, password, firstName,
-                    lastName, AuthService.UserType.SPEAKER);}
+                    lastName, AuthService.UserType.SPEAKER);
+            System.out.println("Speaker created successfully.");}
         catch (AuthService.UserDoesNotExistException e) {
-            System.out.println("User with username " + username + " does not exist.");
+            System.out.println("User with username " + username + " does not exist. " + "Speaker does not create " +
+                    "successfully.");
         } catch (Exception e) {
-            System.out.println("Unknown exception: " + e.toString());
+            System.out.println("Unknown exception: " + e.toString() + ". Speaker does not create " +
+                    "successfully.");
         }
 
     }
@@ -125,23 +128,27 @@ public class OrganizerController extends UserController {
 
             try {
                 EventService.shared.createEvent(title, st, sp, room);
+                System.out.println("Event created successfully." );
 
             } catch (EventService.EventDoesNotExistException e) {
-                System.out.println("Event does not exist.");
+                System.out.println("Event does not exist."+ " Event does not create successfully.");
             } catch (EventService.RoomFullException e) {
-                System.out.println("The event is full.");
+                System.out.println("The event is full." + " Event does not create successfully.");
             } catch (EventService.InvalidEventTimeException e) {
-                System.out.println("The event starting time (" + startingTime + ") is invalid.");
+                System.out.println("The event starting time (" + startingTime + ") is invalid." +
+                        " Event does not create successfully.");
             } catch (Exception e) {
-                System.out.println("Unknown Exception: " + e.toString());
+                System.out.println("Unknown Exception: " + e.toString() + ". Event does not create successfully.");
             }
         } catch (AuthService.AuthException e) {
-            System.out.println("User with username " + speaker + " does not exist.");
+            System.out.println("User with username " + speaker + " does not exist." +
+                    " Event does not create successfully.");
         } catch (NumberFormatException e) {
-            System.out.println("Starting time must be a number.");
-            System.out.println("Room number must be a number");
+            System.out.println("Starting time must be a number." + " Event does not create successfully." );
+            System.out.println("Room number must be a number" + " Event does not create successfully.");
         } catch (RoomService.RoomException e) {
-            System.out.println("Room with room number " + roomNumber + " does not exist.");
+            System.out.println("Room with room number " + roomNumber + " does not exist." +
+                    " Event does not create successfully.");
         }
     }
 
@@ -154,18 +161,18 @@ public class OrganizerController extends UserController {
         System.out.println("Please enter the room capacity: ");
         String roomCapacity = scan.nextLine();
 
-        try{
+        try {
             int rn = Integer.parseInt(roomNumber);
             int rc = Integer.parseInt(roomCapacity);
             if (!RoomService.shared.createRoom(rn, rc)) {
-                System.out.println("room number already exist.");
+                System.out.println("Room number already exist.");
             } else {
-                System.out.println("create room successfully.");
+                System.out.println("Create room successfully.");
             }
 
         } catch (NumberFormatException e) {
-            System.out.println("room number must be a number.");
-            System.out.println("room capacity must be a number.");
+            System.out.println("Room number must be a number." + " Room does not create successfully.");
+            System.out.println("Room capacity must be a number." + " Room does not create successfully.");
         }
 
     }
@@ -397,7 +404,7 @@ public class OrganizerController extends UserController {
         }
     }
 
-    // helper for send message to all the attendee in a specifc event
+    // helper for send message to all the attendee in a specific event
     private void sendMessagesAllAttendeesSpecificEvent() {
         Scanner scanner = new Scanner(System.in);
 
