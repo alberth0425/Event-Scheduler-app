@@ -25,7 +25,7 @@ public class RoomService {
         if (rooms.containsKey(roomNumber)) {
             return false;
         } else {
-            Room room = new Room(roomNumber, capacity);
+            Room room = new Room(capacity, roomNumber);
             rooms.put(roomNumber, room);
             return true;
         }

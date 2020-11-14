@@ -20,7 +20,6 @@ public class Message implements Savable {
         // Set time stamp to current time
         Date date = new Date();
         timeStamp = date.getTime();
-        System.out.println(timeStamp);
 
         // Set id
         id = messageCount;

@@ -40,7 +40,7 @@ public class BaseController {
 
         for (Message message : messages) {
             String username = message.getReceiverUsername();
-            if (messageRepository.containsKey(username)) {
+            if (!messageRepository.containsKey(username)) {
                 messageRepository.put(username, new ArrayList<>());
             }
             messageRepository.get(username).add(message);
