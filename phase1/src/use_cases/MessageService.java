@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MessageService {
-    public HashMap<String, List<String>> contactBook = new HashMap<>();
+    private HashMap<String, List<String>> contactBook = new HashMap<>();
     private HashMap<String, List<Message>> messageRepository = new HashMap<>();
 
     public static MessageService shared = new MessageService();
@@ -21,6 +21,14 @@ public class MessageService {
 
     public void setMessageRepository(HashMap<String, List<Message>> messageRepository) {
         this.messageRepository = messageRepository;
+    }
+
+    public List<Message> getAllMessages() {
+        ArrayList<Message> allMessageList = new ArrayList<>();
+        for (List<Message> e : messageRepository.values()) {
+            allMessageList.addAll(e);
+        }
+        return allMessageList;
     }
 
     /**

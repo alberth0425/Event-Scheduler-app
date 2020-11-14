@@ -2,7 +2,9 @@ package src.use_cases;
 
 import src.entities.Room;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class RoomService {
     private HashMap<Integer, Room> rooms = new HashMap<>();
@@ -13,6 +15,8 @@ public class RoomService {
     public void setRooms(HashMap<Integer, Room> rooms) {
         this.rooms = rooms;
     }
+
+    public List<Room> getAllRooms() {return new ArrayList<>(this.rooms.values()); }
 
     /**
      * Create a new room with room number and capacity.

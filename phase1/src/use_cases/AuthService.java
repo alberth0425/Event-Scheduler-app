@@ -2,7 +2,9 @@ package src.use_cases;
 
 import src.entities.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AuthService {
     private static final int PASSWORD_MINIMUM_LENGTH = 6;
@@ -18,6 +20,9 @@ public class AuthService {
         this.users = users;
     }
 
+    public List<User> getAllUsers() {
+        return new ArrayList<>(users.values());
+    }
     /**
      * Create a new user with given username, password, first name, and last name.
      * 
@@ -160,7 +165,7 @@ public class AuthService {
     public User getCurrentUser() {
         return currentUser;
     }
-    
+
     // Custom Exception Classes
 
     public static class AuthException extends Exception {}
