@@ -1,17 +1,15 @@
 package src.controllers;
 
-import src.entities.Attendee;
-import src.entities.Event;
-import src.entities.Message;
-import src.entities.User;
-import src.gateway.PersistenceStorage;
+import src.entities.*;
 import src.use_cases.AuthService;
 import src.use_cases.EventService;
 import src.use_cases.MessageService;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class AttendeeController extends UserController {
+
     @Override
     void run() {
         while (true) {
@@ -60,6 +58,7 @@ public class AttendeeController extends UserController {
     }
 
     void signUpEvent() {
+        Scanner scanner = new Scanner(System.in);
         Attendee attendee = (Attendee) AuthService.shared.getCurrentUser();
 
         System.out.println("Enter event ID: ");
@@ -83,11 +82,19 @@ public class AttendeeController extends UserController {
         } catch (NumberFormatException e) {
             System.out.println("Event ID must be a number.");
         }
+        scanner.close();
     }
 
     private void cancelEvent() {
+        Scanner scanner = new Scanner(System.in);
         String username = AuthService.shared.getCurrentUser().getUsername();
         List<Event> events = EventService.shared.getEventsWithAttendee(username);
+
+        // User has not not signed up for any events
+        if (events.size() == 0) {
+            System.out.println("You have not signed up for any events yet.");
+            return;
+        }
 
         System.out.println("The events you signed up for:");
         for (Event event : events) {
@@ -115,9 +122,11 @@ public class AttendeeController extends UserController {
         } catch (Exception e) {
             System.out.println("Unknown error: " + e.getMessage());
         }
+        scanner.close();
     }
 
     private void sendMessages() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter receiver username:");
         String receiverUN = scanner.nextLine();
 
@@ -136,5 +145,6 @@ public class AttendeeController extends UserController {
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
         }
+        scanner.close();
     }
 }
