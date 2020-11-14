@@ -1,13 +1,10 @@
 package src.controllers;
 
-import src.entities.Event;
-import src.entities.Speaker;
-import src.entities.User;
+import src.entities.*;
 import src.use_cases.AuthService;
 import src.use_cases.EventService;
 import src.use_cases.MessageService;
 import src.use_cases.RoomService;
-import src.entities.Room;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -328,7 +325,7 @@ public class OrganizerController extends UserController {
 
 
 
-    private void createRoom(){
+    private void createRoom() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please enter the room number: ");
         String roomNumber = scan.nextLine();
@@ -339,13 +336,13 @@ public class OrganizerController extends UserController {
         try{
             int rn = Integer.parseInt(roomNumber);
             int rc = Integer.parseInt(roomCapacity);
-            try{
-                RoomService.shared.createRoom(rn, rc);
-            }catch(RoomService.RoomDoesNotExistException e){
-                System.out.println("Room does not exist.");
+            if (!RoomService.shared.createRoom(rn, rc)) {
+                System.out.println("room number already exist.");
+            } else {
+                System.out.println("create room successfully.");
             }
 
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println("room number must be a number.");
             System.out.println("room capacity must be a number.");
         }
@@ -368,7 +365,7 @@ public class OrganizerController extends UserController {
         String messageContent = scanner.nextLine();
 
         for (User user : AuthService.shared.getAllUsers()) {
-            if (user)
+            if (user instanceof Speaker)
                 MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
         }
     }
@@ -378,7 +375,7 @@ public class OrganizerController extends UserController {
         String messageContent = scanner.nextLine();
 
         for (User user : AuthService.shared.getAllUsers()) {
-            if (user)
+            if (user instanceof Attendee)
                 MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
         }
     }

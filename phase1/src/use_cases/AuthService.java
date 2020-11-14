@@ -4,6 +4,7 @@ import src.entities.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AuthService {
     private static final int PASSWORD_MINIMUM_LENGTH = 6;
@@ -19,13 +20,12 @@ public class AuthService {
         this.users = users;
     }
 
-    public ArrayList<User> getAllUsers() throws AuthException {
-        ArrayList<User> allUsers = new ArrayList<>();
-        for (HashMap.Entry UN : users.entrySet()) {
-            allUsers.add(getUserByUsername((String) UN.getValue()));
+    public List<User> getAllUsers() {
+        List<User> allUsers = new ArrayList<>();
+        for (HashMap.Entry<String, User> UN : users.entrySet()) {
+            allUsers.add(UN.getValue());
         }
         return allUsers;
-        // TODO: implement exception
     }
 
     /**

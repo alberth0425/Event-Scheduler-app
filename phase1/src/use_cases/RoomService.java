@@ -31,7 +31,14 @@ public class RoomService {
         }
     }
 
+    public void validateRoom(int roomNum) throws RoomException {
+        if (!rooms.containsKey(roomNum)) throw new RoomDoesNotExistException();
+    }
+
     public Room getRoom(int roomNumber) {
         return rooms.get(roomNumber);
     }
+
+    public static class RoomException extends Exception {};
+    public static class RoomDoesNotExistException extends RoomException {}
 }
