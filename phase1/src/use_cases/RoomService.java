@@ -25,7 +25,7 @@ public class RoomService {
         if (rooms.containsKey(roomNumber)) {
             return false;
         } else {
-            Room room = new Room(roomNumber, capacity);
+            Room room = new Room(capacity, roomNumber);
             rooms.put(roomNumber, room);
             return true;
         }
@@ -35,8 +35,11 @@ public class RoomService {
         if (!rooms.containsKey(roomNum)) throw new RoomDoesNotExistException();
     }
 
-    public Room getRoom(int roomNumber) {
-        return rooms.get(roomNumber);
+    public Room getRoom(int roomNumber) throws RoomException {
+        Room rm = rooms.get(roomNumber);
+
+        if (rm == null) throw new RoomDoesNotExistException();
+        return rm;
     }
 
     public static class RoomException extends Exception {};

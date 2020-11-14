@@ -18,13 +18,7 @@ public class Event implements Savable {
         this.title = title;
         this.speakerUN = speakerUN;
         this.roomNumber = roomNumber;
-
-        // Check if start time is valid
-        if (startingTime < 9 || startingTime >= 17) {
-            throw new RuntimeException("Invalid event starting time: " + startingTime);
-        } else {
-            this.startingTime = startingTime;
-        }
+        this.startingTime = startingTime;
 
         id = eventCount;
         eventCount += 1;

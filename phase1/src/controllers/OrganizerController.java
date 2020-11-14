@@ -10,6 +10,14 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class OrganizerController extends UserController {
+
+    Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        OrganizerController oc = new OrganizerController();
+        oc.run();
+    }
+
     @Override
     void run() {
         while (true) {
@@ -106,6 +114,7 @@ public class OrganizerController extends UserController {
     }
 
     void assignSpeakerToOneEvent() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter speaker username:");
 
         String speakerUN = scanner.nextLine();
@@ -133,7 +142,7 @@ public class OrganizerController extends UserController {
             } catch (NumberFormatException e) {
                 System.out.println("Event ID must be a number.");
             }
-        } catch (AuthService.UserDoesNotExistException e) {
+        } catch (AuthService.AuthException e) {
             System.out.println("User with username " + speakerUN + " does not exist.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
@@ -281,15 +290,12 @@ public class OrganizerController extends UserController {
             System.out.println("Unknown exception: " + e.toString());
         }
 
-
-
     }
 
     private void createEvent() {
-
-        System.out.println("Please enter the Event title: ");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the event title: ");
         String title = scanner.nextLine();
-
 
         System.out.println("Please enter the starting time: ");
         String startingTime = scanner.nextLine();
@@ -313,13 +319,18 @@ public class OrganizerController extends UserController {
                 System.out.println("Event does not exist.");
             } catch (EventService.RoomFullException e) {
                 System.out.println("The event is full.");
+            } catch (EventService.InvalidEventTimeException e) {
+                System.out.println("The event starting time (" + startingTime + ") is invalid.");
             } catch (Exception e) {
                 System.out.println("Unknown Exception: " + e.toString());
             }
-        } catch (NumberFormatException | AuthService.AuthException e) {
-            System.out.println("starting time must be a number.");
-            System.out.println("room number must be a number");
+        } catch (AuthService.AuthException e) {
             System.out.println("User with username " + speaker + " does not exist.");
+        } catch (NumberFormatException e) {
+            System.out.println("Starting time must be a number.");
+            System.out.println("Room number must be a number");
+        } catch (RoomService.RoomException e) {
+            System.out.println("Room with room number " + roomNumber + " does not exist.");
         }
     }
 

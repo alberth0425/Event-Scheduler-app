@@ -22,7 +22,7 @@ public class EventService {
         this.allEvents = allEvents;
     }
 
-    private Room getRoom(int roomNumber) {
+    private Room getRoom(int roomNumber) throws RoomService.RoomException {
         return RoomService.shared.getRoom(roomNumber);
     }
 
@@ -33,7 +33,7 @@ public class EventService {
      * @param event the event
      * @throws EventException if the event does not exists, i.e., is not in allEvents List
      */
-    public void addEventAttendee(Attendee attendee, Event event) throws EventException {
+    public void addEventAttendee(Attendee attendee, Event event) throws EventException, RoomService.RoomException {
         // Check that the event exists, i.e., is in allEvents List
         validateEvent(event);
 
@@ -159,12 +159,15 @@ public class EventService {
      * @throws SpeakerDoubleBookException if the input speaker is already scheduled to another event at the same time
      * @throws RoomDoubleBookException if the input room is already scheduled to another event at the same time
      */
-    public Event createEvent(String title, int startingTime, Speaker speaker, Room room) throws EventException {
+    public Event createEvent(String title, int startingTime, Speaker speaker, Room room) throws EventException, RoomService.RoomException {
         // Check double booking exceptions (both speaker and room)
         for (Event event : this.getEventsByStartTime(startingTime)) {
             if (event.getSpeakerUsername().equals(speaker.getUsername())) throw new SpeakerDoubleBookException();
             if (getRoom(event.getRoomNumber()).getRoomNumber() == room.getRoomNumber()) throw new RoomDoubleBookException();
         }
+
+        // Check event starting time
+        if (startingTime < 9 || startingTime >= 17) throw new InvalidEventTimeException();
 
         Event event = new Event(title, speaker.getUsername(), startingTime, room.getRoomNumber());
         allEvents.add(event);
@@ -178,7 +181,7 @@ public class EventService {
      * @param event the event
      * @return number of seats that are empty in the event's room
      */
-    public int getEventAvailability(Event event) throws EventException {
+    public int getEventAvailability(Event event) throws RoomService.RoomException {
         Room room = getRoom(event.getRoomNumber());
         return room.getCapacity() - event.getAttendeeUNs().size();
     }
@@ -198,6 +201,7 @@ public class EventService {
     // --- Custom Exceptions ---
 
     public static class EventException extends Exception {}
+    public static class InvalidEventTimeException extends EventException {}
     public static class EventDoesNotExistException extends EventException {}
     public static class RoomDoubleBookException extends EventException {}
     public static class SpeakerDoubleBookException extends EventException {}

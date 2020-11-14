@@ -9,8 +9,11 @@ import src.use_cases.EventService;
 import src.use_cases.MessageService;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class AttendeeController extends UserController {
+
+    Scanner scanner = new Scanner(System.in);
     @Override
     void run() {
         while (true) {

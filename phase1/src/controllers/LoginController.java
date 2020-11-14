@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class LoginController extends BaseController {
+    Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         (new LoginController()).run();
