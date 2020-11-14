@@ -1,5 +1,6 @@
 package src.use_cases;
 
+import src.entities.Event;
 import src.entities.Room;
 
 import java.util.HashMap;
@@ -31,7 +32,17 @@ public class RoomService {
         }
     }
 
+    public void validateRoom(int roomNum) throws RoomService.RoomException {
+        if (!rooms.containsKey(roomNum)) throw new RoomService.RoomDoesNotExistException();
+    }
+
     public Room getRoom(int roomNumber) {
         return rooms.get(roomNumber);
     }
+
+
+    public static class RoomException extends Exception {}
+    public static class RoomDoesNotExistException extends RoomService.RoomException {}
 }
+
+

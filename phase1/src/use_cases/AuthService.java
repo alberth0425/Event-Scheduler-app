@@ -2,7 +2,10 @@ package src.use_cases;
 
 import src.entities.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AuthService {
     private static final int PASSWORD_MINIMUM_LENGTH = 6;
@@ -16,6 +19,14 @@ public class AuthService {
 
     public void setUsers(HashMap<String, User> users) {
         this.users = users;
+    }
+
+    public List<User> getAllUsers() {
+        List<User> allUsers = new ArrayList<>();
+        for (Map.Entry UN : users.entrySet()) {
+            allUsers.add(getUserByUsername(UN.getValue()));
+        }
+        return allUsers;
     }
 
     /**
