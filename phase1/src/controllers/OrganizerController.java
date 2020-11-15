@@ -16,7 +16,8 @@ public class OrganizerController extends UserController {
     public static void main(String[] args) {
         OrganizerController oc = new OrganizerController();
         oc.run();
-    }
+        }
+
 
     @Override
     void run() {
@@ -75,8 +76,112 @@ public class OrganizerController extends UserController {
         }
     }
 
+    private void createSpeaker() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter your username: ");
+        String username = scan.nextLine();
+
+        System.out.println("Please enter your password: ");
+        String password = scan.nextLine();
+
+        System.out.println("Please enter your first name: ");
+        String firstName = scan.nextLine();
+
+        System.out.println("PLease enter your last name: ");
+        String lastName = scan.nextLine();
+
+        try {
+            AuthService.shared.createUser(username, password, firstName,
+                    lastName, AuthService.UserType.SPEAKER);
+            System.out.println("Speaker created successfully.");
+        } catch (AuthService.UserDoesNotExistException e) {
+            System.out.println("User with username " + username + " does not exist. " + "Speaker does not create " +
+                    "successfully.");
+        } catch (AuthService.InvalidFieldException e) {
+            System.out.println("Invalid " + e.getField() + " entered. Speaker does not create successfully");
+        } catch (Exception e) {
+            System.out.println("Unknown exception: " + e.toString() + ". Speaker does not create " +
+                    "successfully.");
+        }
+
+    }
+
+    private void createEvent() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the event title: ");
+        String title = scanner.nextLine();
+
+        System.out.println("Please enter the starting time: ");
+        String startingTime = scanner.nextLine();
+
+        System.out.println("Please enter the speaker username: ");
+        String speaker = scanner.nextLine();
+
+        System.out.println("Please enter the room number: ");
+        String roomNumber = scanner.nextLine();
+
+        try {
+            int st = Integer.parseInt(startingTime);
+            int rm = Integer.parseInt(roomNumber);
+            Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);
+            Room room = RoomService.shared.getRoom(rm);
+
+            try {
+                EventService.shared.createEvent(title, st, sp, room);
+                System.out.println("Event created successfully." );
+
+            } catch (EventService.EventDoesNotExistException e) {
+                System.out.println("Event does not exist." + " Event does not create successfully.");
+            } catch (EventService.SpeakerDoubleBookException e) {
+                System.out.println("The speaker is not available at this time" + "Event does not create successfully.");
+            } catch (EventService.RoomFullException e) {
+                System.out.println("The event is full." + " Event does not create successfully.");
+            } catch (EventService.InvalidEventTimeException e) {
+                System.out.println("The event starting time (" + startingTime + ") is invalid." +
+                        " Event does not create successfully.");
+            } catch (Exception e) {
+                System.out.println("Unknown Exception: " + e.toString() + ". Event does not create successfully.");
+            }
+        } catch (AuthService.AuthException e) {
+            System.out.println("User with username " + speaker + " does not exist." +
+                    " Event does not create successfully.");
+        } catch (NumberFormatException e) {
+            System.out.println("Starting time must be a number." + " Event does not create successfully." );
+            System.out.println("Room number must be a number" + " Event does not create successfully.");
+        } catch (RoomService.RoomException e) {
+            System.out.println("Room with room number " + roomNumber + " does not exist." +
+                    " Event does not create successfully.");
+        }
+    }
+
+
+    private void createRoom() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter the room number: ");
+        String roomNumber = scan.nextLine();
+
+        System.out.println("Please enter the room capacity: ");
+        String roomCapacity = scan.nextLine();
+
+        try {
+            int rn = Integer.parseInt(roomNumber);
+            int rc = Integer.parseInt(roomCapacity);
+            if (!RoomService.shared.createRoom(rn, rc)) {
+                System.out.println("Room number already exist.");
+            } else {
+                System.out.println("Create room successfully.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Room number must be a number." + " Room does not create successfully.");
+            System.out.println("Room capacity must be a number." + " Room does not create successfully.");
+        }
+
+    }
+
+
     // Two different ways to assign speaker to event.
-    void assignSpeakerToEvent() {
+    private void assignSpeakerToEvent() {
         while (true) {
             System.out.println("Select an action:");
             System.out.println("1. Assign speaker to one specific event ");
@@ -113,7 +218,7 @@ public class OrganizerController extends UserController {
         }
     }
 
-    void assignSpeakerToOneEvent() {
+    private void assignSpeakerToOneEvent() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter speaker username:");
 
@@ -132,10 +237,13 @@ public class OrganizerController extends UserController {
 
                     EventService.shared.setEventSpeaker(speaker, event);
 
+                    System.out.println("Speaker " + speakerUN + " is assigned to event " + eventId + " successfully.");
+
                 } catch (EventService.EventDoesNotExistException e) {
-                    System.out.println("Event does not exist.");
+                    System.out.println("Event " + eventId +  " does not exist. Speaker assigned unsuccessfully");
                 } catch (EventService.SpeakerDoubleBookException e) {
-                    System.out.println("Speaker not available at this event's time");
+                    System.out.println("Speaker is not available at this event " + eventId + "'s time. Speaker assigned" +
+                            "unsuccessfully.");
                 } catch (Exception e) {
                     System.out.println("Unknown Exception: " + e.toString());
                 }
@@ -143,13 +251,15 @@ public class OrganizerController extends UserController {
                 System.out.println("Event ID must be a number.");
             }
         } catch (AuthService.AuthException e) {
-            System.out.println("User with username " + speakerUN + " does not exist.");
+            System.out.println("User with username " + speakerUN + " does not exist. Speaker assigned unsuccessfully");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
         }
     }
 
-    void assignSpeakerToMultipleEvents() {
+    private void assignSpeakerToMultipleEvents() {
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("Enter speaker username:");
 
         String speakerUN = scanner.nextLine();
@@ -169,25 +279,28 @@ public class OrganizerController extends UserController {
                         EventService.shared.setEventSpeaker(speaker, event);
 
                     } catch (EventService.EventDoesNotExistException e) {
-                        System.out.println("Event does not exist.");
+                        System.out.println("Event " + eventId + " does not exist. Speaker assigned unsuccessfully");
                     } catch (EventService.SpeakerDoubleBookException e) {
-                        System.out.println("Speaker not available at this event's time");
+                        System.out.println("Speaker is not available at this event " + eventId + "'s time. Speaker " +
+                                "assigned unsuccessfully");
                     } catch (Exception e) {
                         System.out.println("Unknown Exception: " + e.toString());
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Event ID must be a number.");
+                    System.out.println("Event ID must be a number. Speaker assigned unsuccessfully");
                 }
             }
 
-        } catch (AuthService.UserDoesNotExistException e) {
-            System.out.println("User with username " + speakerUN + " does not exist.");
+        } catch (AuthService.AuthException e) {
+            System.out.println("User with username " + speakerUN + " does not exist. Speaker assigned unsuccessfully");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
         }
     }
 
-    void sendMessages() {
+
+    private void sendMessages() {
+
         System.out.println("Choose receiver type");
         System.out.println("1. Send message to all users");
         System.out.println("2. Send message to all speakers");
@@ -204,38 +317,28 @@ public class OrganizerController extends UserController {
             case 1:
                 sendMessagesAllUsers();
 
+                System.out.println("Message send successfully.");
+
                 break;
             case 2:
                 sendMessagesAllSpeakers();
+
+                System.out.println("Message send successfully.");
 
                 break;
             case 3:
                 sendMessagesAllAttendees();
 
+                System.out.println("Message send successfully.");
+
                 break;
             case 4:
-                System.out.println("Enter event id:");
-                String content = scanner.nextLine();
-
-                try {
-                    //check entered content is a digit
-                    int eventId = Integer.parseInt(content);
-
-                    //check entered event id's existence
-                    EventService.shared.getEventById(eventId);
-
-                    System.out.println("Enter message to send:");
-                    String message = scanner.nextLine();
-                    sendMessagesAllAttendeesSpecificRoom(message, eventId);
-
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid event id, please enter only digits.");
-                } catch (EventService.EventException e) {
-                    System.out.println("Event with event id " + content + " does not exist.");
-                }
+                sendMessagesAllAttendeesSpecificEvent();
 
                 break;
             case 5:
+                Scanner scanner = new Scanner(System.in);
+
                 System.out.println("Enter receiver username:");
                 String receiverUN = scanner.nextLine();
 
@@ -247,10 +350,15 @@ public class OrganizerController extends UserController {
 
                     MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), receiver);
 
+                    System.out.println("Message send successfully.");
+
                 } catch (AuthService.UserDoesNotExistException e) {
-                    System.out.println("User with username " + receiverUN + " does not exist.");
+                    System.out.println("User with username " + receiverUN + " does not exist. " +
+                            "Message does not send successfully.");
+                } catch (NullPointerException e) {
+                    System.out.println("User must log in to send message. Message does not send successfully.");
                 } catch (Exception e) {
-                    System.out.println("Unknown exception: " + e.toString());
+                    System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
                 }
 
                 break;
@@ -266,103 +374,12 @@ public class OrganizerController extends UserController {
 
     }
 
-
-    private void createSpeaker()  {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Please enter your username: ");
-        String username = scan.nextLine();
-
-        System.out.println("Please enter your password: ");
-        String password = scan.nextLine();
-
-        System.out.println("Please enter your first name: ");
-        String firstName = scan.nextLine();
-
-        System.out.println("PLease enter your last name: ");
-        String lastName = scan.nextLine();
-
-        try{
-            AuthService.shared.createUser(username, password, firstName,
-                    lastName, AuthService.UserType.SPEAKER);}
-        catch (AuthService.UserDoesNotExistException e) {
-            System.out.println("User with username " + username + " does not exist.");
-        } catch (Exception e) {
-            System.out.println("Unknown exception: " + e.toString());
-        }
-
-    }
-
-    private void createEvent() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter the event title: ");
-        String title = scanner.nextLine();
-
-        System.out.println("Please enter the starting time: ");
-        String startingTime = scanner.nextLine();
-
-        System.out.println("Please enter the speaker username: ");
-        String speaker = scanner.nextLine();
-
-        System.out.println("PLease enter the room number: ");
-        String roomNumber = scanner.nextLine();
-
-        try {
-            int st = Integer.parseInt(startingTime);
-            int rm = Integer.parseInt(roomNumber);
-            Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);
-            Room room = RoomService.shared.getRoom(rm);
-
-            try {
-                EventService.shared.createEvent(title, st, sp, room);
-
-            } catch (EventService.EventDoesNotExistException e) {
-                System.out.println("Event does not exist.");
-            } catch (EventService.RoomFullException e) {
-                System.out.println("The event is full.");
-            } catch (EventService.InvalidEventTimeException e) {
-                System.out.println("The event starting time (" + startingTime + ") is invalid.");
-            } catch (Exception e) {
-                System.out.println("Unknown Exception: " + e.toString());
-            }
-        } catch (AuthService.AuthException e) {
-            System.out.println("User with username " + speaker + " does not exist.");
-        } catch (NumberFormatException e) {
-            System.out.println("Starting time must be a number.");
-            System.out.println("Room number must be a number");
-        } catch (RoomService.RoomException e) {
-            System.out.println("Room with room number " + roomNumber + " does not exist.");
-        }
-    }
-
-
-
-    private void createRoom() {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Please enter the room number: ");
-        String roomNumber = scan.nextLine();
-
-        System.out.println("Please enter the room capacity: ");
-        String roomCapacity = scan.nextLine();
-
-        try{
-            int rn = Integer.parseInt(roomNumber);
-            int rc = Integer.parseInt(roomCapacity);
-            if (!RoomService.shared.createRoom(rn, rc)) {
-                System.out.println("room number already exist.");
-            } else {
-                System.out.println("create room successfully.");
-            }
-
-        } catch (NumberFormatException e) {
-            System.out.println("room number must be a number.");
-            System.out.println("room capacity must be a number.");
-        }
-
-    }
-
     // --- Private helpers ---
 
+    // helper for send message to all existing users
     private void sendMessagesAllUsers() {
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("Enter message to send:");
         String messageContent = scanner.nextLine();
 
@@ -371,39 +388,78 @@ public class OrganizerController extends UserController {
         }
     }
 
+    // helper for send message to all existing speakers
     private void sendMessagesAllSpeakers() {
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("Enter message to send:");
         String messageContent = scanner.nextLine();
-
-        for (User user : AuthService.shared.getAllUsers()) {
-            if (user instanceof Speaker)
-                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
-        }
-    }
-
-    private void sendMessagesAllAttendees() {
-        System.out.println("Enter message to send:");
-        String messageContent = scanner.nextLine();
-
-        for (User user : AuthService.shared.getAllUsers()) {
-            if (user instanceof Attendee)
-                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
-        }
-    }
-
-    private void sendMessagesAllAttendeesSpecificRoom(String message, int eventId) {
 
         try {
-            for (String attendeeUN : EventService.shared.getEventById(eventId).getAttendeeUNs()) {
-                MessageService.shared.sendMessage(message, AuthService.shared.getCurrentUser(),
-                        AuthService.shared.getUserByUsername(attendeeUN));
+            for (User user : AuthService.shared.getAllUsers()) {
+                if (user instanceof Speaker)
+                    MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+            }
+        } catch (NullPointerException e) {
+            System.out.println("User must log in to send message. Message does not send successfully.");
+        }
+    }
+
+    // helper for send message to all existing attendee
+    private void sendMessagesAllAttendees() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter message to send:");
+        String messageContent = scanner.nextLine();
+
+        try {
+            for (User user : AuthService.shared.getAllUsers()) {
+                if (user instanceof Attendee)
+                    MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+            }
+        } catch (NullPointerException e) {
+            System.out.println("User must log in to send message. Message does not send successfully.");
+        }
+    }
+
+    // helper for send message to all the attendee in a specific event
+    private void sendMessagesAllAttendeesSpecificEvent() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter event id:");
+        String content = scanner.nextLine();
+
+        try {
+            //check entered content is a digit
+            int eventId = Integer.parseInt(content);
+
+            //check entered event id's existence
+            EventService.shared.getEventById(eventId);
+
+            System.out.println("Enter message to send:");
+            String message = scanner.nextLine();
+            try {
+                for (String attendeeUN : EventService.shared.getEventById(eventId).getAttendeeUNs()) {
+                    MessageService.shared.sendMessage(message, AuthService.shared.getCurrentUser(),
+                            AuthService.shared.getUserByUsername(attendeeUN));
+                }
+                System.out.println("Message send successfully.");
+
+            } catch (Exception e) {
+                System.out.println("Unknown exception: " + e.toString() + "Message does not send successfully.");
             }
 
-        } catch (Exception e) {
-            System.out.println("Unknown exception: " + e.toString());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid event id, please enter only digits. Message does not send successfully.");
+        } catch (EventService.EventException e) {
+            System.out.println("Event with event id " + content + " does not exist. " +
+                    "Message does not send successfully.");
+        } catch (NullPointerException e) {
+            System.out.println("User must log in to send message. Message does not send successfully.");
         }
     }
 }
+
 
 
 
