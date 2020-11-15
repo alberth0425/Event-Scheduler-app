@@ -32,45 +32,51 @@ public class OrganizerController extends UserController {
             System.out.println("7. Send messages");
             System.out.println("8. Exit");
 
-            int choice = scanner.nextInt();
+            String content = scanner.nextLine();
+            try {
+                int choice = Integer.parseInt(content);
 
-            boolean exit = false;
+                boolean exit = false;
 
-            switch (choice) {
-                case 1:
-                    browseEvents();
-                    break;
-                case 2:
-                    createSpeaker();
-                    break;
-                case 3:
-                    createEvent();
-                    break;
-                case 4:
-                    createRoom();
-                    break;
-                case 5:
-                    assignSpeakerToEvent();
-                    break;
-                case 6:
-                    viewMessages();
-                    break;
-                case 7:
-                    sendMessages();
-                    break;
-                case 8:
-                    exit = true;
-                    break;
+                switch (choice) {
+                    case 1:
+                        browseEvents();
+                        break;
+                    case 2:
+                        createSpeaker();
+                        break;
+                    case 3:
+                        createEvent();
+                        break;
+                    case 4:
+                        createRoom();
+                        break;
+                    case 5:
+                        assignSpeakerToEvent();
+                        break;
+                    case 6:
+                        viewMessages();
+                        break;
+                    case 7:
+                        sendMessages();
+                        break;
+                    case 8:
+                        exit = true;
+                        break;
 
-                default:
-                    System.out.println("Unknown action.");
+                    default:
+                        System.out.println("Unknown action. Please try again.");
+                        break;
+                }
+
+                save();
+
+                if (exit) {
                     break;
-            }
-
-            save();
-
-            if (exit) {
-                break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Unknown action. Please try again. ");
+                run();
             }
 
         }
@@ -133,7 +139,8 @@ public class OrganizerController extends UserController {
             } catch (EventService.EventDoesNotExistException e) {
                 System.out.println("Event does not exist." + " Event does not create successfully.");
             } catch (EventService.SpeakerDoubleBookException e) {
-                System.out.println("The speaker is not available at this time" + "Event does not create successfully.");
+                System.out.println("The speaker is not available at this time." +
+                        " Event does not create successfully.");
             } catch (EventService.RoomFullException e) {
                 System.out.println("The event is full." + " Event does not create successfully.");
             } catch (EventService.InvalidEventTimeException e) {
@@ -169,7 +176,7 @@ public class OrganizerController extends UserController {
             if (!RoomService.shared.createRoom(rn, rc)) {
                 System.out.println("Room number already exist.");
             } else {
-                System.out.println("Create room successfully.");
+                System.out.println("Room created successfully.");
             }
 
         } catch (NumberFormatException e) {
@@ -182,40 +189,46 @@ public class OrganizerController extends UserController {
 
     // Two different ways to assign speaker to event.
     private void assignSpeakerToEvent() {
-        while (true) {
-            System.out.println("Select an action:");
-            System.out.println("1. Assign speaker to one specific event ");
-            System.out.println("2. Assign speaker to multiple events in a list");
-            System.out.println("3. Exit");
+        try {
+            while (true) {
+                System.out.println("Select an action:");
+                System.out.println("1. Assign speaker to one specific event ");
+                System.out.println("2. Assign speaker to multiple events in a list");
+                System.out.println("3. Exit");
 
-            int choice = scanner.nextInt();
+                String content = scanner.nextLine();
+                int choice = Integer.parseInt(content);
 
-            boolean exit = false;
+                boolean exit = false;
 
-            switch (choice) {
-                case 1:
-                    assignSpeakerToOneEvent();
-                    break;
-                case 2:
-                    assignSpeakerToMultipleEvents();
-                    break;
-                case 3:
-                    exit = true;
-                    break;
+                switch (choice) {
+                    case 1:
+                        assignSpeakerToOneEvent();
+                        break;
+                    case 2:
+                        assignSpeakerToMultipleEvents();
+                        break;
+                    case 3:
+                        exit = true;
+                        break;
 
-                default:
-                    System.out.println("Unknown action.");
+                    default:
+                        System.out.println("Unknown action. Please try again.");
+                        break;
+                }
+
+                save();
+                if (exit) {
+                    run();
                     break;
+                }
+
             }
-
-            save();
-
-            if (exit) {
-                run();
-                break;
-            }
-
+        } catch (NumberFormatException e) {
+            System.out.println("Unknown action. Please try again.");
+            assignSpeakerToEvent();
         }
+
     }
 
     private void assignSpeakerToOneEvent() {
@@ -309,69 +322,67 @@ public class OrganizerController extends UserController {
         System.out.println("5. Send message to a specific user");
         System.out.println("6. Exit");
 
-        int choice = scanner.nextInt();
+        try {
+            int choice = scanner.nextInt();
 
-        boolean exit = false;
+            boolean exit = false;
 
-        switch (choice) {
-            case 1:
-                sendMessagesAllUsers();
+            switch (choice) {
+                case 1:
+                    sendMessagesAllUsers();
 
-                System.out.println("Message send successfully.");
+                    break;
+                case 2:
+                    sendMessagesAllSpeakers();
 
-                break;
-            case 2:
-                sendMessagesAllSpeakers();
+                    break;
+                case 3:
+                    sendMessagesAllAttendees();
 
-                System.out.println("Message send successfully.");
+                    break;
+                case 4:
+                    sendMessagesAllAttendeesSpecificEvent();
 
-                break;
-            case 3:
-                sendMessagesAllAttendees();
+                    break;
+                case 5:
+                    Scanner scanner = new Scanner(System.in);
 
-                System.out.println("Message send successfully.");
+                    System.out.println("Enter receiver username:");
+                    String receiverUN = scanner.nextLine();
 
-                break;
-            case 4:
-                sendMessagesAllAttendeesSpecificEvent();
+                    try {
+                        User receiver = AuthService.shared.getUserByUsername(receiverUN);
 
-                break;
-            case 5:
-                Scanner scanner = new Scanner(System.in);
+                        System.out.println("Enter message to send:");
+                        String messageContent = scanner.nextLine();
 
-                System.out.println("Enter receiver username:");
-                String receiverUN = scanner.nextLine();
+                        MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), receiver);
 
-                try {
-                    User receiver = AuthService.shared.getUserByUsername(receiverUN);
+                        System.out.println("Message send successfully.");
 
-                    System.out.println("Enter message to send:");
-                    String messageContent = scanner.nextLine();
+                    } catch (AuthService.UserDoesNotExistException e) {
+                        System.out.println("User with username " + receiverUN + " does not exist. " +
+                                "Message does not send successfully.");
+                    } catch (NullPointerException e) {
+                        System.out.println("User must log in to send message. Message does not send successfully.");
+                    } catch (Exception e) {
+                        System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
+                    }
 
-                    MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), receiver);
+                    break;
+                case 6:
+                    exit = true;
 
-                    System.out.println("Message send successfully.");
+                    run();
 
-                } catch (AuthService.UserDoesNotExistException e) {
-                    System.out.println("User with username " + receiverUN + " does not exist. " +
-                            "Message does not send successfully.");
-                } catch (NullPointerException e) {
-                    System.out.println("User must log in to send message. Message does not send successfully.");
-                } catch (Exception e) {
-                    System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
-                }
-
-                break;
-            case 6:
-                exit = true;
-
-                run();
-
-            default:
-                System.out.println("Unknown action.");
-                run();
+                default:
+                    System.out.println("Unknown action. Please try again.");
+                    run();
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Unknown action. Please try again.");
+            sendMessages();
         }
-
     }
 
     // --- Private helpers ---
@@ -383,8 +394,14 @@ public class OrganizerController extends UserController {
         System.out.println("Enter message to send:");
         String messageContent = scanner.nextLine();
 
-        for (User user : AuthService.shared.getAllUsers()) {
-            MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+        try {
+            for (User user : AuthService.shared.getAllUsers()) {
+                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+
+            System.out.println("Message send successfully.");
+            }
+        } catch (NullPointerException e) {
+            System.out.println("User must log in to send message. Message does not send successfully.");
         }
     }
 
@@ -399,6 +416,8 @@ public class OrganizerController extends UserController {
             for (User user : AuthService.shared.getAllUsers()) {
                 if (user instanceof Speaker)
                     MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+
+            System.out.println("Message send successfully.");
             }
         } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
@@ -416,6 +435,8 @@ public class OrganizerController extends UserController {
             for (User user : AuthService.shared.getAllUsers()) {
                 if (user instanceof Attendee)
                     MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+
+            System.out.println("Message send successfully.");
             }
         } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
