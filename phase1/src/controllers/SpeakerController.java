@@ -166,6 +166,9 @@ public class SpeakerController extends UserController {
                 }
                 System.out.println("Message sent successfully");
             }
+            else{
+                System.out.println("Event id " + content + " is not your event, Unsuccessful message sending");
+            }
 
         } catch (EventService.EventException | AuthService.AuthException e) {
             System.out.println("Event with event id " + content + " does not exist. " +
