@@ -5,7 +5,6 @@ import src.entities.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AuthService {
     private static final int PASSWORD_MINIMUM_LENGTH = 6;
@@ -22,13 +21,8 @@ public class AuthService {
     }
 
     public List<User> getAllUsers() {
-        List<User> allUsers = new ArrayList<>();
-        for (Map.Entry UN : users.entrySet()) {
-            allUsers.add(getUserByUsername(UN.getValue()));
-        }
-        return allUsers;
+        return new ArrayList<>(users.values());
     }
-
     /**
      * Create a new user with given username, password, first name, and last name.
      * 
@@ -171,7 +165,7 @@ public class AuthService {
     public User getCurrentUser() {
         return currentUser;
     }
-    
+
     // Custom Exception Classes
 
     public static class AuthException extends Exception {}
