@@ -10,13 +10,13 @@ public class PersistenceStorage {
      * Path constants for different Savable classes
      */
 
-    public static final String ATTENDEE_STORAGE_PATH = "attendees.csv";
-    public static final String SPEAKER_STORAGE_PATH = "speakers.csv";
-    public static final String ORGANIZER_STORAGE_PATH = "organizers.csv";
-    public static final String EVENT_STORAGE_PATH = "events.csv";
-    public static final String ROOM_STORAGE_PATH = "rooms.csv";
-    public static final String MESSAGE_STORAGE_PATH = "messages.csv";
-    public static final String CONTACT_BOOK_PATH = "contact_book.csv";
+    public static final String ATTENDEE_STORAGE_PATH = "./storage/attendees.csv";
+    public static final String SPEAKER_STORAGE_PATH = "./storage/speakers.csv";
+    public static final String ORGANIZER_STORAGE_PATH = "./storage/organizers.csv";
+    public static final String EVENT_STORAGE_PATH = "./storage/events.csv";
+    public static final String ROOM_STORAGE_PATH = "./storage/rooms.csv";
+    public static final String MESSAGE_STORAGE_PATH = "./storage/messages.csv";
+    public static final String CONTACT_BOOK_PATH = "./storage/contact_book.csv";
 
     /**
      * Save input entries as a csv/txt file to the input path.
