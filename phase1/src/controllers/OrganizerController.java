@@ -16,10 +16,8 @@ public class OrganizerController extends UserController {
     public static void main(String[] args) {
         OrganizerController oc = new OrganizerController();
         oc.run();
-        for (User user: AuthService.shared.getAllUsers()) {
-            MessageService.shared.getReceivedMessages(user.getUsername());
         }
-    }
+
 
     @Override
     void run() {
@@ -357,8 +355,10 @@ public class OrganizerController extends UserController {
                 } catch (AuthService.UserDoesNotExistException e) {
                     System.out.println("User with username " + receiverUN + " does not exist. " +
                             "Message does not send successfully.");
+                } catch (NullPointerException e) {
+                    System.out.println("User must log in to send message. Message does not send successfully.");
                 } catch (Exception e) {
-                    System.out.println("Unknown exception: " + e.toString() + "Message does not send successfully.");
+                    System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
                 }
 
                 break;
@@ -395,9 +395,13 @@ public class OrganizerController extends UserController {
         System.out.println("Enter message to send:");
         String messageContent = scanner.nextLine();
 
-        for (User user : AuthService.shared.getAllUsers()) {
-            if (user instanceof Speaker)
-                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+        try {
+            for (User user : AuthService.shared.getAllUsers()) {
+                if (user instanceof Speaker)
+                    MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+            }
+        } catch (NullPointerException e) {
+            System.out.println("User must log in to send message. Message does not send successfully.");
         }
     }
 
@@ -408,9 +412,13 @@ public class OrganizerController extends UserController {
         System.out.println("Enter message to send:");
         String messageContent = scanner.nextLine();
 
-        for (User user : AuthService.shared.getAllUsers()) {
-            if (user instanceof Attendee)
-                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+        try {
+            for (User user : AuthService.shared.getAllUsers()) {
+                if (user instanceof Attendee)
+                    MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+            }
+        } catch (NullPointerException e) {
+            System.out.println("User must log in to send message. Message does not send successfully.");
         }
     }
 
@@ -446,10 +454,12 @@ public class OrganizerController extends UserController {
         } catch (EventService.EventException e) {
             System.out.println("Event with event id " + content + " does not exist. " +
                     "Message does not send successfully.");
+        } catch (NullPointerException e) {
+            System.out.println("User must log in to send message. Message does not send successfully.");
         }
-
     }
 }
+
 
 
 
