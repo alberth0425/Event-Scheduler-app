@@ -235,10 +235,12 @@ public class OrganizerController extends UserController {
 
                     EventService.shared.setEventSpeaker(speaker, event);
 
+                    System.out.println("Speaker " + speakerUN + " is assigned to event " + eventId + " successfully.");
+
                 } catch (EventService.EventDoesNotExistException e) {
-                    System.out.println("Event does not exist.");
+                    System.out.println("Event " + eventId +  " does not exist.");
                 } catch (EventService.SpeakerDoubleBookException e) {
-                    System.out.println("Speaker not available at this event's time");
+                    System.out.println("Speaker is not available at this event " + eventId + "'s time");
                 } catch (Exception e) {
                     System.out.println("Unknown Exception: " + e.toString());
                 }
@@ -253,6 +255,8 @@ public class OrganizerController extends UserController {
     }
 
     void assignSpeakerToMultipleEvents() {
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("Enter speaker username:");
 
         String speakerUN = scanner.nextLine();
@@ -272,9 +276,9 @@ public class OrganizerController extends UserController {
                         EventService.shared.setEventSpeaker(speaker, event);
 
                     } catch (EventService.EventDoesNotExistException e) {
-                        System.out.println("Event does not exist.");
+                        System.out.println("Event " + eventId + " does not exist.");
                     } catch (EventService.SpeakerDoubleBookException e) {
-                        System.out.println("Speaker not available at this event's time");
+                        System.out.println("Speaker is not available at this event " + eventId + "'s time");
                     } catch (Exception e) {
                         System.out.println("Unknown Exception: " + e.toString());
                     }
