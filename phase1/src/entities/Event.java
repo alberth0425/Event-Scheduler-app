@@ -31,7 +31,8 @@ public class Event implements Savable {
         this.speakerUN = entries[2];
         this.startingTime = Integer.parseInt(entries[3]);
         this.roomNumber = Integer.parseInt(entries[4]);
-        this.attendeeUNs = entries.length < 6 ? new ArrayList<>() : Arrays.asList(entries[5].split("\\|"));
+        this.attendeeUNs = entries.length < 6 ? new ArrayList<>() :
+                                                new ArrayList<>(Arrays.asList(entries[5].split("\\|")));
 
         eventCount += 1;
     }
