@@ -149,6 +149,23 @@ public class EventService {
     }
 
     /**
+     * Get the list of events that a user signed up for.
+     *
+     * @param username the username of the attendee
+     * @return the list of events that the user signed up for
+     */
+    public List<Event> getEventsWithAttendee(String username) {
+        List<Event> events = new ArrayList<>();
+        for (Event event : allEvents) {
+            if (event.getAttendeeUNs().contains(username)) {
+                events.add(event);
+            }
+        }
+
+        return events;
+    }
+
+    /**
      * Create a new event, add the event object to allEvents List, and return the event object.
      *
      * @param title title of the event

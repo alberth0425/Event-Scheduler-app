@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MessageService {
-    public HashMap<String, List<String>> contactBook = new HashMap<>();
+    private HashMap<String, List<String>> contactBook = new HashMap<>();
     private HashMap<String, List<Message>> messageRepository = new HashMap<>();
 
     public static MessageService shared = new MessageService();
@@ -21,6 +21,14 @@ public class MessageService {
 
     public void setMessageRepository(HashMap<String, List<Message>> messageRepository) {
         this.messageRepository = messageRepository;
+    }
+
+    public List<Message> getAllMessages() {
+        ArrayList<Message> allMessageList = new ArrayList<>();
+        for (List<Message> e : messageRepository.values()) {
+            allMessageList.addAll(e);
+        }
+        return allMessageList;
     }
 
     /**
@@ -50,7 +58,7 @@ public class MessageService {
     public boolean sendMessage(String text, User sender, User receiver) {
         Message newMessage = new Message(text, sender.getUsername(), receiver.getUsername());
 
-        if (canSendMessage(sender, receiver)) return false;
+        if (!canSendMessage(sender, receiver)) return false;
 
         // Check if there are existing messages from sender to receiver
         if (messageRepository.containsKey(receiver.getUsername()))
@@ -72,7 +80,9 @@ public class MessageService {
 //        // Check whether receiver is in the contact book of sender
 //        // Not in the contact book
 //        return contactBook.get(sender.getUsername()).contains(receiver.getUsername());
-        return true;
+
+        // Check if sender is receiver
+        return !sender.getFullname().equals(receiver.getUsername());
     }
 
     /**

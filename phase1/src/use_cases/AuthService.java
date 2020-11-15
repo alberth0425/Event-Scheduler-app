@@ -21,13 +21,8 @@ public class AuthService {
     }
 
     public List<User> getAllUsers() {
-        List<User> allUsers = new ArrayList<>();
-        for (HashMap.Entry<String, User> UN : users.entrySet()) {
-            allUsers.add(UN.getValue());
-        }
-        return allUsers;
+        return new ArrayList<>(users.values());
     }
-
     /**
      * Create a new user with given username, password, first name, and last name.
      * 
@@ -170,7 +165,7 @@ public class AuthService {
     public User getCurrentUser() {
         return currentUser;
     }
-    
+
     // Custom Exception Classes
 
     public static class AuthException extends Exception {}
