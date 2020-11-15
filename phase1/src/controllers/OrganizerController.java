@@ -146,7 +146,10 @@ public class OrganizerController extends UserController {
             } catch (EventService.InvalidEventTimeException e) {
                 System.out.println("The event starting time (" + startingTime + ") is invalid." +
                         " Event does not create successfully.");
-            } catch (Exception e) {
+            }catch(EventService.RoomDoubleBookException e){
+                System.out.println("The room is not available at this time."  +
+                        " Event does not create successfully.");
+            }catch (Exception e) {
                 System.out.println("Unknown Exception: " + e.toString() + ". Event does not create successfully.");
             }
         } catch (AuthService.AuthException e) {
