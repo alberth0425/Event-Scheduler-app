@@ -323,62 +323,73 @@ public class OrganizerController extends UserController {
         System.out.println("6. Exit");
 
         try {
-            int choice = scanner.nextInt();
+            while (true) {
+                String content = scanner.nextLine();
+                int choice = Integer.parseInt(content);
 
-            boolean exit = false;
+                boolean exit = false;
 
-            switch (choice) {
-                case 1:
-                    sendMessagesAllUsers();
+                switch (choice) {
+                    case 1:
+                        sendMessagesAllUsers();
 
-                    break;
-                case 2:
-                    sendMessagesAllSpeakers();
+                        sendMessages();
+                    case 2:
+                        sendMessagesAllSpeakers();
 
-                    break;
-                case 3:
-                    sendMessagesAllAttendees();
+                        sendMessages();
+                    case 3:
+                        sendMessagesAllAttendees();
 
-                    break;
-                case 4:
-                    sendMessagesAllAttendeesSpecificEvent();
+                        sendMessages();
+                    case 4:
+                        sendMessagesAllAttendeesSpecificEvent();
 
-                    break;
-                case 5:
-                    Scanner scanner = new Scanner(System.in);
+                        sendMessages();
+                    case 5:
+                        Scanner scanner = new Scanner(System.in);
 
-                    System.out.println("Enter receiver username:");
-                    String receiverUN = scanner.nextLine();
+                        System.out.println("Enter receiver username:");
+                        String receiverUN = scanner.nextLine();
 
-                    try {
-                        User receiver = AuthService.shared.getUserByUsername(receiverUN);
+                        try {
+                            User receiver = AuthService.shared.getUserByUsername(receiverUN);
 
-                        System.out.println("Enter message to send:");
-                        String messageContent = scanner.nextLine();
+                            System.out.println("Enter message to send:");
+                            String messageContent = scanner.nextLine();
 
-                        MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), receiver);
+                            MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(),
+                                    receiver);
 
-                        System.out.println("Message send successfully.");
+                            System.out.println("Message send successfully.");
 
-                    } catch (AuthService.UserDoesNotExistException e) {
-                        System.out.println("User with username " + receiverUN + " does not exist. " +
-                                "Message does not send successfully.");
-                    } catch (NullPointerException e) {
-                        System.out.println("User must log in to send message. Message does not send successfully.");
-                    } catch (Exception e) {
-                        System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
-                    }
+                        } catch (AuthService.UserDoesNotExistException e) {
+                            System.out.println("User with username " + receiverUN + " does not exist. " +
+                                    "Message does not send successfully.");
+                        } catch (NullPointerException e) {
+                            System.out.println("User must log in to send message. Message does not send successfully.");
+                        } catch (Exception e) {
+                            System.out.println("Unknown exception: " + e.toString() +
+                                    " Message does not send successfully.");
+                        }
 
-                    break;
-                case 6:
-                    exit = true;
+                        sendMessages();
+                    case 6:
+                        exit = true;
+                        break;
 
+                    default:
+                        System.out.println("Unknown action. Please try again.");
+                        run();
+                }
+
+                save();
+                if (exit) {
                     run();
-
-                default:
-                    System.out.println("Unknown action. Please try again.");
-                    run();
+                    break;
+                }
             }
+
         } catch (NumberFormatException e) {
             System.out.println("Unknown action. Please try again.");
             sendMessages();
@@ -397,9 +408,8 @@ public class OrganizerController extends UserController {
         try {
             for (User user : AuthService.shared.getAllUsers()) {
                 MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
-
-            System.out.println("Message send successfully.");
             }
+            System.out.println("Message send successfully.");
         } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         }
@@ -417,8 +427,8 @@ public class OrganizerController extends UserController {
                 if (user instanceof Speaker)
                     MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
 
-            System.out.println("Message send successfully.");
             }
+            System.out.println("Message send successfully.");
         } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         }
@@ -435,9 +445,8 @@ public class OrganizerController extends UserController {
             for (User user : AuthService.shared.getAllUsers()) {
                 if (user instanceof Attendee)
                     MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
-
-            System.out.println("Message send successfully.");
             }
+            System.out.println("Message send successfully.");
         } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         }
