@@ -166,6 +166,22 @@ public class EventService {
     }
 
     /**
+     * get the list of events that a speaker is speaking at
+     * @param username
+     * @return
+     */
+    public List<Event> getEventsBySpeaker(String username){
+        List<Event> events = new ArrayList<>();
+        for (Event event: allEvents){
+            if (event.getSpeakerUsername().equals(username))
+                events.add(event);
+        }
+
+        return events;
+    }
+
+
+    /**
      * Create a new event, add the event object to allEvents List, and return the event object.
      *
      * @param title title of the event
