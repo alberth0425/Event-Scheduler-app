@@ -21,7 +21,8 @@ public class AttendeeController extends UserController {
             System.out.println("5. View messages");
             System.out.println("6. Exit");
 
-            int choice = scanner.nextInt();
+            Scanner input = new Scanner(System.in);
+            int choice = input.nextInt();
 
             boolean exit = false;
 
@@ -82,7 +83,6 @@ public class AttendeeController extends UserController {
         } catch (NumberFormatException e) {
             System.out.println("Event ID must be a number.");
         }
-        scanner.close();
     }
 
     private void cancelEvent() {
@@ -101,7 +101,7 @@ public class AttendeeController extends UserController {
             try {
                 String eventStr = "ID: " + event.getId() + ", Title: " + event.getTitle() +
                         ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
-                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event);
                 System.out.println(eventStr);
             } catch (Exception e) {
                 System.out.println("Unknown error: " + e.getMessage());
@@ -122,7 +122,6 @@ public class AttendeeController extends UserController {
         } catch (Exception e) {
             System.out.println("Unknown error: " + e.getMessage());
         }
-        scanner.close();
     }
 
     private void sendMessages() {
@@ -145,6 +144,5 @@ public class AttendeeController extends UserController {
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
         }
-        scanner.close();
     }
 }

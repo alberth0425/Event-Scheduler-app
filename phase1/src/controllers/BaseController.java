@@ -18,7 +18,7 @@ public class BaseController {
     void load() {
         List<Attendee> attendees = PersistenceStorage.readEntities(PersistenceStorage.ATTENDEE_STORAGE_PATH, Attendee.class);
         List<Organizer> organizers = PersistenceStorage.readEntities(PersistenceStorage.ORGANIZER_STORAGE_PATH, Organizer.class);
-        List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.EVENT_STORAGE_PATH, Speaker.class);
+        List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.SPEAKER_STORAGE_PATH, Speaker.class);
 
         HashMap<String, User> users = new HashMap<>();
         for (User user : attendees) {

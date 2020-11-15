@@ -17,7 +17,7 @@ abstract public class UserController extends BaseController {
         StringBuilder sb = new StringBuilder();
         for (Event event : allEvents) {
             try {
-                String eStr = "Title: " + event.getTitle() +
+                String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
                         ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
                         ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
                 sb.append(eStr);
