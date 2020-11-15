@@ -2,7 +2,9 @@ package src.use_cases;
 
 import src.entities.Room;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class RoomService {
     private HashMap<Integer, Room> rooms = new HashMap<>();
@@ -13,6 +15,8 @@ public class RoomService {
     public void setRooms(HashMap<Integer, Room> rooms) {
         this.rooms = rooms;
     }
+
+    public List<Room> getAllRooms() {return new ArrayList<>(this.rooms.values()); }
 
     /**
      * Create a new room with room number and capacity.
@@ -25,13 +29,23 @@ public class RoomService {
         if (rooms.containsKey(roomNumber)) {
             return false;
         } else {
-            Room room = new Room(roomNumber, capacity);
+            Room room = new Room(capacity, roomNumber);
             rooms.put(roomNumber, room);
             return true;
         }
     }
 
-    public Room getRoom(int roomNumber) {
-        return rooms.get(roomNumber);
+    public void validateRoom(int roomNum) throws RoomException {
+        if (!rooms.containsKey(roomNum)) throw new RoomDoesNotExistException();
     }
+
+    public Room getRoom(int roomNumber) throws RoomException {
+        Room rm = rooms.get(roomNumber);
+
+        if (rm == null) throw new RoomDoesNotExistException();
+        return rm;
+    }
+
+    public static class RoomException extends Exception {};
+    public static class RoomDoesNotExistException extends RoomException {}
 }

@@ -27,9 +27,9 @@ public class SignupService {
                 sb.append(eStr);
             } catch (AuthService.AuthException e) {
                 System.out.println("Speaker of event <" + event.getTitle() +
-                        "> with username: <" + event.getSpeakerUsername() + "> does not exists.");
-            } catch (EventService.EventException e) {
-                System.out.println("Event <" + event.getTitle() + "> does not exists.");
+                        "> with username: <" + event.getSpeakerUsername() + "> does not exist.");
+            } catch (RoomService.RoomException e) {
+                System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
             }
         }
 

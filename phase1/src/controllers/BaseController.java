@@ -13,12 +13,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class BaseController {
-    Scanner scanner = new Scanner(System.in);
 
     void load() {
         List<Attendee> attendees = PersistenceStorage.readEntities(PersistenceStorage.ATTENDEE_STORAGE_PATH, Attendee.class);
         List<Organizer> organizers = PersistenceStorage.readEntities(PersistenceStorage.ORGANIZER_STORAGE_PATH, Organizer.class);
-        List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.EVENT_STORAGE_PATH, Speaker.class);
+        List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.SPEAKER_STORAGE_PATH, Speaker.class);
 
         HashMap<String, User> users = new HashMap<>();
         for (User user : attendees) {
@@ -40,7 +39,7 @@ public class BaseController {
 
         for (Message message : messages) {
             String username = message.getReceiverUsername();
-            if (messageRepository.containsKey(username)) {
+            if (!messageRepository.containsKey(username)) {
                 messageRepository.put(username, new ArrayList<>());
             }
             messageRepository.get(username).add(message);
@@ -61,6 +60,34 @@ public class BaseController {
     }
 
     void save() {
-        // TODO ok need getters for use cases too great!!!
+        // save all event to the storage
+        List<Savable> events = new ArrayList<>(EventService.shared.getAllEvents());
+        PersistenceStorage.saveEntities(events,PersistenceStorage.EVENT_STORAGE_PATH);
+
+        // save all users to the storage
+        List<User> users = new ArrayList<>(AuthService.shared.getAllUsers());
+        List<Savable> attendees = new ArrayList<>();
+        List<Savable> organizers = new ArrayList<>();
+        List<Savable> speakers = new ArrayList<>();
+        for (User u : users) {
+            if (u instanceof Attendee) {
+                attendees.add(u);
+            } else if (u instanceof Organizer) {
+                organizers.add(u);
+            } else if (u instanceof Speaker) {
+                speakers.add(u);
+            }
+        }
+        PersistenceStorage.saveEntities(attendees,PersistenceStorage.ATTENDEE_STORAGE_PATH);
+        PersistenceStorage.saveEntities(organizers,PersistenceStorage.ORGANIZER_STORAGE_PATH);
+        PersistenceStorage.saveEntities(speakers,PersistenceStorage.SPEAKER_STORAGE_PATH);
+
+        // save all rooms to the storage
+        List<Savable> rooms = new ArrayList<>(RoomService.shared.getAllRooms());
+        PersistenceStorage.saveEntities(rooms,PersistenceStorage.ROOM_STORAGE_PATH);
+
+        // save all messages to the storage
+        List<Savable> messages = new ArrayList<>(MessageService.shared.getAllMessages());
+        PersistenceStorage.saveEntities(messages,PersistenceStorage.MESSAGE_STORAGE_PATH);
     }
 }
