@@ -95,10 +95,12 @@ public class OrganizerController extends UserController {
         try {
             AuthService.shared.createUser(username, password, firstName,
                     lastName, AuthService.UserType.SPEAKER);
-            System.out.println("Speaker created successfully.");}
-        catch (AuthService.UserDoesNotExistException e) {
+            System.out.println("Speaker created successfully.");
+        } catch (AuthService.UserDoesNotExistException e) {
             System.out.println("User with username " + username + " does not exist. " + "Speaker does not create " +
                     "successfully.");
+        } catch (AuthService.InvalidFieldException e) {
+            System.out.println("Invalid " + e.getField() + " entered. Speaker does not create successfully");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + ". Speaker does not create " +
                     "successfully.");
@@ -131,7 +133,9 @@ public class OrganizerController extends UserController {
                 System.out.println("Event created successfully." );
 
             } catch (EventService.EventDoesNotExistException e) {
-                System.out.println("Event does not exist."+ " Event does not create successfully.");
+                System.out.println("Event does not exist." + " Event does not create successfully.");
+            } catch (EventService.SpeakerDoubleBookException e) {
+                System.out.println("The speaker is not available at this time" + "Event does not create successfully.");
             } catch (EventService.RoomFullException e) {
                 System.out.println("The event is full." + " Event does not create successfully.");
             } catch (EventService.InvalidEventTimeException e) {
@@ -179,7 +183,7 @@ public class OrganizerController extends UserController {
 
 
     // Two different ways to assign speaker to event.
-    void assignSpeakerToEvent() {
+    private void assignSpeakerToEvent() {
         while (true) {
             System.out.println("Select an action:");
             System.out.println("1. Assign speaker to one specific event ");
@@ -216,7 +220,7 @@ public class OrganizerController extends UserController {
         }
     }
 
-    void assignSpeakerToOneEvent() {
+    private void assignSpeakerToOneEvent() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter speaker username:");
 
@@ -238,9 +242,10 @@ public class OrganizerController extends UserController {
                     System.out.println("Speaker " + speakerUN + " is assigned to event " + eventId + " successfully.");
 
                 } catch (EventService.EventDoesNotExistException e) {
-                    System.out.println("Event " + eventId +  " does not exist.");
+                    System.out.println("Event " + eventId +  " does not exist. Speaker assigned unsuccessfully");
                 } catch (EventService.SpeakerDoubleBookException e) {
-                    System.out.println("Speaker is not available at this event " + eventId + "'s time");
+                    System.out.println("Speaker is not available at this event " + eventId + "'s time. Speaker assigned" +
+                            "unsuccessfully.");
                 } catch (Exception e) {
                     System.out.println("Unknown Exception: " + e.toString());
                 }
@@ -248,13 +253,13 @@ public class OrganizerController extends UserController {
                 System.out.println("Event ID must be a number.");
             }
         } catch (AuthService.AuthException e) {
-            System.out.println("User with username " + speakerUN + " does not exist.");
+            System.out.println("User with username " + speakerUN + " does not exist. Speaker assigned unsuccessfully");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
         }
     }
 
-    void assignSpeakerToMultipleEvents() {
+    private void assignSpeakerToMultipleEvents() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter speaker username:");
@@ -276,19 +281,20 @@ public class OrganizerController extends UserController {
                         EventService.shared.setEventSpeaker(speaker, event);
 
                     } catch (EventService.EventDoesNotExistException e) {
-                        System.out.println("Event " + eventId + " does not exist.");
+                        System.out.println("Event " + eventId + " does not exist. Speaker assigned unsuccessfully");
                     } catch (EventService.SpeakerDoubleBookException e) {
-                        System.out.println("Speaker is not available at this event " + eventId + "'s time");
+                        System.out.println("Speaker is not available at this event " + eventId + "'s time. Speaker " +
+                                "assigned unsuccessfully");
                     } catch (Exception e) {
                         System.out.println("Unknown Exception: " + e.toString());
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Event ID must be a number.");
+                    System.out.println("Event ID must be a number. Speaker assigned unsuccessfully");
                 }
             }
 
-        } catch (AuthService.UserDoesNotExistException e) {
-            System.out.println("User with username " + speakerUN + " does not exist.");
+        } catch (AuthService.AuthException e) {
+            System.out.println("User with username " + speakerUN + " does not exist. Speaker assigned unsuccessfully");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
         }
