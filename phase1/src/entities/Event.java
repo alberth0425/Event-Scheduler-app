@@ -25,7 +25,7 @@ public class Event implements Savable {
     }
 
     public Event(String dataEntry) {
-        String[] entries = dataEntry.split(",");
+        String[] entries = dataEntry.split(Savable.DELIMITER);
         this.id = Integer.parseInt(entries[0]);
         this.title = entries[1];
         this.speakerUN = entries[2];
@@ -91,7 +91,7 @@ public class Event implements Savable {
 
     @Override
     public String toSavableString() {
-        return getId() + "," + getTitle() + "," + getSpeakerUsername() + "," + getStartingTime() + "," + getRoomNumber() +
-                "," + String.join("|", getAttendeeUNs());
+        return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER + getSpeakerUsername() + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
+                Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
 }

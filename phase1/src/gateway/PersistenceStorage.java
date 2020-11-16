@@ -10,13 +10,13 @@ public class PersistenceStorage {
      * Path constants for different Savable classes
      */
 
-    public static final String ATTENDEE_STORAGE_PATH = "./phase1/storage/attendees.csv";
-    public static final String SPEAKER_STORAGE_PATH = "./phase1/storage/speakers.csv";
-    public static final String ORGANIZER_STORAGE_PATH = "./phase1/storage/organizers.csv";
-    public static final String EVENT_STORAGE_PATH = "./phase1/storage/events.csv";
-    public static final String ROOM_STORAGE_PATH = "./phase1/storage/rooms.csv";
-    public static final String MESSAGE_STORAGE_PATH = "./phase1/storage/messages.csv";
-    public static final String CONTACT_BOOK_PATH = "./phase1/storage/contact_book.csv";
+    public static final String ATTENDEE_STORAGE_PATH = "./phase1/storage/attendees.txt";
+    public static final String SPEAKER_STORAGE_PATH = "./phase1/storage/speakers.txt";
+    public static final String ORGANIZER_STORAGE_PATH = "./phase1/storage/organizers.txt";
+    public static final String EVENT_STORAGE_PATH = "./phase1/storage/events.txt";
+    public static final String ROOM_STORAGE_PATH = "./phase1/storage/rooms.txt";
+    public static final String MESSAGE_STORAGE_PATH = "./phase1/storage/messages.txt";
+    public static final String CONTACT_BOOK_PATH = "./phase1/storage/contact_book.txt";
 
     /**
      * Save input entries as a csv/txt file to the input path.
@@ -90,7 +90,7 @@ public class PersistenceStorage {
             PrintWriter pw = getPrinterWriter(path);
 
             for (Map.Entry<String, List<String>> me : contactBook.entrySet()) {
-                pw.println(me.getKey() + "," + String.join(",", me.getValue()));
+                pw.println(me.getKey() + Savable.DELIMITER + String.join(Savable.DELIMITER, me.getValue()));
             }
             pw.flush();
             pw.close();
@@ -115,7 +115,7 @@ public class PersistenceStorage {
             Scanner eventScanner = new Scanner(eventFile);
 
             while (eventScanner.hasNext()) {
-                String[] usernames = eventScanner.nextLine().trim().split(",");
+                String[] usernames = eventScanner.nextLine().trim().split(Savable.DELIMITER);
                 List<String> contacts = Arrays.asList(Arrays.copyOfRange(usernames, 1, usernames.length));
                 String user = usernames[0];
                 res.put(user, contacts);

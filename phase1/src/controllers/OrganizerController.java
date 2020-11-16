@@ -6,7 +6,6 @@ import src.use_cases.EventService;
 import src.use_cases.MessageService;
 import src.use_cases.RoomService;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class OrganizerController extends UserController {
