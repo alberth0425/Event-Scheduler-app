@@ -7,6 +7,7 @@ import src.use_cases.EventService;
 import src.use_cases.AuthService;
 import src.use_cases.RoomService;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,37 +21,42 @@ public class SpeakerController extends UserController {
 
     void run() {
         while (true) {
-            System.out.println("Select an action:");
-            System.out.println("1. browse my events");
-            System.out.println("2. View messages");
-            System.out.println("3. Send a message");
-            System.out.println("4. exit");
+            try {
+                System.out.println("Select an action:");
+                System.out.println("1. browse my events");
+                System.out.println("2. View messages");
+                System.out.println("3. Send a message");
+                System.out.println("4. exit");
 
-            int action = scan.nextInt();
+                String action = scan.nextLine();
+                int num = Integer.parseInt(action);
 
-            boolean exit = false;
+                boolean exit = false;
 
-            switch (action) {
-                case 1:
-                    browseMyEvents();
+                switch (num) {
+                    case 1:
+                        browseMyEvents();
+                        break;
+                    case 2:
+                        viewMessages();
+                        break;
+                    case 3:
+                        sendMessages();
+                        break;
+                    case 4:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Unknown action. Try again");
+                        break;
+                }
+                save();
+
+                if (exit)
                     break;
-                case 2:
-                    viewMessages();
-                    break;
-                case 3:
-                    sendMessages();
-                    break;
-                case 4:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Unknown action.");
-                    break;
+            } catch (NumberFormatException e){
+                System.out.println("Wrong user input, please enter a digit from 1 - 4");
             }
-            save();
-
-            if (exit)
-                break;
         }
     }
 
@@ -58,36 +64,40 @@ public class SpeakerController extends UserController {
         Scanner scan = new Scanner(System.in);
 
         while (true) {
-            System.out.println("Please choose a receiver type");
-            System.out.println("1. Send message to all attendees in all of your events");
-            System.out.println("2. Send message to all attendees in one of your event");
-            System.out.println("3. Send message to a specific user");
-            System.out.println("4. Exit");
+            try {
+                System.out.println("Please choose a receiver type");
+                System.out.println("1. Send message to all attendees in all of your events");
+                System.out.println("2. Send message to all attendees in one of your event");
+                System.out.println("3. Send message to a specific user");
+                System.out.println("4. Exit");
 
-            int input = scan.nextInt();
-            boolean exit = false;
+                String input = scan.nextLine();
+                int num = Integer.parseInt(input);
+                boolean exit = false;
 
-            switch (input) {
-                case 1:
-                    sendToAllAttendeesAllEvents();
+                switch (num) {
+                    case 1:
+                        sendToAllAttendeesAllEvents();
+                        break;
+                    case 2:
+                        sendToAllAttendeesOneEvent();
+                        break;
+                    case 3:
+                        sendToOne();
+                        break;
+                    case 4:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Unknown action, choose again");
+                        break;
+                }
+                if (exit)
                     break;
-                case 2:
-                    sendToAllAttendeesOneEvent();
-                    break;
-                case 3:
-                    sendToOne();
-                    break;
-                case 4:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Unknown action, choose again");
-                    break;
+            } catch (NumberFormatException e){
+                System.out.println("Wrong user input, please enter a digit from 1 - 4");
             }
-            if (exit)
-                break;
         }
-
     }
 
     /**
