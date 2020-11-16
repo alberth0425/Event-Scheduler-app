@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class BaseController {
-    Scanner scanner = new Scanner(System.in);
 
     void load() {
         List<Attendee> attendees = PersistenceStorage.readEntities(PersistenceStorage.ATTENDEE_STORAGE_PATH, Attendee.class);

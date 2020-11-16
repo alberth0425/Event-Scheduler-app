@@ -4,6 +4,7 @@ import src.entities.*;
 import src.use_cases.AuthService;
 import src.use_cases.EventService;
 import src.use_cases.MessageService;
+import src.use_cases.RoomService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -87,22 +88,17 @@ public class AttendeeController extends UserController {
 
         try {
             int eventId = Integer.parseInt(scanner.nextLine());
-
-            try {
-                Event event = EventService.shared.getEventById(eventId);
-
-                EventService.shared.addEventAttendee(attendee, event);
-
-            } catch (EventService.EventDoesNotExistException e) {
-                System.out.println("Event does not exist.");
-            } catch (EventService.RoomFullException e) {
-                System.out.println("The event is full.");
-            } catch (Exception e) {
-                System.out.println("Unknown Exception: " + e.toString());
-            }
+            Event event = EventService.shared.getEventById(eventId);
+            EventService.shared.addEventAttendee(attendee, event);
 
         } catch (NumberFormatException e) {
             System.out.println("Event ID must be a number.");
+        } catch (EventService.EventDoesNotExistException e) {
+            System.out.println("Event does not exist.");
+        } catch (EventService.RoomFullException e) {
+            System.out.println("The event is full.");
+        } catch (EventService.EventException | RoomService.RoomException e) {
+            System.out.println("Unknown Exception: " + e.toString());
         }
     }
 
