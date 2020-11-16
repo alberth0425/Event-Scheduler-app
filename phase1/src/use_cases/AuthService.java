@@ -16,13 +16,24 @@ public class AuthService {
     public static AuthService shared = new AuthService();
     private AuthService() {}
 
+    /**
+     * Initialize the users HashMap.
+     *
+     * @param users HashMap mapping username to user
+     */
     public void setUsers(HashMap<String, User> users) {
         this.users = users;
     }
 
+    /**
+     * Get an ArrayList containing all users in the program.
+     *
+     * @return the list of all users
+     */
     public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
+
     /**
      * Create a new user with given username, password, first name, and last name.
      * 
@@ -162,6 +173,11 @@ public class AuthService {
         }
     }
 
+    /**
+     * Get the current logged in user.
+     *
+     * @return if an user is logged in, the User object, otherwise null
+     */
     public User getCurrentUser() {
         return currentUser;
     }
