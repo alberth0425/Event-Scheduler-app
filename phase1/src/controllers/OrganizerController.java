@@ -105,6 +105,8 @@ public class OrganizerController extends UserController {
                     "successfully.");
         } catch (AuthService.InvalidFieldException e) {
             System.out.println("Invalid " + e.getField() + " entered. Speaker does not create successfully");
+        } catch (AuthService.UsernameAlreadyTakenException e) {
+            System.out.println("Username " + username + "already taken.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + ". Speaker does not create " +
                     "successfully.");
@@ -253,21 +255,22 @@ public class OrganizerController extends UserController {
 
                     EventService.shared.setEventSpeaker(speaker, event);
 
-                    System.out.println("Speaker " + speakerUN + " is assigned to event " + eventId + " successfully.");
+                    System.out.println("Speaker " + speakerUN + " is assigned to event successfully.");
 
                 } catch (EventService.EventDoesNotExistException e) {
-                    System.out.println("Event " + eventId +  " does not exist. Speaker assigned unsuccessfully");
-                } catch (EventService.SpeakerDoubleBookException e) {
-                    System.out.println("Speaker is not available at this event " + eventId + "'s time. Speaker assigned" +
+                    System.out.println("Event with ID " + eventId +  " does not exist. Speaker assigned " +
                             "unsuccessfully.");
+                } catch (EventService.SpeakerDoubleBookException e) {
+                    System.out.println("Speaker is not available at this event with event ID "
+                            + eventId + "'s time. Speaker assigned unsuccessfully.");
                 } catch (Exception e) {
                     System.out.println("Unknown Exception: " + e.toString());
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Event ID must be a number.");
+                System.out.println("Event ID must be a number. Speaker assigned unsuccessfully.");
             }
         } catch (AuthService.AuthException e) {
-            System.out.println("User with username " + speakerUN + " does not exist. Speaker assigned unsuccessfully");
+            System.out.println("User with username " + speakerUN + " does not exist. Speaker assigned unsuccessfully.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
         }
@@ -286,6 +289,7 @@ public class OrganizerController extends UserController {
             System.out.println("Enter a list of event id separated using comma:");
             String eventIds = scanner.nextLine();
             String[] listOfEventId = eventIds.split(",");
+            boolean assigned = true;
             for (String id: listOfEventId){
                 try{
                     int eventId = Integer.parseInt(id);
@@ -295,20 +299,27 @@ public class OrganizerController extends UserController {
                         EventService.shared.setEventSpeaker(speaker, event);
 
                     } catch (EventService.EventDoesNotExistException e) {
-                        System.out.println("Event " + eventId + " does not exist. Speaker assigned unsuccessfully");
+                        System.out.println("Event with event id " + eventId + " does not exist. Speaker assigned " +
+                                "unsuccessfully.");
+                        assigned = false;
                     } catch (EventService.SpeakerDoubleBookException e) {
-                        System.out.println("Speaker is not available at this event " + eventId + "'s time. Speaker " +
-                                "assigned unsuccessfully");
+                        System.out.println("Speaker is not available at this event with event ID"
+                                + eventId + "'s time. Speaker assigned unsuccessfully.");
+                        assigned = false;
                     } catch (Exception e) {
                         System.out.println("Unknown Exception: " + e.toString());
+                        assigned = false;
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Event ID must be a number. Speaker assigned unsuccessfully");
+                    System.out.println("Event ID must be a number. Speaker assigned unsuccessfully.");
+                    assigned = false;
                 }
             }
+            if (assigned)
+                System.out.println("Speaker " + speakerUN + " is assigned to events successfully.");
 
         } catch (AuthService.AuthException e) {
-            System.out.println("User with username " + speakerUN + " does not exist. Speaker assigned unsuccessfully");
+            System.out.println("User with username " + speakerUN + " does not exist. Speaker assigned unsuccessfully.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
         }
