@@ -1,6 +1,5 @@
 package src.controllers;
 
-import src.entities.*;
 import src.entities.Event;
 import src.entities.User;
 import src.use_cases.MessageService;
@@ -8,7 +7,6 @@ import src.use_cases.EventService;
 import src.use_cases.AuthService;
 import src.use_cases.RoomService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -122,6 +120,7 @@ public class SpeakerController extends UserController {
 
     // -- private helpers --
     private void sendToAllAttendeesAllEvents() {
+        Scanner scan = new Scanner(System.in);
         System.out.println("Please enter your message: ");
         String input = scan.nextLine();
 
@@ -142,6 +141,7 @@ public class SpeakerController extends UserController {
     }
 
     private void sendToAllAttendeesOneEvent() {
+        Scanner scan = new Scanner(System.in);
         System.out.println("Please enter the event id: ");
         String content = scan.nextLine();
 
@@ -180,6 +180,7 @@ public class SpeakerController extends UserController {
     }
 
     private void sendToOne(){
+        Scanner scan = new Scanner(System.in);
         System.out.println("Please enter the receiver User Name");
         String receiverUN = scan.nextLine();
 
