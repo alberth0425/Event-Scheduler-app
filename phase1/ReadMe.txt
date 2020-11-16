@@ -1,0 +1,4 @@
+ReadMe== Description ==Phase 1 is a program that allows different users to login and perform different actions. == Operation Instructions ==All storage files are under the “storage” folder. (contains attendees.txt, events.txt, messages.txt, organizers.txt, rooms.txt, speakers.txt)-Notice that the delimiter is set as φα
+-the elements that stored in the storage are in the order of: id, username, password, first name, last name  1. Enter the LoginController and click on the run button next to the main function. This would start the program and you could see “Login  Username: ” in your console.
+2. Put in the username in order to login in. (Notice that the username is already stored in the storage.)
+For example if we click on the attendee.txt, we could see that one of the username is a02. 
