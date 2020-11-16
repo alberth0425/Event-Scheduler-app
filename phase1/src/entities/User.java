@@ -21,7 +21,7 @@ public class User implements Savable {
     }
 
     public User(String dataEntry) {
-        String[] entries = dataEntry.split(",");
+        String[] entries = dataEntry.split(Savable.DELIMITER);
         this.id = Integer.parseInt(entries[0]);
         this.username = entries[1];
         this.password = entries[2];
@@ -65,6 +65,6 @@ public class User implements Savable {
 
     @Override
     public String toSavableString() {
-        return id + "," + username + "," + password + "," + firstName + "," + lastName;
+        return id + Savable.DELIMITER + username + Savable.DELIMITER + password + Savable.DELIMITER + firstName + Savable.DELIMITER + lastName;
     }
 }
