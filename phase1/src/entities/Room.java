@@ -11,7 +11,7 @@ public class Room implements Savable {
     }
 
     public Room(String dataEntry) {
-        String[] entries = dataEntry.split(",");
+        String[] entries = dataEntry.split(Savable.DELIMITER);
         this.capacity = Integer.parseInt(entries[1]);
         this.roomNumber = Integer.parseInt(entries[0]);
     }
@@ -26,6 +26,6 @@ public class Room implements Savable {
 
     @Override
     public String toSavableString() {
-        return roomNumber + "," + capacity;
+        return roomNumber + Savable.DELIMITER + capacity;
     }
 }
