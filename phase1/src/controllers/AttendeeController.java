@@ -97,6 +97,8 @@ public class AttendeeController extends UserController {
             System.out.println("Event does not exist.");
         } catch (EventService.RoomFullException e) {
             System.out.println("The event is full.");
+        } catch (EventService.AttendeeScheduleConflictException e) {
+            System.out.println("Event time conflicted.");
         } catch (EventService.EventException | RoomService.RoomException e) {
             System.out.println("Unknown Exception: " + e.toString());
         }
