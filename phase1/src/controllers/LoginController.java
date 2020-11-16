@@ -18,6 +18,9 @@ public class LoginController extends BaseController {
         (new LoginController()).run();
     }
 
+    /**
+     * Entry point of the program. Prompts the user to login and redirects to a UserController.
+     */
     public void run() {
         load();
 
