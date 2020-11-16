@@ -421,7 +421,9 @@ public class OrganizerController extends UserController {
 
         try {
             for (User user : AuthService.shared.getAllUsers()) {
-                MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+                if (user instanceof Speaker || user instanceof Attendee){
+                    MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
+                }
             }
             System.out.println("Message send successfully.");
         } catch (NullPointerException e) {
