@@ -65,7 +65,7 @@ public class OrganizerController extends UserController {
                         break;
 
                     default:
-                        System.out.println("Unknown action. Please try again.");
+                        System.out.println("Unknown action. Please enter digit between 1 and 8.");
                         break;
                 }
 
@@ -75,7 +75,7 @@ public class OrganizerController extends UserController {
                     break;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Unknown action. Please try again. ");
+                System.out.println("Unknown action. Please enter digit between 1 and 8. ");
                 run();
             }
 
@@ -218,7 +218,7 @@ public class OrganizerController extends UserController {
                         break;
 
                     default:
-                        System.out.println("Unknown action. Please try again.");
+                        System.out.println("Unknown action. Please enter digit between 1 and 3.");
                         break;
                 }
 
@@ -230,7 +230,7 @@ public class OrganizerController extends UserController {
 
             }
         } catch (NumberFormatException e) {
-            System.out.println("Unknown action. Please try again.");
+            System.out.println("Unknown action. Please enter digit between 1 and 3.");
             assignSpeakerToEvent();
         }
 
@@ -393,7 +393,7 @@ public class OrganizerController extends UserController {
                         break;
 
                     default:
-                        System.out.println("Unknown action. Please try again.");
+                        System.out.println("Unknown action. Please enter digit between 1 and 6.");
                         run();
                 }
 
@@ -405,7 +405,7 @@ public class OrganizerController extends UserController {
             }
 
         } catch (NumberFormatException e) {
-            System.out.println("Unknown action. Please try again.");
+            System.out.println("Unknown action. Please enter digit between 1 and 6.");
             sendMessages();
         }
     }
