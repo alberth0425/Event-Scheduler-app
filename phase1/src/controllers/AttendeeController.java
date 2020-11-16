@@ -16,11 +16,12 @@ public class AttendeeController extends UserController {
         while (true) {
             System.out.println("Select an action:");
             System.out.println("1. Browse events");
-            System.out.println("2. Sign up for an event");
-            System.out.println("3. Cancel event");
-            System.out.println("4. Send messages");
-            System.out.println("5. View messages");
-            System.out.println("6. Exit");
+            System.out.println("2. Browse events you signed up");
+            System.out.println("3. Sign up for an event");
+            System.out.println("4. Cancel event");
+            System.out.println("5. Send messages");
+            System.out.println("6. View messages");
+            System.out.println("7. Exit");
 
             Scanner input = new Scanner(System.in);
             int choice = input.nextInt();
@@ -32,18 +33,21 @@ public class AttendeeController extends UserController {
                     browseEvents();
                     break;
                 case 2:
-                    signUpEvent();
+                    browseEventsSignedUp();
                     break;
                 case 3:
-                    cancelEvent();
+                    signUpEvent();
                     break;
                 case 4:
-                    sendMessages();
+                    cancelEvent();
                     break;
                 case 5:
-                    viewMessages();
+                    sendMessages();
                     break;
                 case 6:
+                    viewMessages();
+                    break;
+                case 7:
                     exit = true;
                     break;
                 default:
@@ -55,6 +59,23 @@ public class AttendeeController extends UserController {
 
             if (exit) {
                 break;
+            }
+        }
+    }
+
+    private void browseEventsSignedUp() {
+        String username = AuthService.shared.getCurrentUser().getUsername();
+        List<Event> events = EventService.shared.getEventsWithAttendee(username);
+
+        System.out.println("The events you signed up for:");
+        for (Event event : events) {
+            try {
+                String eventStr = "ID: " + event.getId() + ", Title: " + event.getTitle() +
+                        ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
+                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event);
+                System.out.println(eventStr);
+            } catch (Exception e) {
+                System.out.println("Unknown error: " + e.getMessage());
             }
         }
     }
@@ -76,6 +97,8 @@ public class AttendeeController extends UserController {
             System.out.println("Event does not exist.");
         } catch (EventService.RoomFullException e) {
             System.out.println("The event is full.");
+        } catch (EventService.AttendeeScheduleConflictException e) {
+            System.out.println("Event time conflicted.");
         } catch (EventService.EventException | RoomService.RoomException e) {
             System.out.println("Unknown Exception: " + e.toString());
         }
@@ -92,17 +115,7 @@ public class AttendeeController extends UserController {
             return;
         }
 
-        System.out.println("The events you signed up for:");
-        for (Event event : events) {
-            try {
-                String eventStr = "ID: " + event.getId() + ", Title: " + event.getTitle() +
-                        ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
-                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event);
-                System.out.println(eventStr);
-            } catch (Exception e) {
-                System.out.println("Unknown error: " + e.getMessage());
-            }
-        }
+        browseEventsSignedUp();
 
         System.out.println("Enter the ID of the event to cancel:");
 

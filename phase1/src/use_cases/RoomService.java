@@ -12,11 +12,23 @@ public class RoomService {
     public final static RoomService shared = new RoomService();
     private RoomService() {}
 
+    /**
+     * Initialize the rooms HashMap.
+     *
+     * @param rooms HashMap mapping room number to room
+     */
     public void setRooms(HashMap<Integer, Room> rooms) {
         this.rooms = rooms;
     }
 
-    public List<Room> getAllRooms() {return new ArrayList<>(this.rooms.values()); }
+    /**
+     * Get an ArrayList containing all rooms.
+     *
+     * @return the list of rooms
+     */
+    public List<Room> getAllRooms() {
+        return new ArrayList<>(this.rooms.values());
+    }
 
     /**
      * Create a new room with room number and capacity.
@@ -35,10 +47,23 @@ public class RoomService {
         }
     }
 
+    /**
+     * Validate that the room with given room number exists.
+     *
+     * @param roomNum the room number
+     * @throws RoomException if the room does not exist
+     */
     public void validateRoom(int roomNum) throws RoomException {
         if (!rooms.containsKey(roomNum)) throw new RoomDoesNotExistException();
     }
 
+    /**
+     * Get the room with the given room number.
+     *
+     * @param roomNumber room number of the room
+     * @return the room with the given room number
+     * @throws RoomException if the room does not exist
+     */
     public Room getRoom(int roomNumber) throws RoomException {
         Room rm = rooms.get(roomNumber);
 
