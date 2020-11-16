@@ -1,8 +1,7 @@
 package src.controllers;
 
-import src.entities.Attendee;
+import src.entities.*;
 import src.entities.Event;
-import src.entities.Speaker;
 import src.entities.User;
 import src.use_cases.MessageService;
 import src.use_cases.EventService;
@@ -22,16 +21,12 @@ public class SpeakerController extends UserController {
     }
 
     void run() {
-
         while (true) {
-
-
             System.out.println("Select an action:");
-            System.out.println("1. browse all events");
-            System.out.println("2. browse my events");
-            System.out.println("3. View messages");
-            System.out.println("4. Send a message");
-            System.out.println("5. exit");
+            System.out.println("1. browse my events");
+            System.out.println("2. View messages");
+            System.out.println("3. Send a message");
+            System.out.println("4. exit");
 
             int action = scan.nextInt();
 
@@ -39,19 +34,19 @@ public class SpeakerController extends UserController {
 
             switch (action) {
                 case 1:
-                    browseEvents();
-                    break;
-                case 2:
                     browseMyEvents();
                     break;
-                case 3:
+                case 2:
                     viewMessages();
                     break;
-                case 4:
+                case 3:
                     sendMessages();
                     break;
-                case 5:
+                case 4:
                     exit = true;
+                    break;
+                default:
+                    System.out.println("Unknown action.");
                     break;
             }
             save();
@@ -65,7 +60,6 @@ public class SpeakerController extends UserController {
         Scanner scan = new Scanner(System.in);
 
         while (true) {
-
             System.out.println("Please choose a receiver type");
             System.out.println("1. Send message to all attendees in all of your events");
             System.out.println("2. Send message to all attendees in one of your event");
@@ -90,6 +84,7 @@ public class SpeakerController extends UserController {
                     break;
                 default:
                     System.out.println("Unknown action, choose again");
+                    break;
             }
             if (exit)
                 break;
@@ -111,11 +106,14 @@ public class SpeakerController extends UserController {
                 String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
                         ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
                         ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                sb.append(eStr);
             } catch (AuthService.AuthException e) {
                 System.out.println("Speaker of event <" + event.getTitle() +
                         "> with username: <" + event.getSpeakerUsername() + "> does not exist.");
             } catch (RoomService.RoomException e) {
                 System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+            } catch (Exception e) {
+                System.out.println("Unknown exception: " + e.toString());
             }
         }
         System.out.println(sb.toString().trim());
@@ -124,7 +122,7 @@ public class SpeakerController extends UserController {
 
     // -- private helpers --
     private void sendToAllAttendeesAllEvents() {
-        System.out.println("Please enter your message");
+        System.out.println("Please enter your message: ");
         String input = scan.nextLine();
 
         try {
@@ -135,16 +133,16 @@ public class SpeakerController extends UserController {
                     MessageService.shared.sendMessage(input, AuthService.shared.getCurrentUser(), attendee);
                 }
             }
-            System.out.println("Message sent successfully");
-        } catch (AuthService.AuthException e) {
-            e.printStackTrace();
-        } catch(NullPointerException e2){
+            System.out.println("Message sent successfully.");
+        } catch(NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
+        } catch (Exception e) {
+            System.out.println("Unknown exception: " + e.toString() + "Message does not send successfully.");
         }
     }
 
     private void sendToAllAttendeesOneEvent() {
-        System.out.println("Please enter the event id");
+        System.out.println("Please enter the event id: ");
         String content = scan.nextLine();
 
         try {
@@ -158,25 +156,26 @@ public class SpeakerController extends UserController {
             Event event = EventService.shared.getEventById(eventId);
             if (EventService.shared.getEventsBySpeaker(AuthService.shared.getCurrentUser().getUsername()).contains(
                     event)) {
-                System.out.println("Please enter the message");
+                System.out.println("Please enter the message: ");
                 String message = scan.nextLine();
                 for (String userName : event.getAttendeeUNs()) {
                     MessageService.shared.sendMessage(message, AuthService.shared.getCurrentUser(),
                             AuthService.shared.getUserByUsername(userName));
                 }
-                System.out.println("Message sent successfully");
+                System.out.println("Message sent successfully.");
             }
             else{
-                System.out.println("Event id " + content + " is not your event, Unsuccessful message sending");
+                System.out.println("Event id: " + content + " is not your event, Unsuccessful message sending.");
             }
 
-        } catch (EventService.EventException | AuthService.AuthException e) {
-            System.out.println("Event with event id " + content + " does not exist. " +
-                    "Message does not send successfully.");
-        } catch (NumberFormatException e2) {
-            System.out.println("Incorrect Event Id, please enter digits ONLY! Message does not send successfully");
-        } catch (NullPointerException e3){
+        } catch (EventService.EventDoesNotExistException e) {
+            System.out.println("Event with event id: " + content + " does not exist. ");
+        } catch (NumberFormatException e) {
+            System.out.println("Incorrect Event Id, please enter digits ONLY! Message does not send successfully.");
+        } catch (NullPointerException e){
             System.out.println("User must log in to send message. Message does not send successfully.");
+        } catch (Exception e) {
+            System.out.println("Unknown exception: " + e.toString() + "Message does not send successfully.");
         }
     }
 
@@ -193,10 +192,12 @@ public class SpeakerController extends UserController {
             MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), receiver);
 
             System.out.println("Message sent successfully.");
-        } catch (AuthService.AuthException e) {
-            e.printStackTrace();
-        } catch(NullPointerException e2){
+        } catch (AuthService.UserDoesNotExistException e) {
+            System.out.println("User with username " + receiverUN + " does not exist.");
+        } catch(NullPointerException e){
             System.out.println("User must log in to send message. Message does not send successfully.");
+        } catch (Exception e) {
+            System.out.println("Unknown exception: " + e.toString() + "Message does not send successfully.");
         }
     }
 }
