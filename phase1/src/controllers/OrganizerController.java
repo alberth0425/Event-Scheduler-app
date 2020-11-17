@@ -75,7 +75,7 @@ public class OrganizerController extends UserController {
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Unknown action. Please enter digit between 1 and 8. ");
-                run();
+                break;
             }
 
         }
@@ -327,7 +327,7 @@ public class OrganizerController extends UserController {
 
     private void sendMessages() {
 
-        System.out.println("Choose receiver type");
+        System.out.println("Please choose a receiver type");
         System.out.println("1. Send message to all users");
         System.out.println("2. Send message to all speakers");
         System.out.println("3. Send message to all attendees");
@@ -374,7 +374,7 @@ public class OrganizerController extends UserController {
                             MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(),
                                     receiver);
 
-                            System.out.println("Message send successfully.");
+                            System.out.println("Message sent successfully.");
 
                         } catch (AuthService.UserDoesNotExistException e) {
                             System.out.println("User with username " + receiverUN + " does not exist. " +
@@ -424,7 +424,7 @@ public class OrganizerController extends UserController {
                     MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
                 }
             }
-            System.out.println("Message send successfully.");
+            System.out.println("Message sent successfully.");
         } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         }
@@ -443,7 +443,7 @@ public class OrganizerController extends UserController {
                     MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
 
             }
-            System.out.println("Message send successfully.");
+            System.out.println("Message sent successfully.");
         } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         }
@@ -461,7 +461,7 @@ public class OrganizerController extends UserController {
                 if (user instanceof Attendee)
                     MessageService.shared.sendMessage(messageContent, AuthService.shared.getCurrentUser(), user);
             }
-            System.out.println("Message send successfully.");
+            System.out.println("Message sent successfully.");
         } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         }
@@ -488,10 +488,10 @@ public class OrganizerController extends UserController {
                     MessageService.shared.sendMessage(message, AuthService.shared.getCurrentUser(),
                             AuthService.shared.getUserByUsername(attendeeUN));
                 }
-                System.out.println("Message send successfully.");
+                System.out.println("Message sent successfully.");
 
             } catch (Exception e) {
-                System.out.println("Unknown exception: " + e.toString() + "Message does not send successfully.");
+                System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
             }
 
         } catch (NumberFormatException e) {
