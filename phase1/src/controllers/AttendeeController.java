@@ -155,6 +155,7 @@ public class AttendeeController extends UserController {
             // TODO: this is not done. need to check for whether can message this user
 
             MessageService.shared.sendMessage(content, AuthService.shared.getCurrentUser(), receiver);
+            System.out.println("Message sent successfully.");
 
         } catch (AuthService.UserDoesNotExistException e) {
             System.out.println("User with username " + receiverUN + " does not exist. " +
