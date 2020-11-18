@@ -24,43 +24,51 @@ public class AttendeeController extends UserController {
             System.out.println("7. Exit");
 
             Scanner input = new Scanner(System.in);
-            int choice = input.nextInt();
+            String content = input.nextLine();
 
-            boolean exit = false;
+            try {
+                int choice = Integer.parseInt(content);
 
-            switch (choice) {
-                case 1:
-                    browseEvents();
-                    break;
-                case 2:
-                    browseEventsSignedUp();
-                    break;
-                case 3:
-                    signUpEvent();
-                    break;
-                case 4:
-                    cancelEvent();
-                    break;
-                case 5:
-                    sendMessages();
-                    break;
-                case 6:
-                    viewMessages();
-                    break;
-                case 7:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Unknown action.");
-                    break;
-            }
+                boolean exit = false;
 
-            save();
+                switch (choice) {
+                    case 1:
+                        browseEvents();
+                        break;
+                    case 2:
+                        browseEventsSignedUp();
+                        break;
+                    case 3:
+                        signUpEvent();
+                        break;
+                    case 4:
+                        cancelEvent();
+                        break;
+                    case 5:
+                        sendMessages();
+                        break;
+                    case 6:
+                        viewMessages();
+                        break;
+                    case 7:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Unknown action. Please enter digit between 1 and 7.");
+                        break;
+                }
 
-            if (exit) {
+                save();
+
+                if (exit) {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Unknown action. Please enter digit between 1 and 7.");
                 break;
             }
-        }
+            }
+
     }
 
     private void browseEventsSignedUp() {
@@ -147,11 +155,14 @@ public class AttendeeController extends UserController {
             // TODO: this is not done. need to check for whether can message this user
 
             MessageService.shared.sendMessage(content, AuthService.shared.getCurrentUser(), receiver);
+            System.out.println("Message sent successfully.");
 
         } catch (AuthService.UserDoesNotExistException e) {
-            System.out.println("User with username " + receiverUN + " does not exist.");
+            System.out.println("User with username " + receiverUN + " does not exist. " +
+                    "Message does not send successfully.");
         } catch (Exception e) {
-            System.out.println("Unknown exception: " + e.toString());
+            System.out.println("Unknown exception: " + e.toString() +
+                    " Message does not send successfully.");
         }
     }
 }
