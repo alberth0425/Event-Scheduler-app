@@ -23,7 +23,7 @@ public class SpeakerController extends UserController {
         while (true) {
             try {
                 System.out.println("Select an action:");
-                System.out.println("1. browse my events");
+                System.out.println("1. Browse my events");
                 System.out.println("2. View messages");
                 System.out.println("3. Send messages");
                 System.out.println("4. exit");

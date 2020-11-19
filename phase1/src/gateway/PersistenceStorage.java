@@ -33,7 +33,6 @@ public class PersistenceStorage {
             }
             pw.flush();
             pw.close();
-//            System.out.println("All entries saved to path: " + path);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
