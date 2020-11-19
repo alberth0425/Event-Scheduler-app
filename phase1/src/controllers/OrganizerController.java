@@ -80,6 +80,7 @@ public class OrganizerController extends UserController {
 
         }
     }
+
     /**
      * The createSpeaker method implements an application that
      * let Organizers create Speaker account.
@@ -309,6 +310,7 @@ public class OrganizerController extends UserController {
             System.out.println("Unknown exception: " + e.toString());
         }
     }
+
     /**
      * The assignSpeakerToEvent method implements an application that
      * let Organizers assign Speaker to multiple Event.
