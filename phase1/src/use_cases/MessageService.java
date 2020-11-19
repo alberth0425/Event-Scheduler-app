@@ -38,6 +38,8 @@ public class MessageService {
 
     /**
      * Get all the messages exist in the messageRepository.
+     *
+     * @return all the messages
      */
     public List<Message> getAllMessages() {
         ArrayList<Message> allMessageList = new ArrayList<>();
