@@ -13,6 +13,9 @@ public class AuthService {
 
     private User currentUser;
 
+    /**
+     * singleton implementation.
+     */
     public static AuthService shared = new AuthService();
     private AuthService() {}
 

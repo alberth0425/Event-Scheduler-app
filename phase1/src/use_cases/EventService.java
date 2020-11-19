@@ -13,11 +13,19 @@ import java.util.List;
 
 public class EventService {
 
+    /**
+     * singleton implementation.
+     */
     public static EventService shared = new EventService();
     private EventService() {}
 
     private List<Event> allEvents = new ArrayList<>();
 
+    /**
+     * Setter for allEvents.
+     *
+     * @param allEvents a list that contains all of the events
+     */
     public void setAllEvents(List<Event> allEvents) {
         this.allEvents = allEvents;
     }

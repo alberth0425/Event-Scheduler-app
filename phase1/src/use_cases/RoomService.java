@@ -9,6 +9,9 @@ import java.util.List;
 public class RoomService {
     private HashMap<Integer, Room> rooms = new HashMap<>();
 
+    /**
+     * singleton implementation.
+     */
     public final static RoomService shared = new RoomService();
     private RoomService() {}
 
@@ -71,6 +74,6 @@ public class RoomService {
         return rm;
     }
 
-    public static class RoomException extends Exception {};
+    public static class RoomException extends Exception {}
     public static class RoomDoesNotExistException extends RoomException {}
 }
