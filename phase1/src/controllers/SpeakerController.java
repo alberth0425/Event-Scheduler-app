@@ -7,6 +7,7 @@ import src.use_cases.EventService;
 import src.use_cases.AuthService;
 import src.use_cases.RoomService;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,37 +21,44 @@ public class SpeakerController extends UserController {
 
     void run() {
         while (true) {
-            System.out.println("Select an action:");
-            System.out.println("1. browse my events");
-            System.out.println("2. View messages");
-            System.out.println("3. Send a message");
-            System.out.println("4. exit");
+            try {
+                System.out.println("Select an action:");
+                System.out.println("1. browse my events");
+                System.out.println("2. View messages");
+                System.out.println("3. Send messages");
+                System.out.println("4. exit");
 
-            int action = scan.nextInt();
+                String action = scan.nextLine();
 
-            boolean exit = false;
+                int num = Integer.parseInt(action);
 
-            switch (action) {
-                case 1:
-                    browseMyEvents();
-                    break;
-                case 2:
-                    viewMessages();
-                    break;
-                case 3:
-                    sendMessages();
-                    break;
-                case 4:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Unknown action.");
-                    break;
-            }
-            save();
+                boolean exit = false;
 
-            if (exit)
+                switch (num) {
+                    case 1:
+                        browseMyEvents();
+                        break;
+                    case 2:
+                        viewMessages();
+                        break;
+                    case 3:
+                        sendMessages();
+                        break;
+                    case 4:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Unknown action. Please enter digit between 1 and 4.");
+                        break;
+                }
+                save();
+
+                if (exit)
+                    break;
+            } catch (NumberFormatException e){
+                System.out.println("Unknown action. Please enter digit between 1 and 4.");
                 break;
+            }
         }
     }
 
@@ -58,36 +66,41 @@ public class SpeakerController extends UserController {
         Scanner scan = new Scanner(System.in);
 
         while (true) {
-            System.out.println("Please choose a receiver type");
-            System.out.println("1. Send message to all attendees in all of your events");
-            System.out.println("2. Send message to all attendees in one of your event");
-            System.out.println("3. Send message to a specific user");
-            System.out.println("4. Exit");
+            try {
+                System.out.println("Please choose a receiver type");
+                System.out.println("1. Send message to all attendees in all of your events");
+                System.out.println("2. Send message to all attendees in one of your event");
+                System.out.println("3. Send message to a specific user");
+                System.out.println("4. Exit");
 
-            int input = scan.nextInt();
-            boolean exit = false;
+                String input = scan.nextLine();
+                int num = Integer.parseInt(input);
+                boolean exit = false;
 
-            switch (input) {
-                case 1:
-                    sendToAllAttendeesAllEvents();
+                switch (num) {
+                    case 1:
+                        sendToAllAttendeesAllEvents();
+                        break;
+                    case 2:
+                        sendToAllAttendeesOneEvent();
+                        break;
+                    case 3:
+                        sendToOne();
+                        break;
+                    case 4:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Unknown action. Please enter digit between 1 and 4.");
+                        break;
+                }
+                if (exit)
                     break;
-                case 2:
-                    sendToAllAttendeesOneEvent();
-                    break;
-                case 3:
-                    sendToOne();
-                    break;
-                case 4:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Unknown action, choose again");
-                    break;
-            }
-            if (exit)
+            } catch (NumberFormatException e){
+                System.out.println("Unknown action. Please enter digit between 1 and 4.");
                 break;
+            }
         }
-
     }
 
     /**
@@ -121,7 +134,7 @@ public class SpeakerController extends UserController {
     // -- private helpers --
     private void sendToAllAttendeesAllEvents() {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Please enter your message: ");
+        System.out.println("Enter message to send: ");
         String input = scan.nextLine();
 
         try {
@@ -136,13 +149,13 @@ public class SpeakerController extends UserController {
         } catch(NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         } catch (Exception e) {
-            System.out.println("Unknown exception: " + e.toString() + "Message does not send successfully.");
+            System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
         }
     }
 
     private void sendToAllAttendeesOneEvent() {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Please enter the event id: ");
+        System.out.println("Enter event id: ");
         String content = scan.nextLine();
 
         try {
@@ -156,7 +169,7 @@ public class SpeakerController extends UserController {
             Event event = EventService.shared.getEventById(eventId);
             if (EventService.shared.getEventsBySpeaker(AuthService.shared.getCurrentUser().getUsername()).contains(
                     event)) {
-                System.out.println("Please enter the message: ");
+                System.out.println("Enter message to send: ");
                 String message = scan.nextLine();
                 for (String userName : event.getAttendeeUNs()) {
                     MessageService.shared.sendMessage(message, AuthService.shared.getCurrentUser(),
@@ -165,23 +178,25 @@ public class SpeakerController extends UserController {
                 System.out.println("Message sent successfully.");
             }
             else{
-                System.out.println("Event id: " + content + " is not your event, Unsuccessful message sending.");
+                System.out.println("Event with event id " + content + " is not your event, " +
+                        "Message does not send successfully.");
             }
 
         } catch (EventService.EventDoesNotExistException e) {
-            System.out.println("Event with event id: " + content + " does not exist. ");
+            System.out.println("Event with event id " + content + " does not exist. " +
+                    "Message does not send successfully.");
         } catch (NumberFormatException e) {
-            System.out.println("Incorrect Event Id, please enter digits ONLY! Message does not send successfully.");
+            System.out.println("Invalid event id, please enter only digits. Message does not send successfully.");
         } catch (NullPointerException e){
             System.out.println("User must log in to send message. Message does not send successfully.");
         } catch (Exception e) {
-            System.out.println("Unknown exception: " + e.toString() + "Message does not send successfully.");
+            System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
         }
     }
 
     private void sendToOne(){
         Scanner scan = new Scanner(System.in);
-        System.out.println("Please enter the receiver User Name");
+        System.out.println("Enter receiver username:");
         String receiverUN = scan.nextLine();
 
         try{
@@ -194,11 +209,12 @@ public class SpeakerController extends UserController {
 
             System.out.println("Message sent successfully.");
         } catch (AuthService.UserDoesNotExistException e) {
-            System.out.println("User with username " + receiverUN + " does not exist.");
+            System.out.println("User with username " + receiverUN + " does not exist. " +
+                    "Message does not send successfully.");
         } catch(NullPointerException e){
             System.out.println("User must log in to send message. Message does not send successfully.");
         } catch (Exception e) {
-            System.out.println("Unknown exception: " + e.toString() + "Message does not send successfully.");
+            System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
         }
     }
 }

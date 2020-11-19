@@ -103,7 +103,8 @@ public class EventService {
 
         // Check for double booking
         for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
-            if (e.getSpeakerUsername().equals(newSpeaker.getUsername()) && e.getId() != event.getId()) throw new SpeakerDoubleBookException();
+            if (e.getSpeakerUsername().equals(newSpeaker.getUsername()) && e.getId() != event.getId())
+                throw new SpeakerDoubleBookException();
         }
 
         event.setSpeakerUN(newSpeaker.getUsername());
@@ -192,11 +193,13 @@ public class EventService {
      * @throws SpeakerDoubleBookException if the input speaker is already scheduled to another event at the same time
      * @throws RoomDoubleBookException if the input room is already scheduled to another event at the same time
      */
-    public Event createEvent(String title, int startingTime, Speaker speaker, Room room) throws EventException, RoomService.RoomException {
+    public Event createEvent(String title, int startingTime, Speaker speaker, Room room) throws EventException,
+            RoomService.RoomException {
         // Check double booking exceptions (both speaker and room)
         for (Event event : this.getEventsByStartTime(startingTime)) {
             if (event.getSpeakerUsername().equals(speaker.getUsername())) throw new SpeakerDoubleBookException();
-            if (getRoom(event.getRoomNumber()).getRoomNumber() == room.getRoomNumber()) throw new RoomDoubleBookException();
+            if (getRoom(event.getRoomNumber()).getRoomNumber() == room.getRoomNumber()) throw new
+                    RoomDoubleBookException();
         }
 
         // Check event starting time
