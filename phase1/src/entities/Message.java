@@ -12,6 +12,13 @@ public class Message implements Savable {
     private final long timeStamp;  // message send time in millisecond
     private final int id;
 
+    /**
+     * constructor for the message class
+     *
+     * @param text the text in this message
+     * @param senderUsername the username of the sender
+     * @param receiverUsername the username of the receiver
+     */
     public Message(String text, String senderUsername, String receiverUsername) {
         this.text = text;
         this.senderUsername = senderUsername;
@@ -26,6 +33,11 @@ public class Message implements Savable {
         messageCount += 1;
     }
 
+    /**
+     * construct message from a dataEntry.
+     *
+     * @param dataEntry the savable string that represents a message
+     */
     public Message(String dataEntry) {
         String[] entries = dataEntry.split(Savable.DELIMITER);
         this.id = Integer.parseInt(entries[0]);
@@ -37,18 +49,38 @@ public class Message implements Savable {
         messageCount += 1;
     }
 
+    /**
+     * getter for the text.
+     *
+     * @return the text of this message
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * getter for the sender.
+     *
+     * @return the sender's username
+     */
     public String getSenderUsername() {
         return senderUsername;
     }
 
+    /**
+     * getter for the receiver.
+     *
+     * @return the receiver's username
+     */
     public String getReceiverUsername() {
         return receiverUsername;
     }
 
+    /**
+     * getter for the timeStamp.
+     *
+     * @return the event's timestamp
+     */
     public long getTimeStamp() {
         return timeStamp;
     }
@@ -64,10 +96,20 @@ public class Message implements Savable {
         return dateFormat.format(date);
     }
 
+    /**
+     * getter for the id of this message.
+     *
+     * @return the id of this message
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * turn the information of this message into a savable string.
+     *
+     * @return a savable string
+     */
     @Override
     public String toSavableString() {
         return id + Savable.DELIMITER + text + Savable.DELIMITER + senderUsername + Savable.DELIMITER + receiverUsername + Savable.DELIMITER + timeStamp;
