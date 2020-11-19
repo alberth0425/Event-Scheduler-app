@@ -12,17 +12,33 @@ public class MessageService {
     private HashMap<String, List<String>> contactBook = new HashMap<>();
     private HashMap<String, List<Message>> messageRepository = new HashMap<>();
 
+    /**
+     * singleton implementation.
+     */
     public static MessageService shared = new MessageService();
     private MessageService() {}
 
+    /**
+     * Getter for the contactBook.
+     *
+     * @param contactBook the Hashmap that records all the userid for users that this user can send message to
+     */
     public void setContactBook(HashMap<String, List<String>> contactBook) {
         this.contactBook = contactBook;
     }
 
+    /**
+     * Setter for messageRepository.
+     *
+     * @param messageRepository the Hashmap that records a list of user's messages
+     */
     public void setMessageRepository(HashMap<String, List<Message>> messageRepository) {
         this.messageRepository = messageRepository;
     }
 
+    /**
+     * Get all the messages exist in the messageRepository.
+     */
     public List<Message> getAllMessages() {
         ArrayList<Message> allMessageList = new ArrayList<>();
         for (List<Message> e : messageRepository.values()) {
