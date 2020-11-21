@@ -7,6 +7,9 @@ import java.util.List;
 
 public class SignupService {
 
+    /**
+     * singleton implementation.
+     */
     public static SignupService shared = new SignupService();
     private SignupService() {}
 

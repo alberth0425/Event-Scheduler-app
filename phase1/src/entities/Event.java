@@ -14,6 +14,14 @@ public class Event implements Savable {
     private List<String> attendeeUNs = new ArrayList<>();
     private final int id;
 
+    /**
+     * constructor for the event class.
+     *
+     * @param title the title of this event
+     * @param speakerUN the speaker username of this event
+     * @param startingTime the starting time of this event
+     * @param roomNumber the room number of the room that this event is going to happen
+     */
     public Event(String title, String speakerUN, int startingTime, int roomNumber) {
         this.title = title;
         this.speakerUN = speakerUN;
@@ -24,6 +32,11 @@ public class Event implements Savable {
         eventCount += 1;
     }
 
+    /**
+     * construct event from a dataEntry.
+     *
+     * @param dataEntry the savable string that contains all the information of this event
+     */
     public Event(String dataEntry) {
         String[] entries = dataEntry.split(Savable.DELIMITER);
         this.id = Integer.parseInt(entries[0]);
@@ -37,46 +50,97 @@ public class Event implements Savable {
         eventCount += 1;
     }
 
+    /**
+     *  getter for the id.
+     *
+     * @return the id of the event
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     *  getter for the title.
+     *
+     * @return the title of the event
+     */
     public String getTitle() {
         return this.title;
     }
 
+    /**
+     *  getter for the speaker username.
+     *
+     * @return the username of the speaker for this event
+     */
     public String getSpeakerUsername() {
         return this.speakerUN;
     }
 
+    /**
+     *  getter for the start time of the event.
+     *
+     * @return the the start time of the even
+     */
     public int getStartingTime() {
         return this.startingTime;
     }
 
+    /**
+     *  getter for the room number.
+     *
+     * @return the room number this event is going to happen
+     */
     public int getRoomNumber() {
         return roomNumber;
     }
 
+    /**
+     *  getter for the attendees' username.
+     *
+     * @return the username of all the attndees of this event
+     */
     public List<String> getAttendeeUNs() {
         return attendeeUNs;
     }
 
+    /**
+     * add a new attendee to this event.
+     * @param attendeeUN the username of this attendee
+     */
     public void addAttendee(String attendeeUN) {
         attendeeUNs.add(attendeeUN);
     }
 
+    /**
+     * remove an attendee from this event.
+     * @param attendeeUN the username of this attendee
+     */
     public void removeAttendee(String attendeeUN) {
         attendeeUNs.remove(attendeeUN);
     }
 
+    /**
+     * setter of the room number.
+     * @param roomNumber set the room number of where this event is going to happen
+     */
     public void setRoomNumber(int roomNumber) {
         this.roomNumber = roomNumber;
     }
 
+    /**
+     * setter for the speaker username.
+     * @param speakerUN the username of the speaker for this event
+     */
     public void setSpeakerUN(String speakerUN) {
         this.speakerUN = speakerUN;
     }
 
+    /**
+     * turn the information of this event into a string.
+     *
+     * @return the string that contains all the information of this event
+     */
     @Override
     public String toString() {
         return "Event{" +
@@ -89,6 +153,11 @@ public class Event implements Savable {
                 '}';
     }
 
+    /**
+     * turn the information of this event into a savable string.
+     *
+     * @return a savable string that contains all the information of this event
+     */
     @Override
     public String toSavableString() {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER + getSpeakerUsername() + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
