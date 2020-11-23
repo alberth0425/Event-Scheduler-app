@@ -1,0 +1,217 @@
+@startuml
+
+title __USE_CASES's Class Diagram__\n
+
+  namespace src.use_cases {
+    class src.use_cases.AuthService {
+        {static} + shared : AuthService
+        ~ users : HashMap<String, User>
+        {static} - PASSWORD_MINIMUM_LENGTH : int
+        + createUser()
+        + getAllUsers()
+        + getCurrentUser()
+        + getUserByUsername()
+        + loginUser()
+        + modifyCredentials()
+        + setUsers()
+        - AuthService()
+        {static} - validatePassword()
+        {static} - validateUsername()
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.AuthService.AuthException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.AuthService.InvalidFieldException {
+        + getField()
+        - InvalidFieldException()
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.AuthService.UserDoesNotExistException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    enum UserField {
+      FIRST_NAME
+      LAST_NAME
+      PASSWORD
+      USERNAME
+    }
+  }
+  
+
+  namespace src.use_cases {
+    enum UserType {
+      ATTENDEE
+      ORGANIZER
+      SPEAKER
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.AuthService.UsernameAlreadyTakenException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.EventService {
+        {static} + shared : EventService
+        - allEvents : List<Event>
+        + addEventAttendee()
+        + createEvent()
+        + getAllEvents()
+        + getEventAvailability()
+        + getEventById()
+        + getEventsBySpeaker()
+        + getEventsByStartTime()
+        + getEventsWithAttendee()
+        + removeEventAttendee()
+        + setAllEvents()
+        + setEventRoom()
+        + setEventSpeaker()
+        - EventService()
+        - getRoom()
+        - validateEvent()
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.EventService.AttendeeScheduleConflictException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.EventService.EventDoesNotExistException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.EventService.EventException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.EventService.InvalidEventTimeException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.EventService.RoomDoubleBookException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.EventService.RoomFullException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.EventService.SpeakerDoubleBookException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.MessageService {
+        {static} + shared : MessageService
+        - contactBook : HashMap<String, List<String>>
+        - messageRepository : HashMap<String, List<Message>>
+        + addUserToContact()
+        + getAllMessages()
+        + getReceivedMessages()
+        + sendMessage()
+        + setContactBook()
+        + setMessageRepository()
+        - MessageService()
+        - canSendMessage()
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.RoomService {
+        {static} + shared : RoomService
+        - rooms : HashMap<Integer, Room>
+        + createRoom()
+        + getAllRooms()
+        + getRoom()
+        + setRooms()
+        + validateRoom()
+        - RoomService()
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.RoomService.RoomDoesNotExistException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.RoomService.RoomException {
+    }
+  }
+  
+
+  namespace src.use_cases {
+    class src.use_cases.SignupService {
+        {static} + shared : SignupService
+        + addAttendeeToEvent()
+        + fetchAllEvents()
+        + removeAttendeeFromEvent()
+        - SignupService()
+    }
+  }
+  
+
+  src.use_cases.AuthService o-- src.entities.User : currentUser
+  src.use_cases.AuthService +-down- src.use_cases.AuthService.AuthException
+  src.use_cases.AuthService +-down- src.use_cases.AuthService.InvalidFieldException
+  src.use_cases.AuthService +-down- src.use_cases.AuthService.UserDoesNotExistException
+  src.use_cases.AuthService +-down- src.use_cases.AuthService.UserField
+  src.use_cases.AuthService +-down- src.use_cases.AuthService.UserType
+  src.use_cases.AuthService +-down- src.use_cases.AuthService.UsernameAlreadyTakenException
+  src.use_cases.AuthService.InvalidFieldException -up-|> src.use_cases.AuthService.AuthException
+  src.use_cases.AuthService.InvalidFieldException o-- src.use_cases.AuthService.UserField : field
+  src.use_cases.AuthService.UserDoesNotExistException -up-|> src.use_cases.AuthService.AuthException
+  src.use_cases.AuthService.UsernameAlreadyTakenException -up-|> src.use_cases.AuthService.AuthException
+  src.use_cases.EventService +-down- src.use_cases.EventService.AttendeeScheduleConflictException
+  src.use_cases.EventService +-down- src.use_cases.EventService.EventDoesNotExistException
+  src.use_cases.EventService +-down- src.use_cases.EventService.EventException
+  src.use_cases.EventService +-down- src.use_cases.EventService.InvalidEventTimeException
+  src.use_cases.EventService +-down- src.use_cases.EventService.RoomDoubleBookException
+  src.use_cases.EventService +-down- src.use_cases.EventService.RoomFullException
+  src.use_cases.EventService +-down- src.use_cases.EventService.SpeakerDoubleBookException
+  src.use_cases.EventService.AttendeeScheduleConflictException -up-|> src.use_cases.EventService.EventException
+  src.use_cases.EventService.EventDoesNotExistException -up-|> src.use_cases.EventService.EventException
+  src.use_cases.EventService.InvalidEventTimeException -up-|> src.use_cases.EventService.EventException
+  src.use_cases.EventService.RoomDoubleBookException -up-|> src.use_cases.EventService.EventException
+  src.use_cases.EventService.RoomFullException -up-|> src.use_cases.EventService.EventException
+  src.use_cases.EventService.SpeakerDoubleBookException -up-|> src.use_cases.EventService.EventException
+  src.use_cases.RoomService +-down- src.use_cases.RoomService.RoomDoesNotExistException
+  src.use_cases.RoomService +-down- src.use_cases.RoomService.RoomException
+  src.use_cases.RoomService.RoomDoesNotExistException -up-|> src.use_cases.RoomService.RoomException
+
+
+@enduml

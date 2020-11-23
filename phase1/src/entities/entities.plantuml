@@ -1,0 +1,131 @@
+@startuml
+
+title __ENTITIES's Class Diagram__\n
+
+  namespace src.entities {
+    class src.entities.Attendee {
+        + Attendee()
+        + Attendee()
+    }
+  }
+  
+
+  namespace src.entities {
+    class src.entities.Event {
+        - attendeeUNs : List<String>
+        {static} - eventCount : int
+        - id : int
+        - roomNumber : int
+        - speakerUN : String
+        - startingTime : int
+        - title : String
+        + Event()
+        + Event()
+        + addAttendee()
+        + getAttendeeUNs()
+        + getId()
+        + getRoomNumber()
+        + getSpeakerUsername()
+        + getStartingTime()
+        + getTitle()
+        + removeAttendee()
+        + setRoomNumber()
+        + setSpeakerUN()
+        + toSavableString()
+        + toString()
+    }
+  }
+  
+
+  namespace src.entities {
+    class src.entities.Message {
+        - id : int
+        {static} - messageCount : int
+        - receiverUsername : String
+        - senderUsername : String
+        - text : String
+        - timeStamp : long
+        + Message()
+        + Message()
+        + getFormattedTimeStamp()
+        + getId()
+        + getReceiverUsername()
+        + getSenderUsername()
+        + getText()
+        + getTimeStamp()
+        + toSavableString()
+    }
+  }
+  
+
+  namespace src.entities {
+    class src.entities.Organizer {
+        + Organizer()
+        + Organizer()
+    }
+  }
+  
+
+  namespace src.entities {
+    class src.entities.Room {
+        - capacity : int
+        - roomNumber : int
+        + Room()
+        + Room()
+        + getCapacity()
+        + getRoomNumber()
+        + toSavableString()
+    }
+  }
+  
+
+  namespace src.entities {
+    interface src.entities.Savable {
+        {static} + DELIMITER : String
+        {static} + isStringSavable()
+        {abstract} + toSavableString()
+    }
+  }
+  
+
+  namespace src.entities {
+    class src.entities.Speaker {
+        + Speaker()
+        + Speaker()
+    }
+  }
+  
+
+  namespace src.entities {
+    class src.entities.User {
+        # firstName : String
+        # id : int
+        # lastName : String
+        {static} # numUser : int
+        # password : String
+        # username : String
+        + User()
+        + User()
+        + getFullname()
+        + getId()
+        + getPassword()
+        + getUsername()
+        + setFirstName()
+        + setLastName()
+        + setPassword()
+        + setUsername()
+        + toSavableString()
+    }
+  }
+  
+
+  src.entities.Attendee -up-|> src.entities.User
+  src.entities.Event .up.|> src.entities.Savable
+  src.entities.Message .up.|> src.entities.Savable
+  src.entities.Organizer -up-|> src.entities.User
+  src.entities.Room .up.|> src.entities.Savable
+  src.entities.Speaker -up-|> src.entities.User
+  src.entities.User .up.|> src.entities.Savable
+
+
+@enduml
