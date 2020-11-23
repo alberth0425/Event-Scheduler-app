@@ -1,4 +1,4 @@
-package src.controllers;
+package controllers;
 
 import src.entities.*;
 import src.use_cases.AuthService;

@@ -1,4 +1,4 @@
-package src.entities;
+package entities;
 
 public class User implements Savable {
     protected static int numUser;
@@ -35,7 +35,7 @@ public class User implements Savable {
      *                  the order of the string is: id, username, password, first name and last name
      */
     public User(String dataEntry) {
-        String[] entries = dataEntry.split(Savable.DELIMITER);
+        String[] entries = dataEntry.split(DELIMITER);
         this.id = Integer.parseInt(entries[0]);
         this.username = entries[1];
         this.password = entries[2];
@@ -106,6 +106,6 @@ public class User implements Savable {
      */
     @Override
     public String toSavableString() {
-        return id + Savable.DELIMITER + username + Savable.DELIMITER + password + Savable.DELIMITER + firstName + Savable.DELIMITER + lastName;
+        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName;
     }
 }

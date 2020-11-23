@@ -1,4 +1,4 @@
-package src.entities;
+package entities;
 
 public class Room implements Savable {
 
@@ -23,7 +23,7 @@ public class Room implements Savable {
      *                  first one is the room number, and second one is the capacity
      */
     public Room(String dataEntry) {
-        String[] entries = dataEntry.split(Savable.DELIMITER);
+        String[] entries = dataEntry.split(DELIMITER);
         this.capacity = Integer.parseInt(entries[1]);
         this.roomNumber = Integer.parseInt(entries[0]);
     }
@@ -53,6 +53,6 @@ public class Room implements Savable {
      */
     @Override
     public String toSavableString() {
-        return roomNumber + Savable.DELIMITER + capacity;
+        return roomNumber + DELIMITER + capacity;
     }
 }

@@ -1,4 +1,4 @@
-package src.gateway;
+package gateway;
 
 import src.entities.*;
 

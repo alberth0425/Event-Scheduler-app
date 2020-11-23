@@ -1,4 +1,4 @@
-package src.entities;
+package entities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +38,7 @@ public class Event implements Savable {
      * @param dataEntry the savable string that contains all the information of this event
      */
     public Event(String dataEntry) {
-        String[] entries = dataEntry.split(Savable.DELIMITER);
+        String[] entries = dataEntry.split(DELIMITER);
         this.id = Integer.parseInt(entries[0]);
         this.title = entries[1];
         this.speakerUN = entries[2];
@@ -160,7 +160,7 @@ public class Event implements Savable {
      */
     @Override
     public String toSavableString() {
-        return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER + getSpeakerUsername() + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
-                Savable.DELIMITER + String.join("|", getAttendeeUNs());
+        return getId() + DELIMITER + getTitle() + DELIMITER + getSpeakerUsername() + DELIMITER + getStartingTime() + DELIMITER + getRoomNumber() +
+                DELIMITER + String.join("|", getAttendeeUNs());
     }
 }

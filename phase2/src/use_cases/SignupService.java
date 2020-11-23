@@ -1,4 +1,4 @@
-package src.use_cases;
+package use_cases;
 
 import src.entities.Attendee;
 import src.entities.Event;

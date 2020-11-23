@@ -1,4 +1,4 @@
-package src.entities;
+package entities;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -39,7 +39,7 @@ public class Message implements Savable {
      * @param dataEntry the savable string that represents a message
      */
     public Message(String dataEntry) {
-        String[] entries = dataEntry.split(Savable.DELIMITER);
+        String[] entries = dataEntry.split(DELIMITER);
         this.id = Integer.parseInt(entries[0]);
         this.text = entries[1];
         this.senderUsername = entries[2];
@@ -112,6 +112,6 @@ public class Message implements Savable {
      */
     @Override
     public String toSavableString() {
-        return id + Savable.DELIMITER + text + Savable.DELIMITER + senderUsername + Savable.DELIMITER + receiverUsername + Savable.DELIMITER + timeStamp;
+        return id + DELIMITER + text + DELIMITER + senderUsername + DELIMITER + receiverUsername + DELIMITER + timeStamp;
     }
 }
