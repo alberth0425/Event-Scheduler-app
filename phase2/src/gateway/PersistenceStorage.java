@@ -1,6 +1,6 @@
 package gateway;
 
-import src.entities.*;
+import entities.*;
 
 import java.io.*;
 import java.util.*;

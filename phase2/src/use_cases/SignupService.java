@@ -1,7 +1,7 @@
 package use_cases;
 
-import src.entities.Attendee;
-import src.entities.Event;
+import entities.Attendee;
+import entities.Event;
 
 import java.util.List;
 

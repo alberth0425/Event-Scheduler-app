@@ -1,10 +1,10 @@
 package controllers;
 
-import src.entities.*;
-import src.use_cases.AuthService;
-import src.use_cases.EventService;
-import src.use_cases.MessageService;
-import src.use_cases.RoomService;
+import entities.*;
+import use_cases.AuthService;
+import use_cases.EventService;
+import use_cases.MessageService;
+import use_cases.RoomService;
 
 import java.util.List;
 import java.util.Scanner;

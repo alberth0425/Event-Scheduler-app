@@ -1,6 +1,6 @@
 package use_cases;
 
-import src.entities.*;
+import entities.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

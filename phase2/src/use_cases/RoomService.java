@@ -1,6 +1,6 @@
 package use_cases;
 
-import src.entities.Room;
+import entities.Room;
 
 import java.util.ArrayList;
 import java.util.HashMap;

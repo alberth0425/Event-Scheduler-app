@@ -1,9 +1,8 @@
 package use_cases;
 
-import src.entities.Message;
-import src.entities.User;
+import entities.Message;
+import entities.User;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

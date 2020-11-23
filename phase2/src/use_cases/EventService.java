@@ -1,12 +1,11 @@
 package use_cases;
 
-import src.entities.Attendee;
-import src.entities.Event;
-import src.entities.Room;
-import src.entities.Speaker;
+import entities.Attendee;
+import entities.Event;
+import entities.Room;
+import entities.Speaker;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 // TODO: double check this
