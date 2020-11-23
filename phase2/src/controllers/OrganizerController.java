@@ -24,15 +24,13 @@ public class OrganizerController extends UserController {
             System.out.println("Select an action:");
             System.out.println("1. Browse events");
             System.out.println("2. Create account");
-            System.out.println("2. Create speaker account");
-            System.out.println("3. Create attendee account");
-            System.out.println("4. Create organizer account");
             System.out.println("3. Create new event");
-            System.out.println("4. Create new room");
-            System.out.println("5. Assign speaker to event");
-            System.out.println("6. View messages");
-            System.out.println("7. Send messages");
-            System.out.println("8. Exit");
+            System.out.println("4. Cancel event");
+            System.out.println("5. Create new room");
+            System.out.println("6. Assign speaker to event");
+            System.out.println("7. View messages");
+            System.out.println("8. Send messages");
+            System.out.println("9. Exit");
 
             String content = scanner.nextLine();
             try {
@@ -51,18 +49,21 @@ public class OrganizerController extends UserController {
                         createEvent();
                         break;
                     case 4:
-                        createRoom();
+                        cancelEvent();
                         break;
                     case 5:
-                        assignSpeakerToEvent();
+                        createRoom();
                         break;
                     case 6:
-                        viewMessages();
+                        assignSpeakerToEvent();
                         break;
                     case 7:
-                        sendMessages();
+                        viewMessages();
                         break;
                     case 8:
+                        sendMessages();
+                        break;
+                    case 9:
                         exit = true;
                         break;
 
@@ -195,6 +196,8 @@ public class OrganizerController extends UserController {
                     "successfully.");
         }
     }
+
+
     /**
      * The createSpeaker method implements an application that
      * let Organizers create Speaker account.
@@ -233,6 +236,8 @@ public class OrganizerController extends UserController {
         }
 
     }
+
+
     /**
      * The createEvent method implements an application that
      * let Organizers create Event.
@@ -293,6 +298,32 @@ public class OrganizerController extends UserController {
         } catch (RoomService.RoomException e) {
             System.out.println("Room with room number " + roomNumber + " does not exist." +
                     " Event does not create successfully.");
+        }
+    }
+
+
+    /**
+     * Cancel Event
+     *
+     */
+    private void cancelEvent() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the event id: ");
+        String Id = scanner.nextLine();
+
+        try {
+            int eventId = Integer.parseInt(Id);
+
+            EventService.shared.cancelEvent(eventId);
+
+            System.out.println("Event cancelled. ");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter digit only.");
+        } catch (EventService.EventDoesNotExistException e) {
+            System.out.println("Event with ID " + Id +  " does not exist. ");
+        } catch (EventService.EventException e) {
+            System.out.println("Unknown exception: " + e.toString() + " Event does not cancelled successfully.");
         }
     }
 

@@ -218,6 +218,18 @@ public class EventService {
         return event;
     }
 
+
+    /**
+     * Cancel event by given event id
+     *
+     * @param id the event id
+     */
+    public void cancelEvent(int id) throws EventException {
+        Event event = getEventById(id);
+        allEvents.remove(event);
+    }
+
+
     /**
      * Get the number of empty seats of a given event.
      *
