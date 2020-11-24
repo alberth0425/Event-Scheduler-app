@@ -25,6 +25,7 @@ public class PersistenceStorage {
 
     public static void main(String[] args) throws IOException {
         getRequest();
+        putRequest();
     }
 
     /**
@@ -152,8 +153,8 @@ public class PersistenceStorage {
 
         // Request setup
         con.setRequestMethod("GET");
-        con.setConnectTimeout(6000);
-        con.setReadTimeout(6000);
+        con.setConnectTimeout(6000); // 6 secs
+        con.setReadTimeout(6000); // 6 secs
 
         BufferedReader output = new BufferedReader(new InputStreamReader(con.getResponseCode() > 299 ? con.getErrorStream() : con.getInputStream()));
         String line;
@@ -161,10 +162,30 @@ public class PersistenceStorage {
 
         output.close();
         con.disconnect();
-        parse(returnedString.toString());
+        parseToString(returnedString.toString());
     }
 
-    public static void parse(String response) {
+    public static void putRequest() throws IOException {
+        URL urlForInformation = new URL(USER_DB_URL);
+        HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
+
+        //Request setup
+        con.setDoInput(true);
+        con.setDoOutput(true);
+        con.setRequestMethod("PUT");
+        con.setConnectTimeout(6000); // 6 secs
+        con.setReadTimeout(6000); // 6 secs
+
+        String a = "sfasd faadf sakfjs;f sfsfsa";
+
+        OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+        writer.write(a);
+        writer.flush();
+        writer.close();
+        con.disconnect();
+    }
+
+    public static void parseToString(String response) {
         JSONArray users = new JSONArray(response);
         for (int i = 0; i < users.length(); i++) {
             JSONObject user = users.getJSONObject(i);
