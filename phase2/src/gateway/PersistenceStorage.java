@@ -170,19 +170,18 @@ public class PersistenceStorage {
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
 
         //Request setup
-        con.setDoInput(true);
         con.setDoOutput(true);
         con.setRequestMethod("PUT");
+        con.addRequestProperty("Content-Type", "application/json");
         con.setConnectTimeout(6000); // 6 secs
         con.setReadTimeout(6000); // 6 secs
 
-        String a = "sfasd faadf sakfjs;f sfsfsa";
-
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        writer.write(a);
+        writer.write("[{\"password\":\"qwerasdf\",\"username\":\"test-usr-java2\",\"user_type\":\"speaker\",\"last_name\":\"Last\",\"first_name\":\"First\"}]");
         writer.flush();
         writer.close();
         con.disconnect();
+        System.out.println(con.getResponseCode());
     }
 
     public static void parseToString(String response) {
@@ -192,10 +191,5 @@ public class PersistenceStorage {
             System.out.println("User full name: " + user.getString("first_name") + " " + user.getString("last_name"));
         }
     }
-
-    //public static JSONArray parseToJson(String input) {
-    //    JSONArray array = new JSONArray(input);
-    //    return array;
-    //}
     
 }
