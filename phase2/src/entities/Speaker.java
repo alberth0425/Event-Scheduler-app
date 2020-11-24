@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Speaker extends User {
-    protected List<Double> allRate = new ArrayList<>();
+    protected List<Integer> allRate = new ArrayList<>();
 
     /**
      * the constructor for speaker class.
@@ -27,13 +27,13 @@ public class Speaker extends User {
         super(dataEntry);
     }
 
-    public void addRate(double rate) {
+    public void addRate(int rate) {
         allRate.add(rate);
     }
 
     public double getAverageRate() {
         double sum = 0;
-        for (double rate: allRate) {
+        for (int rate: allRate) {
             sum += rate;
         }
         return sum/allRate.size();

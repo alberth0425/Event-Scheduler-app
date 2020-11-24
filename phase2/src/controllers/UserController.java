@@ -2,6 +2,7 @@ package controllers;
 
 import entities.Event;
 import entities.Message;
+import entities.Speaker;
 import use_cases.AuthService;
 import use_cases.EventService;
 import use_cases.MessageService;
@@ -18,9 +19,12 @@ abstract public class UserController extends BaseController {
         StringBuilder sb = new StringBuilder();
         for (Event event : allEvents) {
             try {
+                Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(event.getSpeakerUsername());
+
                 String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
                         ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
-                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + ", Speaker rate: " +
+                        speaker.getAverageRate() + "\n";
                 sb.append(eStr);
             } catch (AuthService.AuthException e) {
                 System.out.println("Speaker of event <" + event.getTitle() +

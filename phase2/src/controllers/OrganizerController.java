@@ -301,7 +301,7 @@ public class OrganizerController extends UserController {
             int rm = Integer.parseInt(roomNumber);
 
             //Get the Speaker by searching the username of the Speaker.
-            Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);
+            Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);//TODO 加exception如果输进去的不是speaker
 
             //Get the Room by searching the room number.
             Room room = RoomService.shared.getRoom(rm);
