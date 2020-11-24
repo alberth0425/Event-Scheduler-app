@@ -1,12 +1,10 @@
 package entities;
 
 public class Agreement implements Savable {
-    protected static int numAgreement;
 
     protected String raterUserName;
     protected String firstName;
     protected String lastName;
-    protected int id;
 
     /**
      * the constructor for user class.
@@ -17,9 +15,6 @@ public class Agreement implements Savable {
      */
     public Agreement(String raterUserName, String firstName, String lastName) {
         this.raterUserName = raterUserName;
-        this.id = numAgreement;
-
-        numAgreement += 1;
     }
 
     /**
@@ -30,12 +25,9 @@ public class Agreement implements Savable {
      */
     public Agreement(String dataEntry) {
         String[] entries = dataEntry.split(DELIMITER);
-        this.id = Integer.parseInt(entries[0]);
-        this.raterUserName = entries[1];
-        this.firstName = entries[2];
-        this.lastName = entries[3];
-
-        numAgreement += 1;
+        this.raterUserName = entries[0];
+        this.firstName = entries[1];
+        this.lastName = entries[2];
     }
 
     /**
@@ -57,22 +49,13 @@ public class Agreement implements Savable {
     }
 
     /**
-     * getter for this id of this user.
-     *
-     * @return the id of this user
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
      * turn the information of this user into a savable string.
      *
-     * @return a savable string in the order of: id, raterUserName, firstname, lastname
+     * @return a savable string in the order of: raterUserName, firstname, lastname
      */
     @Override
     public String toSavableString() {
-        return id + DELIMITER + raterUserName + DELIMITER + firstName + DELIMITER + lastName;
+        return raterUserName + DELIMITER + firstName + DELIMITER + lastName;
     }
 
     /**

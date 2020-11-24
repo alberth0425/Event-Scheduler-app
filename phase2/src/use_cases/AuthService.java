@@ -47,7 +47,8 @@ public class AuthService {
      * @throws UsernameAlreadyTakenException if the username is already taken by another user
      * @throws InvalidFieldException if one of the fields are invalid
      */
-    public void createUser(String username, String password, String firstName, String lastName, UserType userType) throws AuthException {
+    public void createUser(String username, String password, String firstName, String lastName, UserType userType)
+            throws AuthException {
         // Validate user fields
         if (!validateUsername(username)) {
             throw new InvalidFieldException(UserField.USERNAME);
@@ -79,6 +80,9 @@ public class AuthService {
                 Attendee attendee = new Attendee(username, password, firstName, lastName);
                 users.put(username, attendee);
                 break;
+            case RATER:
+                Rater rater = new Rater(username, password, firstName, lastName);
+                users.put(username, rater);
         }
     }
 
@@ -201,7 +205,8 @@ public class AuthService {
     public enum UserType {
         ATTENDEE,
         ORGANIZER,
-        SPEAKER
+        SPEAKER,
+        RATER,
     }
 
     public static class InvalidFieldException extends AuthException {

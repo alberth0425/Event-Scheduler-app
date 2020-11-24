@@ -2,7 +2,6 @@ package entities;
 
 public class Rater extends User {
 
-    protected int agreementId;
 
     /**
      * the constructor for rater class.
@@ -11,11 +10,9 @@ public class Rater extends User {
      * @param password the password this rater needs to login
      * @param firstName the firstname of this rater
      * @param lastName the lastname of this rater
-     * @param agreementId the agreement id for this rater
      */
-    public Rater(String username, String password, String firstName, String lastName, int agreementId) {
+    public Rater(String username, String password, String firstName, String lastName) {
         super(username, password, firstName, lastName);
-        this.agreementId = agreementId;
     }
 
     /**
@@ -27,26 +24,15 @@ public class Rater extends User {
         super(dataEntry);
 
         String[] entries = dataEntry.split(DELIMITER);
-
-        this.agreementId = Integer.parseInt(entries[5]);
-    }
-
-    /**
-     * getter for the agreement id
-     * @return the agreement id for this rater
-     */
-    public int getAgreementId(){
-        return this.agreementId;
     }
 
     /**
      * turn the information of this user into a savable string.
      *
-     * @return a savable string in the order of: id, username, password, firstname, lastname, agreementid
+     * @return a savable string in the order of: id, username, password, firstname, lastname
      */
     @Override
     public String toSavableString() {
-        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
-                DELIMITER + agreementId;
+        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName;
     }
 }
