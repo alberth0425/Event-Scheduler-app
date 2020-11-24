@@ -17,7 +17,7 @@ public class AgreementService {
     public static AgreementService shared = new AgreementService();
     private AgreementService() {}
 
-    public Agreement getAgreementByUserName(String username) throws AgreementException {
+    public Agreement getAgreementByUserName(String username) throws AgreementDoesNotExistException {
         //check that the agreement with given username exists
         if (!allAgreements.containsKey(username)){
             throw new AgreementDoesNotExistException();
@@ -25,6 +25,18 @@ public class AgreementService {
         return allAgreements.get(username);
     }
 
+    public void signAgreement(String username, String firstName, String lastName) throws AgreementAlreadyExistException {
+        // Check double signing exceptions
+        if (allAgreements.containsKey(username)){
+            throw new AgreementAlreadyExistException();
+        }
+
+        Agreement agreement = new Agreement(username, firstName, lastName);
+        allAgreements.put(username, agreement);
+
+    }
+
     public static class AgreementException extends Exception {}
-    public static class AgreementDoesNotExistException extends AgreementService.AgreementException {}
+    public static class AgreementDoesNotExistException extends AgreementException {}
+    public static class AgreementAlreadyExistException extends AgreementException{}
 }

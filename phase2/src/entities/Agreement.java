@@ -15,6 +15,8 @@ public class Agreement implements Savable {
      */
     public Agreement(String raterUserName, String firstName, String lastName) {
         this.raterUserName = raterUserName;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     /**

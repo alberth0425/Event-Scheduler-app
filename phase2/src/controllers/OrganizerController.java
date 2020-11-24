@@ -1,10 +1,7 @@
 package controllers;
 
 import entities.*;
-import use_cases.AuthService;
-import use_cases.EventService;
-import use_cases.MessageService;
-import use_cases.RoomService;
+import use_cases.*;
 
 import java.util.Scanner;
 
@@ -93,7 +90,8 @@ public class OrganizerController extends UserController {
                 System.out.println("1. Create speaker account ");
                 System.out.println("2. Create attendee account");
                 System.out.println("3. Create organizer account");
-                System.out.println("4. Exit");
+                System.out.println("4. Create rater account");
+                System.out.println("5. Exit");
 
                 String content = scanner.nextLine();
                 int choice = Integer.parseInt(content);
@@ -109,7 +107,11 @@ public class OrganizerController extends UserController {
                         break;
                     case 3:
                         createOrganizer();
+                        break;
                     case 4:
+                        createRater();
+                        break;
+                    case 5:
                         exit = true;
                         break;
 
@@ -151,9 +153,6 @@ public class OrganizerController extends UserController {
                     lastName, AuthService.UserType.ATTENDEE);
             System.out.println("Attendee created successfully.");
 
-        } catch (AuthService.UserDoesNotExistException e) {
-            System.out.println("User with username " + username + " does not exist. " + "Attendee does not create " +
-                    "successfully.");
         } catch (AuthService.InvalidFieldException e) {
             System.out.println("Invalid " + e.getField() + " entered. Attendee does not create successfully");
         } catch (AuthService.UsernameAlreadyTakenException e) {
@@ -184,9 +183,6 @@ public class OrganizerController extends UserController {
                     lastName, AuthService.UserType.ORGANIZER);
             System.out.println("Organizer created successfully.");
 
-        } catch (AuthService.UserDoesNotExistException e) {
-            System.out.println("User with username " + username + " does not exist. " + "Organizer does not create " +
-                    "successfully.");
         } catch (AuthService.InvalidFieldException e) {
             System.out.println("Invalid " + e.getField() + " entered. Organizer does not create successfully");
         } catch (AuthService.UsernameAlreadyTakenException e) {
@@ -226,6 +222,7 @@ public class OrganizerController extends UserController {
         } catch (AuthService.UserDoesNotExistException e) {
             System.out.println("User with username " + username + " does not exist. " + "Speaker does not create " +
                     "successfully.");
+            // TODO: 需要catch这个exception吗？This includes all user types.
         } catch (AuthService.InvalidFieldException e) {
             System.out.println("Invalid " + e.getField() + " entered. Speaker does not create successfully");
         } catch (AuthService.UsernameAlreadyTakenException e) {
@@ -237,6 +234,48 @@ public class OrganizerController extends UserController {
 
     }
 
+    /**
+     * The createRater method implements an application that
+     * let Organizer create Rater account.
+     *
+     */
+    private void createRater() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter your username: ");
+        String username = scan.nextLine();
+
+        System.out.println("Please enter your password: ");
+        String password = scan.nextLine();
+
+        System.out.println("Please enter your first name: ");
+        String firstName = scan.nextLine();
+
+        System.out.println("PLease enter your last name: ");
+        String lastName = scan.nextLine();
+
+        try{
+            // Signing agreement first before creating a Rater
+            AgreementService.shared.signAgreement(username, firstName, lastName);
+            System.out.println("Agreement signed successfully.");
+            try {
+                //Call createUser method in AuthService to create a Rater account.
+                AuthService.shared.createUser(username, password, firstName,
+                        lastName, AuthService.UserType.RATER);
+                System.out.println("Rater created successfully.");
+
+            } catch (AuthService.InvalidFieldException e) {
+                System.out.println("Invalid " + e.getField() + " entered. Rater does not create successfully");
+            } catch (AuthService.UsernameAlreadyTakenException e) {
+                System.out.println("Username " + username + "already taken.");
+            } catch (Exception e) {
+                System.out.println("Unknown exception: " + e.toString() + ". Rater does not create " +
+                        "successfully.");
+            }
+        } catch (AgreementService.AgreementAlreadyExistException e) {
+            System.out.println("Agreement already exists, no need to sign again.");
+        }
+
+    }
 
     /**
      * The createEvent method implements an application that
