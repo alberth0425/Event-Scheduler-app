@@ -1,8 +1,12 @@
 package gateway;
 
 import entities.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
 
 public class PersistenceStorage {
@@ -18,6 +22,9 @@ public class PersistenceStorage {
     public static final String MESSAGE_STORAGE_PATH = "./phase1/storage/messages.txt";
     public static final String CONTACT_BOOK_PATH = "./phase1/storage/contact_book.txt";
 
+    public static void main(String args[]) throws IOException {
+        getRequest();
+    }
     /**
      * Save input entries as a csv/txt file to the input path.
      *
@@ -134,6 +141,40 @@ public class PersistenceStorage {
         BufferedWriter bw = new BufferedWriter(fw);
 
         return new PrintWriter(bw);
+    }
+    public static void getRequest() throws IOException {
+        StringBuffer returnedString = new StringBuffer();
+        URL urlForInformation = new URL("https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/users");
+        HttpURLConnection connect = (HttpURLConnection)urlForInformation.openConnection();
+        //Request setup
+        connect.setRequestMethod("GET");
+        connect.setConnectTimeout(6000);
+        connect.setReadTimeout(6000);
+        if (connect.getResponseCode() > 299) {
+            BufferedReader output = new BufferedReader(new InputStreamReader(connect.getErrorStream()));
+            String line;
+            while ((line = output.readLine())!=null) {
+                returnedString.append(line);
+            }
+            output.close();
+        } else {
+            BufferedReader output = new BufferedReader(new InputStreamReader(connect.getInputStream()));
+            String line;
+            while ((line = output.readLine())!=null) {
+                returnedString.append(line);
+            }
+            output.close();
+        }
+        connect.disconnect();
+        parse(returnedString.toString());
+    }
+
+    public static void parse(String response) {
+        JSONArray users = new JSONArray(response);
+        for (int i = 0; i < users.length(); i++) {
+            JSONObject user = users.getJSONObject(i);
+            System.out.println("User name: " + user.getString("first_name") + "" + user.getString("last_name"));
+        }
     }
     
 }
