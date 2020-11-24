@@ -22,9 +22,10 @@ public class PersistenceStorage {
     public static final String MESSAGE_STORAGE_PATH = "./phase1/storage/messages.txt";
     public static final String CONTACT_BOOK_PATH = "./phase1/storage/contact_book.txt";
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         getRequest();
     }
+
     /**
      * Save input entries as a csv/txt file to the input path.
      *
@@ -142,11 +143,13 @@ public class PersistenceStorage {
 
         return new PrintWriter(bw);
     }
+
     public static void getRequest() throws IOException {
-        StringBuffer returnedString = new StringBuffer();
+        StringBuilder returnedString = new StringBuilder();
         URL urlForInformation = new URL("https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/users");
         HttpURLConnection connect = (HttpURLConnection)urlForInformation.openConnection();
-        //Request setup
+
+        // Request setup
         connect.setRequestMethod("GET");
         connect.setConnectTimeout(6000);
         connect.setReadTimeout(6000);
