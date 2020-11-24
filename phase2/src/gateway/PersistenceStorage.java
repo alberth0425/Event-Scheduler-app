@@ -13,6 +13,7 @@ public class PersistenceStorage {
     /**
      * Path constants for different Savable classes
      */
+    private static final String USER_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/users";
 
     public static final String ATTENDEE_STORAGE_PATH = "./phase1/storage/attendees.txt";
     public static final String SPEAKER_STORAGE_PATH = "./phase1/storage/speakers.txt";
@@ -146,29 +147,20 @@ public class PersistenceStorage {
 
     public static void getRequest() throws IOException {
         StringBuilder returnedString = new StringBuilder();
-        URL urlForInformation = new URL("https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/users");
-        HttpURLConnection connect = (HttpURLConnection)urlForInformation.openConnection();
+        URL urlForInformation = new URL(USER_DB_URL);
+        HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
 
         // Request setup
-        connect.setRequestMethod("GET");
-        connect.setConnectTimeout(6000);
-        connect.setReadTimeout(6000);
-        if (connect.getResponseCode() > 299) {
-            BufferedReader output = new BufferedReader(new InputStreamReader(connect.getErrorStream()));
-            String line;
-            while ((line = output.readLine())!=null) {
-                returnedString.append(line);
-            }
-            output.close();
-        } else {
-            BufferedReader output = new BufferedReader(new InputStreamReader(connect.getInputStream()));
-            String line;
-            while ((line = output.readLine())!=null) {
-                returnedString.append(line);
-            }
-            output.close();
-        }
-        connect.disconnect();
+        con.setRequestMethod("GET");
+        con.setConnectTimeout(6000);
+        con.setReadTimeout(6000);
+
+        BufferedReader output = new BufferedReader(new InputStreamReader(con.getResponseCode() > 299 ? con.getErrorStream() : con.getInputStream()));
+        String line;
+        while ((line = output.readLine())!=null) returnedString.append(line);
+
+        output.close();
+        con.disconnect();
         parse(returnedString.toString());
     }
 
@@ -176,7 +168,7 @@ public class PersistenceStorage {
         JSONArray users = new JSONArray(response);
         for (int i = 0; i < users.length(); i++) {
             JSONObject user = users.getJSONObject(i);
-            System.out.println("User name: " + user.getString("first_name") + "" + user.getString("last_name"));
+            System.out.println("User full name: " + user.getString("first_name") + " " + user.getString("last_name"));
         }
     }
     
