@@ -24,8 +24,8 @@ public class PersistenceStorage {
     public static final String CONTACT_BOOK_PATH = "./phase1/storage/contact_book.txt";
 
     public static void main(String[] args) throws IOException {
-        getRequest();
         putRequest();
+        getRequest();
     }
 
     /**
@@ -178,7 +178,7 @@ public class PersistenceStorage {
 
         String a = "sfasd faadf sakfjs;f sfsfsa";
 
-        OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
         writer.write(a);
         writer.flush();
         writer.close();
@@ -192,5 +192,10 @@ public class PersistenceStorage {
             System.out.println("User full name: " + user.getString("first_name") + " " + user.getString("last_name"));
         }
     }
+
+    //public static JSONArray parseToJson(String input) {
+    //    JSONArray array = new JSONArray(input);
+    //    return array;
+    //}
     
 }
