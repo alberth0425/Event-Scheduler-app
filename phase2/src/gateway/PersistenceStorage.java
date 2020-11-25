@@ -24,7 +24,10 @@ public class PersistenceStorage {
     public static final String CONTACT_BOOK_PATH = "./phase1/storage/contact_book.txt";
 
     public static void main(String[] args) throws IOException {
-        putRequest();
+        User lynn = new User("lynn", "1234","Lynn", "Qian");
+        ArrayList user_list = new ArrayList();
+        user_list.add(lynn);
+        putRequest(user_list);
         getRequest();
     }
 
@@ -165,7 +168,7 @@ public class PersistenceStorage {
         parseToString(returnedString.toString());
     }
 
-    public static void putRequest() throws IOException {
+    public static void putRequest(List<User> users) throws IOException {
         URL urlForInformation = new URL(USER_DB_URL);
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
 
@@ -177,7 +180,15 @@ public class PersistenceStorage {
         con.setReadTimeout(6000); // 6 secs
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        writer.write("[{\"password\":\"qwerasdf\",\"username\":\"test-usr-java2\",\"user_type\":\"speaker\",\"last_name\":\"Last\",\"first_name\":\"First\"}]");
+        //writer.write("[{\"password\":\"qwerasdf\",\"username\":\"test-usr-java—1\",\"user_type\":\"speaker\",\"last_name\":\"Last\",\"first_name\":\"First\"}]");
+        ArrayList<String> returnedList = new ArrayList<>();
+        for (User user : users) {
+            System.out.println(user.toSavableString());
+            returnedList.add("{"+user.toSavableString()+"}");
+
+        }
+        System.out.println(returnedList.toString());
+        writer.write(returnedList.toString());
         writer.flush();
         writer.close();
         con.disconnect();

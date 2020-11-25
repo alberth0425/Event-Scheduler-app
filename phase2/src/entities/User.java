@@ -1,5 +1,9 @@
 package entities;
 
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.List;
+
 public class User implements Savable {
     protected static int numUser;
 
@@ -106,6 +110,9 @@ public class User implements Savable {
      */
     @Override
     public String toSavableString() {
-        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName;
+        return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
+                "\"last_name\": \"{3}\",\"usertype\": \"{4}\"",username, password, firstName, lastName, this.getClass().getName());
+
     }
+
 }
