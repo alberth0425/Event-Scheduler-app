@@ -4,11 +4,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import ui.BaseViewController;
-import ui.event.EventViewController;
-import ui.login.LoginViewController;
-import ui.user.UserActionViewController;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class NavigationController {
     private final Scene scene;
@@ -17,11 +15,8 @@ public class NavigationController {
         this.scene = scene;
     }
 
-    public static <T extends BaseViewController> Scene initialize(
-            Class<T> controllerClass,
-            String filename
-    ) throws IOException {
-        RootAndController<T> pair = load(controllerClass, filename);
+    public static <P, T extends BaseViewController<P>> Scene initialize(Class<T> controllerClass) throws IOException {
+        RootAndController<P, T> pair = load(getFXMLPath(controllerClass));
 
         Scene scene = new Scene(pair.root);
 
@@ -31,44 +26,34 @@ public class NavigationController {
         return scene;
     }
 
-    public void navigateTo(Destination destination) {
+    public <P, T extends BaseViewController<P>> void navigate(Class<T> controllerClass) {
+        navigate(controllerClass, null);
+    }
+
+    public <P, T extends BaseViewController<P>> void navigate(Class<T> controllerClass, P params) {
         try {
-            switch (destination) {
-                case LOGIN:
-                    navigate(LoginViewController.class, "user_action.fxml");
-                    break;
-                case USER_ACTIONS:
-                    navigate(UserActionViewController.class, "user_action.fxml");
-                    break;
-                case EVENTS:
-                    navigate(EventViewController.class, "event.fxml");
-                    break;
-            }
+            RootAndController<P, T> pair = load(getFXMLPath(controllerClass));
+            pair.controller.setNavigationController(this);
+            pair.controller.initializeWithParameters(params);
+            scene.setRoot(pair.root);
         } catch (IOException e) {
             System.out.println("Unhandled IOException: " + e.getMessage());
         }
     }
 
-    private <T extends BaseViewController> void navigate(
-            Class<T> controllerClass,
-            String filename
-    ) throws IOException {
-        RootAndController<T> pair = load(controllerClass, filename);
-        pair.controller.setNavigationController(this);
-        scene.setRoot(pair.root);
+    private static URL getFXMLPath(Class<?> controllerClass) {
+        String filename = controllerClass.getAnnotation(FXMLFile.class).value();
+        return controllerClass.getResource(filename);
     }
 
-    private static <T extends BaseViewController> RootAndController<T> load(
-            Class<T> controllerClass,
-            String filename
-    ) throws IOException {
-        FXMLLoader loader = new FXMLLoader(controllerClass.getResource(filename));
+    private static <P, T extends BaseViewController<P>> RootAndController<P, T> load(URL path) throws IOException {
+        FXMLLoader loader = new FXMLLoader(path);
         Parent root = loader.load();
         T controller = loader.getController();
         return new RootAndController<>(root, controller);
     }
 
-    private static class RootAndController<T extends BaseViewController> {
+    private static class RootAndController<P, T extends BaseViewController<P>> {
         Parent root;
         T controller;
 

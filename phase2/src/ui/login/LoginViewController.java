@@ -1,17 +1,15 @@
 package ui.login;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import ui.BaseViewController;
-import ui.navigation.Destination;
+import ui.navigation.FXMLFile;
+import ui.user.UserActionViewController;
 
-import java.io.IOException;
-
-public class LoginViewController extends BaseViewController implements LoginPresenter.LoginView {
+@FXMLFile("login.fxml")
+public class LoginViewController extends BaseViewController<Void> implements LoginPresenter.LoginView {
     public TextField usernameTextField;
     public PasswordField passwordTextField;
     public Label errorLabel;
@@ -39,6 +37,6 @@ public class LoginViewController extends BaseViewController implements LoginPres
 
     @Override
     public void navigateToUserView() {
-        getNavigationController().navigateTo(Destination.USER_ACTIONS);
+        getNavigationController().navigate(UserActionViewController.class);
     }
 }

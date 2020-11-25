@@ -8,12 +8,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import ui.BaseViewController;
-import ui.navigation.Destination;
+import ui.navigation.FXMLFile;
+import ui.user.UserActionViewController;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventViewController extends BaseViewController implements EventPresenter.EventView {
+@FXMLFile("event.fxml")
+public class EventViewController extends BaseViewController<Void> implements EventPresenter.EventView {
     public TableView<EventAdapter> eventTableView;
     public Button backButton;
     public HBox actionHBox;
@@ -46,7 +48,7 @@ public class EventViewController extends BaseViewController implements EventPres
     }
 
     public void backButtonAction() {
-        getNavigationController().navigateTo(Destination.USER_ACTIONS);
+        getNavigationController().navigate(UserActionViewController.class);
     }
 
     @Override

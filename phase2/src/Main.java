@@ -19,7 +19,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         load();
 
-        Scene scene = NavigationController.initialize(LoginViewController.class, "login.fxml");
+        Scene scene = NavigationController.initialize(LoginViewController.class);
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -28,7 +28,6 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 
     // TODO: temporary code, remove when DB is done in persistent storage
 

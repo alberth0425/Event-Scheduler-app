@@ -2,8 +2,10 @@ package ui;
 
 import ui.navigation.NavigationController;
 
-public class BaseViewController {
+public abstract class BaseViewController<P> {
     private NavigationController navigationController;
+
+    public void initializeWithParameters(P parameters) {}
 
     public NavigationController getNavigationController() {
         return navigationController;

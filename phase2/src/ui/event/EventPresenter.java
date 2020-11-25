@@ -8,7 +8,6 @@ import use_cases.EventService;
 import use_cases.RoomService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

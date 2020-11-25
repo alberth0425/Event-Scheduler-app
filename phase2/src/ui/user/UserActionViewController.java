@@ -5,10 +5,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import ui.BaseViewController;
-import ui.navigation.Destination;
+import ui.event.EventViewController;
+import ui.navigation.FXMLFile;
 import ui.util.NoSelectionModel;
 
-public class UserActionViewController extends BaseViewController implements UserActionPresenter.UserActionView {
+@FXMLFile("user_action.fxml")
+public class UserActionViewController extends BaseViewController<Void> implements UserActionPresenter.UserActionView {
     public ListView<String> listView;
     public Label userInfoLabel;
     public Label actionLabel;
@@ -35,7 +37,7 @@ public class UserActionViewController extends BaseViewController implements User
 
     @Override
     public void navigateToEvents() {
-        getNavigationController().navigateTo(Destination.EVENTS);
+        getNavigationController().navigate(EventViewController.class);
     }
 
     class ActionCell extends ListCell<String> {
