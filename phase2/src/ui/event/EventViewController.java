@@ -15,12 +15,6 @@ import java.util.List;
 
 public class EventViewController extends BaseViewController implements EventPresenter.EventView {
     public TableView<EventAdapter> eventTableView;
-    public TableColumn<EventAdapter, String> idColumn;
-    public TableColumn<EventAdapter, String> titleColumn;
-    public TableColumn<EventAdapter, String> speakerColumn;
-    public TableColumn<EventAdapter, String> roomColumn;
-    public TableColumn<EventAdapter, String> timeColumn;
-    public TableColumn<EventAdapter, String> capacityColumn;
     public Button backButton;
     public HBox actionHBox;
 

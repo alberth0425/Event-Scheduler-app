@@ -9,6 +9,7 @@ import use_cases.RoomService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class EventPresenter {
@@ -37,7 +38,9 @@ public class EventPresenter {
     }
 
     public List<EventTableColumn> getTableColumns() {
-        List<EventTableColumn> columns = Arrays.asList(
+        List<EventTableColumn> columns = new ArrayList<>();
+
+        Collections.addAll(columns,
                 new EventTableColumn("ID", "id"),
                 new EventTableColumn("Title", "title"),
                 new EventTableColumn("Speaker", "speaker"),
