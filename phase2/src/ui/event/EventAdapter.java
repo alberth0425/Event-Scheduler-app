@@ -6,10 +6,12 @@ import entities.Room;
 public class EventAdapter {
     private final Event event;
     private final Room room;
+    private final String currentUsername;
 
-    public EventAdapter(Event event, Room room) {
+    public EventAdapter(Event event, Room room, String currentUsername) {
         this.event = event;
         this.room = room;
+        this.currentUsername = currentUsername;
     }
 
     public Event getEvent() {
@@ -38,5 +40,13 @@ public class EventAdapter {
 
     public String getCapacity() {
         return event.getAttendeeUNs().size() + " / " + room.getCapacity();
+    }
+
+    public String getSignedUp() {
+        if (event.getAttendeeUNs().contains(currentUsername)) {
+            return "Yes";
+        } else {
+            return "No";
+        }
     }
 }

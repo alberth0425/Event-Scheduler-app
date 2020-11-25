@@ -12,7 +12,8 @@ public class AttendeeActionPresenter extends UserActionPresenter {
     public AttendeeActionPresenter(UserActionView view) {
         super(view);
 
-        getView().setUserInfoLabelText("You have logged in as: " + AuthService.shared.getCurrentUser().getUsername());
+        getView().setUserInfoLabelText("You have logged in as: " + AuthService.shared.getCurrentUser().getUsername()
+                + " (Attendee)");
         getView().setActionLabelText("Select an action:");
     }
 
