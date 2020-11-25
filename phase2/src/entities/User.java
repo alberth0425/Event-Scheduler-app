@@ -110,8 +110,18 @@ public class User implements Savable {
      */
     @Override
     public String toSavableString() {
+        String type;
+        if (this instanceof Attendee) {
+            type = "attendee";
+        } else if (this instanceof Organizer) {
+            type = "organizer";
+        } else if (this instanceof Speaker) {
+            type = "speaker";
+        } else {
+            type = "undetermined";
+        }
         return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
-                "\"last_name\": \"{3}\",\"usertype\": \"{4}\"",username, password, firstName, lastName, this.getClass().getName());
+                "\"last_name\": \"{3}\",\"user_type\": \"{4}\"",username, password, firstName, lastName, type);
 
     }
 
