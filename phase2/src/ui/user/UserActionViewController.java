@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import ui.BaseViewController;
+import ui.event.EventPresenter;
 import ui.event.EventViewController;
 import ui.navigation.FXMLFile;
 import ui.util.NoSelectionModel;
@@ -36,8 +37,8 @@ public class UserActionViewController extends BaseViewController<Void> implement
     }
 
     @Override
-    public void navigateToEvents() {
-        getNavigationController().navigate(EventViewController.class);
+    public void navigateToEvents(EventPresenter.EventFilter filter) {
+        getNavigationController().navigate(EventViewController.class, filter);
     }
 
     class ActionCell extends ListCell<String> {

@@ -2,12 +2,20 @@ package ui.user;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ui.event.EventPresenter;
+import use_cases.AuthService;
 
 public class SpeakerActionPresenter extends UserActionPresenter {
-    private final ObservableList<String> actionList = FXCollections.observableArrayList();
+    private final ObservableList<String> actionList = FXCollections.observableArrayList(
+            "Browse events", "My events"
+    );
 
     public SpeakerActionPresenter(UserActionView view) {
         super(view);
+
+        getView().setUserInfoLabelText("You have logged in as: " + AuthService.shared.getCurrentUser().getUsername()
+                + " (Speaker)");
+        getView().setActionLabelText("Select an action:");
     }
 
     @Override
@@ -17,6 +25,14 @@ public class SpeakerActionPresenter extends UserActionPresenter {
 
     @Override
     public void onAction(int index) {
-
+        switch (index) {
+            case 0:
+                browseEvents(EventPresenter.EventFilter.ALL);
+                break;
+            case 1:
+                browseEvents(EventPresenter.EventFilter.GIVING_SPEECH);
+            default:
+                break;
+        }
     }
 }

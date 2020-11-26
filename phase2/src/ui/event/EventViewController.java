@@ -1,5 +1,6 @@
 package ui.event;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.SelectionMode;
@@ -15,15 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @FXMLFile("event.fxml")
-public class EventViewController extends BaseViewController<Void> implements EventPresenter.EventView {
+public class EventViewController extends BaseViewController<EventPresenter.EventFilter> implements EventPresenter.EventView {
     public TableView<EventAdapter> eventTableView;
     public Button backButton;
     public HBox actionHBox;
 
     private EventPresenter presenter;
 
-    public void initialize() {
-        presenter = new EventPresenter(this);
+    @Override
+    public void initializeWithParameters(EventPresenter.EventFilter filter) {
+        presenter = new EventPresenter(this, filter);
 
         // Set table columns given by presenter based on current user type
         List<TableColumn<EventAdapter, String>> tableColumns = new ArrayList<>();
@@ -39,11 +41,13 @@ public class EventViewController extends BaseViewController<Void> implements Eve
         eventTableView.setItems(presenter.getEventList());
         eventTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         eventTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-            presenter.setSelectedIndex((Integer) newValue);
+            Platform.runLater(() -> {
+                presenter.setSelectedIndex((Integer) newValue);
 
-            if (!oldValue.equals(newValue)) {
-                refreshActionButtons();
-            }
+                if (!oldValue.equals(newValue)) {
+                    refreshActionButtons();
+                }
+            });
         });
     }
 
@@ -58,10 +62,12 @@ public class EventViewController extends BaseViewController<Void> implements Eve
         List<Node> buttons = new ArrayList<>();
         buttons.add(backButton);
 
-        for (EventPresenter.EventAction action : presenter.getActionsForEvent(index)) {
-            Button button = new Button(action.getName());
-            button.setOnAction(event -> action.call());
-            buttons.add(button);
+        if (index != -1) {
+            for (EventPresenter.EventAction action : presenter.getActionsForEvent(index)) {
+                Button button = new Button(action.getName());
+                button.setOnAction(event -> action.call());
+                buttons.add(button);
+            }
         }
 
         actionHBox.getChildren().setAll(buttons);

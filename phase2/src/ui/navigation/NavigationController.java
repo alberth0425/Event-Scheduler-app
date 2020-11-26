@@ -22,6 +22,7 @@ public class NavigationController {
 
         NavigationController navigationController = new NavigationController(scene);
         pair.controller.setNavigationController(navigationController);
+        pair.controller.initializeWithParameters(null);
 
         return scene;
     }

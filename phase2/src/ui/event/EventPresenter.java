@@ -10,26 +10,65 @@ import use_cases.RoomService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EventPresenter {
     private final EventView view;
 
-    private final ObservableList<EventAdapter> eventList;
+    private final ObservableList<EventAdapter> eventList = FXCollections.observableArrayList();
 
     private int selectedIndex = -1;
 
-    public EventPresenter(EventView view) {
-        this.view = view;
+    private final EventFilter filter;
 
-        this.eventList = FXCollections.observableArrayList();
-        for (Event event : EventService.shared.getAllEvents()) {
-            try {
-                Room room = RoomService.shared.getRoom(event.getRoomNumber());
-                eventList.add(new EventAdapter(event, room, AuthService.shared.getCurrentUser().getUsername()));
-            } catch (RoomService.RoomException e) {
-                System.out.println("Event's room does not exist. This shouldn't happen.");
+    public EventPresenter(EventView view, EventFilter filter) {
+        this.view = view;
+        this.filter = filter;
+
+        refreshEvents();
+    }
+
+    private void refresh() {
+        refreshEvents();
+        // Table view is updated automatically when list changes
+        view.refreshActionButtons();
+    }
+
+    private void refreshEvents() {
+        Stream<Event> events = EventService.shared.getAllEvents().stream();
+        String currentUsername = AuthService.shared.getCurrentUser().getUsername();
+
+        // Apply event filters
+        if (filter != null) {
+            switch (filter) {
+                case ALL:
+                    break;
+                case SIGNED_UP:
+                    events = events.filter(event -> event.getAttendeeUNs().contains(currentUsername));
+                    break;
+                case GIVING_SPEECH:
+                    events = events.filter(event -> event.getSpeakerUsername().equals(currentUsername));
+                    break;
             }
         }
+
+        List<EventAdapter> eventList = events
+                .map(event -> {
+                    try {
+                        // Map Event to EventAdapter
+                        Room room = RoomService.shared.getRoom(event.getRoomNumber());
+                        return new EventAdapter(event, room, AuthService.shared.getCurrentUser().getUsername());
+                    } catch (RoomService.RoomException e) {
+                        System.out.println("Event's room does not exist. This shouldn't happen.");
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        this.eventList.setAll(eventList);
     }
 
     public ObservableList<EventAdapter> getEventList() {
@@ -72,7 +111,7 @@ public class EventPresenter {
                 actions.add(new EventAction("Cancel sign up", () -> {
                     try {
                         EventService.shared.removeEventAttendee((Attendee) user, event);
-                        view.refresh();
+                        refresh();
                     } catch (EventService.EventException e) {
                         System.out.println("Failed to cancel sign up: " + e.getMessage());
                     }
@@ -81,7 +120,7 @@ public class EventPresenter {
                 actions.add(new EventAction("Sign up", () -> {
                     try {
                         EventService.shared.addEventAttendee((Attendee) user, event);
-                        view.refresh();
+                        refresh();
                     } catch (EventService.EventException | RoomService.RoomException e) {
                         System.out.println("Failed to sign up: " + e.getMessage());
                     }
@@ -120,7 +159,6 @@ public class EventPresenter {
         }
     }
 
-
     private interface EventActionCallback {
         void run();
     }
@@ -141,6 +179,10 @@ public class EventPresenter {
         public String getField() {
             return field;
         }
+    }
+
+    public enum EventFilter {
+        ALL, SIGNED_UP, GIVING_SPEECH,
     }
 
     public interface EventView {

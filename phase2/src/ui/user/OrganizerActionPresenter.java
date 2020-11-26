@@ -2,6 +2,7 @@ package ui.user;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ui.event.EventPresenter;
 import use_cases.AuthService;
 
 public class OrganizerActionPresenter extends UserActionPresenter {
@@ -24,7 +25,7 @@ public class OrganizerActionPresenter extends UserActionPresenter {
     public void onAction(int index) {
         switch (index) {
             case 0:
-                browseEvents();
+                browseEvents(EventPresenter.EventFilter.ALL);
                 break;
             default:
                 break;

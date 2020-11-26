@@ -5,6 +5,7 @@ import entities.Organizer;
 import entities.Speaker;
 import entities.User;
 import javafx.collections.ObservableList;
+import ui.event.EventPresenter;
 import use_cases.AuthService;
 
 abstract public class UserActionPresenter {
@@ -35,13 +36,13 @@ abstract public class UserActionPresenter {
         return view;
     }
 
-    void browseEvents() {
-        getView().navigateToEvents();
+    void browseEvents(EventPresenter.EventFilter filter) {
+        getView().navigateToEvents(filter);
     }
 
     public interface UserActionView {
         void setUserInfoLabelText(String text);
         void setActionLabelText(String text);
-        void navigateToEvents();
+        void navigateToEvents(EventPresenter.EventFilter filter);
     }
 }
