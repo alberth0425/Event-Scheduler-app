@@ -3,6 +3,7 @@ package ui.event;
 import entities.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ui.util.TextFieldPrompt;
 import use_cases.AuthService;
 import use_cases.EventService;
 import use_cases.RoomService;
@@ -128,8 +129,21 @@ public class EventPresenter {
             }
         } else if (user instanceof Organizer) {
             actions.add(new EventAction("Change speaker", () -> {
-                // TODO: present new view
-                System.out.println("Changing speaker");
+                view.displayTextField("Speaker ID", speakerId -> {
+                    try {
+                        Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(speakerId);
+                        EventService.shared.setEventSpeaker(speaker, event);
+                        refresh();
+                        return null;
+
+                    } catch (AuthService.AuthException | ClassCastException e) {
+                        return "No speaker with ID " + speakerId + ".";
+                    } catch (EventService.SpeakerDoubleBookException e) {
+                        return "Speaker double book.";
+                    } catch (EventService.EventException e) {
+                        return "Unknown error when changing speaker.";
+                    }
+                });
             }));
 
             actions.add(new EventAction("Cancel event", () -> {
@@ -186,6 +200,8 @@ public class EventPresenter {
     }
 
     public interface EventView {
+        void displayTextField(String promptText, TextFieldPrompt.Validator validator);
+
         void refreshActionButtons();
         void refreshTableView();
 

@@ -2,24 +2,28 @@ package ui.event;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import ui.BaseViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
+import ui.util.TextFieldPrompt;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @FXMLFile("event.fxml")
 public class EventViewController extends BaseViewController<EventPresenter.EventFilter> implements EventPresenter.EventView {
+    public VBox containerVBox;
     public TableView<EventAdapter> eventTableView;
     public Button backButton;
     public HBox actionHBox;
+
+    // Text field to display above TableView when prompted. Initialized when needed
+    private Node promptTextField;
 
     private EventPresenter presenter;
 
@@ -45,6 +49,7 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
                 presenter.setSelectedIndex((Integer) newValue);
 
                 if (!oldValue.equals(newValue)) {
+                    dismissTextField();
                     refreshActionButtons();
                 }
             });
@@ -53,6 +58,23 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
 
     public void backButtonAction() {
         getNavigationController().navigate(UserActionViewController.class);
+    }
+
+    @Override
+    public void displayTextField(String promptText, TextFieldPrompt.Validator validator) {
+        dismissTextField();
+
+        promptTextField = TextFieldPrompt.create(promptText, "Ok", validator, this::dismissTextField);
+
+        // Add text field to container above actions
+        containerVBox.getChildren().add(1, promptTextField);
+    }
+
+    private void dismissTextField() {
+        if (promptTextField != null) {
+            containerVBox.getChildren().remove(promptTextField);
+            promptTextField = null;
+        }
     }
 
     @Override
