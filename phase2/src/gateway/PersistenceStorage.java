@@ -26,11 +26,11 @@ public class PersistenceStorage {
     public static final String CONTACT_BOOK_PATH = "./phase1/storage/contact_book.txt";
 
     public static void main(String[] args) throws IOException {
-        User lynn = new Attendee("lynn", "1234","Lynn", "Qian");
-        ArrayList user_list = new ArrayList();
-        user_list.add(lynn);
-        //putUserRequest(user_list);
-        for (Object user: getRequest(USER_DB_URL)) {
+//        User lynn = new Attendee("lynn", "1234","Lynn", "Qian");
+//        List<User> userList = new ArrayList<>();
+//        userList.add(lynn);
+//        putUserRequest(userList);
+        for (User user: getRequest(USER_DB_URL, User.class)) {
             System.out.println(user.toString());
         }
     }
@@ -149,7 +149,7 @@ public class PersistenceStorage {
      * @param inputURL a URL that contains all the information
      * @throws IOException throws Input/Output exception
      */
-    public static <T> List<T> getRequest(String inputURL) throws IOException {
+    public static <T> List<T> getRequest(String inputURL, Class<T> returnType) throws IOException {
         StringBuilder returnedString = new StringBuilder();
         URL urlForInformation = new URL(inputURL);
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
@@ -167,7 +167,7 @@ public class PersistenceStorage {
         if (inputURL.equals(USER_DB_URL)) {
             return (List<T>) parseToUserList(returnedString.toString());
         } else {
-            return null;
+            return new ArrayList<>();
         }
     }
 

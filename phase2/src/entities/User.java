@@ -125,4 +125,14 @@ public class User implements Savable {
 
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
 }
