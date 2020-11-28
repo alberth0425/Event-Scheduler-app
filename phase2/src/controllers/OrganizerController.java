@@ -253,26 +253,62 @@ public class OrganizerController extends UserController {
         System.out.println("PLease enter your last name: ");
         String lastName = scan.nextLine();
 
-        try{
-            // Signing agreement first before creating a Rater
-            AgreementService.shared.signAgreement(username, firstName, lastName);
-            System.out.println("Agreement signed successfully.");
-            try {
-                //Call createUser method in AuthService to create a Rater account.
-                AuthService.shared.createUser(username, password, firstName,
-                        lastName, AuthService.UserType.RATER);
-                System.out.println("Rater created successfully.");
 
-            } catch (AuthService.InvalidFieldException e) {
-                System.out.println("Invalid " + e.getField() + " entered. Rater does not create successfully");
-            } catch (AuthService.UsernameAlreadyTakenException e) {
-                System.out.println("Username " + username + "already taken.");
-            } catch (Exception e) {
-                System.out.println("Unknown exception: " + e.toString() + ". Rater does not create " +
-                        "successfully.");
+        System.out.println("To rate a speaker, please sign this agreement:" );
+        System.out.println("I, " + firstName + " " + lastName + ", agree to respect every speaker I rate, " +
+                    "and to rate every speaker using professional attitude in which I will not give out rate on my own " +
+                    "personal emotion.");
+        System.out.println("1. I agree");
+        System.out.println("2. I do not agree");
+        String agree = scan.nextLine();
+        try{
+            int choice = Integer.parseInt(agree);
+
+            boolean exit = false;
+
+            switch (choice) {
+                case 1:
+                    // Signing agreement first before creating a Rater
+                    try{
+                        AgreementService.shared.signAgreement(username, firstName, lastName);
+                        System.out.println("Agreement signed successfully.");
+                        try {
+                            //Call createUser method in AuthService to create a Rater account.
+                            AuthService.shared.createUser(username, password, firstName,
+                                    lastName, AuthService.UserType.RATER);
+                            System.out.println("Rater created successfully.");
+
+                        } catch (AuthService.InvalidFieldException e) {
+                            System.out.println("Invalid " + e.getField() + " entered. Rater does not create successfully");
+                        } catch (AuthService.UsernameAlreadyTakenException e) {
+                            System.out.println("Username " + username + "already taken.");
+                        } catch (Exception e) {
+                            System.out.println("Unknown exception: " + e.toString() + ". Rater does not create " +
+                                    "successfully.");
+                        }
+                    } catch (AgreementService.AgreementAlreadyExistException e) {
+                        System.out.println("Agreement already exists, no need to sign again.");
+                    }
+
+                    break;
+
+                case 2:
+                    System.out.println("To become a rater, agreement needs to be signed.");
+                    System.out.println("Rater does create successfully.");
+                    exit = true;
+                    break;
+
+                default:
+                    System.out.println("Unknown action. Please enter digit between 1 and 2.");
+                    break;
             }
-        } catch (AgreementService.AgreementAlreadyExistException e) {
-            System.out.println("Agreement already exists, no need to sign again.");
+
+            save();
+            if (exit) {
+                createRater();
+            }
+        } catch (NumberFormatException e) {
+        System.out.println("Unknown action. Please enter digit between 1 and 2.");
         }
 
     }
