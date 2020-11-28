@@ -29,6 +29,7 @@ public class Speaker extends User {
 
     public void addRate(int rate) {
         allRate.add(rate);
+
     }
 
     public double getAverageRate() {

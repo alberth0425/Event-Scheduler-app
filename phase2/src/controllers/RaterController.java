@@ -1,7 +1,10 @@
 package controllers;
 
+import entities.Rater;
 import entities.Speaker;
+import entities.User;
 import use_cases.AuthService;
+import use_cases.RaterService;
 
 import java.util.Scanner;
 
@@ -54,31 +57,33 @@ public class RaterController extends UserController {
         String speakerUN = scanner.nextLine();
 
         try {
-            if (!(AuthService.shared.getUserByUsername(speakerUN) instanceof Speaker)) throw new notSpeakerException();
-
-            Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(speakerUN);
+            User speaker = AuthService.shared.getUserByUsername(speakerUN);
+            Rater rater = (Rater) AuthService.shared.getCurrentUser();
 
             System.out.println("Please enter a rate between 1 to 10: ");
             int rate = Integer.parseInt(scanner.nextLine());
-            if (rate < 1 || rate > 10) throw new rateOutOfBoundException();
 
-            speaker.addRate(rate);
+            RaterService.shared.rateSpeaker(speaker, rater, rate);
 
             System.out.println("You have rated " + speakerUN + " successfully.");
 
 
         } catch (AuthService.UserDoesNotExistException e) {
             System.out.println("User with username " + speakerUN + " does not exist.");
-        } catch (notSpeakerException e) {
-            System.out.println("Username given is not a Speaker username.");
-        } catch (NumberFormatException | rateOutOfBoundException e) {
+        } catch (NumberFormatException e) {
             System.out.println("Rate entered must be an integer between 1 to 10.");
+            rateSpeaker();
+        } catch (RaterService.notSpeakerException e) {
+            System.out.println("Username given is not a Speaker username.");
+        } catch (RaterService.rateOutOfBoundException e) {
+            System.out.println("Rate entered must be an integer between 1 to 10.");
+        } catch (RaterService.rateRepetitionException e) {
+            System.out.println("You have already rated the speaker with username " + speakerUN +
+                    ", please choose a speaker you haven't rated before");
         } catch (Exception e) {
             System.out.println("Unknown Exception: " + e.toString());
         }
     }
 
-    public static class raterException extends Exception {}
-    public static class notSpeakerException extends raterException {}
-    public static class rateOutOfBoundException extends raterException {}
+
 }

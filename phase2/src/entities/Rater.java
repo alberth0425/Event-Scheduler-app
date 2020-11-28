@@ -1,6 +1,10 @@
 package entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Rater extends User {
+    public List<Integer> speakerIdRated = new ArrayList<>();
 
 
     /**
@@ -24,6 +28,14 @@ public class Rater extends User {
         super(dataEntry);
 
         String[] entries = dataEntry.split(DELIMITER);
+    }
+
+    public List<Integer> getSpeakerIdRated() {
+        return speakerIdRated;
+    }
+
+    public void addSpeakerIdRated(int id) {
+        speakerIdRated.add(id);
     }
 
     /**

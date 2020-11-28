@@ -17,7 +17,7 @@ public class AuthService {
      * singleton implementation.
      */
     public static AuthService shared = new AuthService();
-    private AuthService() {}
+    protected AuthService() {}
 
     /**
      * Initialize the users HashMap.
