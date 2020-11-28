@@ -164,10 +164,15 @@ public class PersistenceStorage {
         while ((line = output.readLine())!=null) returnedString.append(line);
         output.close();
         con.disconnect();
-        if (inputURL.equals(USER_DB_URL)) {
-            return (List<T>) parseToUserList(returnedString.toString());
-        } else {
-            return new ArrayList<>();
+        switch (inputURL) {
+            case USER_DB_URL:
+                return (List<T>) parseToUserList(returnedString.toString());
+            case ROOM_DB_URL:
+                return (List<T>) parseToRoomList(returnedString.toString());
+            case EVENT_DB_URL:
+                return (List<T>) parseToEventList(returnedString.toString());
+            default:
+                return new ArrayList<>();
         }
     }
 
@@ -293,5 +298,25 @@ public class PersistenceStorage {
         }
         return userList;
     }
-    
+
+    private static List<Room> parseToRoomList(String response) {
+        ArrayList<Room> roomList = new ArrayList<>();
+        JSONArray rooms = new JSONArray(response);
+        for (int i = 0; i < rooms.length(); i++) {
+            JSONObject room = rooms.getJSONObject(i);
+            roomList.add(new Room(room.getInt("capacity"), room.getInt( "room_number")));
+        }
+        return roomList;
+    }
+
+    private static List<Event> parseToEventList(String response) {
+        ArrayList<Event> eventList = new ArrayList<>();
+        JSONArray events = new JSONArray(response);
+        for (int i = 0; i < events.length(); i++) {
+            JSONObject event = events.getJSONObject(i);
+            eventList.add(new Event(event.getString("title"), event.getString( "speaker_un"),
+                    event.getInt("starting_time"), event.getInt("room_number")));
+        }
+        return eventList;
+    }
 }
