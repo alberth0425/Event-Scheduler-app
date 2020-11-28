@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Speaker extends User {
     protected List<Integer> allRate = new ArrayList<>();
+    protected double averageRate;
 
     /**
      * the constructor for speaker class.
@@ -25,19 +26,26 @@ public class Speaker extends User {
      */
     public Speaker(String dataEntry) {
         super(dataEntry);
+        this.averageRate = Double.parseDouble(dataEntry.split(DELIMITER)[5]);
     }
 
     public void addRate(int rate) {
         allRate.add(rate);
-
+        averageRate = getAverageRate();
     }
 
-    public double getAverageRate() {
+    public Double getAverageRate() {
         double sum = 0;
         for (int rate: allRate) {
             sum += rate;
         }
         return sum/allRate.size();
+    }
+
+    @Override
+    public String toSavableString() {
+        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
+                DELIMITER + averageRate;
     }
 }
 

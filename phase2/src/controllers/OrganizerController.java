@@ -129,7 +129,7 @@ public class OrganizerController extends UserController {
             }
         } catch (NumberFormatException e) {
             System.out.println("Unknown action. Please enter digit between 1 and 4.");
-            assignSpeakerToEvent();
+            createAccount();
         }
     }
 
@@ -294,7 +294,7 @@ public class OrganizerController extends UserController {
 
                 case 2:
                     System.out.println("To become a rater, agreement needs to be signed.");
-                    System.out.println("Rater does create successfully.");
+                    System.out.println("Rater does not create successfully.");
                     exit = true;
                     break;
 
@@ -305,7 +305,7 @@ public class OrganizerController extends UserController {
 
             save();
             if (exit) {
-                createRater();
+                createAccount();
             }
         } catch (NumberFormatException e) {
         System.out.println("Unknown action. Please enter digit between 1 and 2.");
