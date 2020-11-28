@@ -15,6 +15,7 @@ public class PersistenceStorage {
      */
     private static final String USER_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/users";
     private static final String ROOM_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/rooms";
+    private static final String EVENT_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/events";
 
     public static final String ATTENDEE_STORAGE_PATH = "./phase1/storage/attendees.txt";
     public static final String SPEAKER_STORAGE_PATH = "./phase1/storage/speakers.txt";
@@ -195,6 +196,11 @@ public class PersistenceStorage {
         System.out.println(con.getResponseCode());
     }
 
+    /**
+     * save all the rooms in the input list to the room database
+     * @param rooms an input list that contains all the rooms we want to save
+     * @throws IOException throws input output exceptions
+     */
     public static void putRoomRequest(List<Room> rooms) throws IOException {
         URL urlForInformation = new URL(ROOM_DB_URL);
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();

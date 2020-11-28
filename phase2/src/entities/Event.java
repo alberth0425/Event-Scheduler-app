@@ -1,5 +1,6 @@
 package entities;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -160,7 +161,8 @@ public class Event implements Savable {
      */
     @Override
     public String toSavableString() {
-        return getId() + DELIMITER + getTitle() + DELIMITER + getSpeakerUsername() + DELIMITER + getStartingTime() + DELIMITER + getRoomNumber() +
-                DELIMITER + String.join("|", getAttendeeUNs());
+        return MessageFormat.format("\"room_number\": \"{0}\",\"speaker_un\": \"{1}\",\"id\": \"{2}\", " +
+                "\"attendee_uns\": \"{3}\",\"starting_time\": \"{4}\",\"title\": \"{4}\"",roomNumber, speakerUN, id, attendeeUNs, startingTime, title);
+
     }
 }
