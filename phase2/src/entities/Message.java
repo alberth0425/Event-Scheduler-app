@@ -1,5 +1,6 @@
 package entities;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -112,6 +113,7 @@ public class Message implements Savable {
      */
     @Override
     public String toSavableString() {
-        return id + DELIMITER + text + DELIMITER + senderUsername + DELIMITER + receiverUsername + DELIMITER + timeStamp;
+        return MessageFormat.format("\"message_id\": \"{0}\",\"text\": \"{1}\",\"sender_un\": \"{2}\", " +
+                "\"receiver_un\": \"{3}\",\"timestamp\": \"{4}\"", id, text, senderUsername, receiverUsername, timeStamp);
     }
 }

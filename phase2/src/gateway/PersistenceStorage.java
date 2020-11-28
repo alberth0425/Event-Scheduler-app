@@ -16,6 +16,8 @@ public class PersistenceStorage {
     private static final String USER_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/users";
     private static final String ROOM_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/rooms";
     private static final String EVENT_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/events";
+    private static final String MESSAGE_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/messages";
+
 
     public static final String ATTENDEE_STORAGE_PATH = "./phase1/storage/attendees.txt";
     public static final String SPEAKER_STORAGE_PATH = "./phase1/storage/speakers.txt";
@@ -171,6 +173,8 @@ public class PersistenceStorage {
                 return (List<T>) parseToRoomList(returnedString.toString());
             case EVENT_DB_URL:
                 return (List<T>) parseToEventList(returnedString.toString());
+            case MESSAGE_DB_URL:
+                return (List<T>) parseToMessageList(returnedString.toString());
             default:
                 return new ArrayList<>();
         }
@@ -318,5 +322,16 @@ public class PersistenceStorage {
                     event.getInt("starting_time"), event.getInt("room_number")));
         }
         return eventList;
+    }
+
+    private static List<Message> parseToMessageList(String response) {
+        ArrayList<Message> messagesList = new ArrayList<>();
+        JSONArray messages = new JSONArray(response);
+        for (int i = 0; i < messages.length(); i++) {
+            JSONObject message = messages.getJSONObject(i);
+            messagesList.add(new Message(message.getString("text"), message.getString( "sender_un"),
+                    message.getString("receiver_un")));
+        }
+        return messagesList;
     }
 }
