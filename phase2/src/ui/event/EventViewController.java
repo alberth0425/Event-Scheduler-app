@@ -5,7 +5,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import ui.BaseViewController;
 import ui.navigation.FXMLFile;
@@ -46,8 +45,6 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
         eventTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         eventTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
-                presenter.setSelectedIndex((Integer) newValue);
-
                 if (!oldValue.equals(newValue)) {
                     dismissTextField();
                     refreshActionButtons();

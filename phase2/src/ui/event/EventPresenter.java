@@ -20,8 +20,6 @@ public class EventPresenter {
 
     private final ObservableList<EventAdapter> eventList = FXCollections.observableArrayList();
 
-    private int selectedIndex = -1;
-
     private final EventFilter filter;
 
     public EventPresenter(EventView view, EventFilter filter) {
@@ -94,10 +92,6 @@ public class EventPresenter {
         }
 
         return columns;
-    }
-
-    public void setSelectedIndex(int selectedIndex) {
-        this.selectedIndex = selectedIndex;
     }
 
     public List<EventAction> getActionsForEvent(int index) {

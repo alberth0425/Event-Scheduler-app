@@ -6,7 +6,9 @@ import ui.event.EventPresenter;
 import use_cases.AuthService;
 
 public class OrganizerActionPresenter extends UserActionPresenter {
-    private final ObservableList<String> actionList = FXCollections.observableArrayList("Browse events");
+    private final ObservableList<String> actionList = FXCollections.observableArrayList(
+            "Browse events", "Messages"
+    );
 
     public OrganizerActionPresenter(UserActionView view) {
         super(view);
@@ -26,6 +28,9 @@ public class OrganizerActionPresenter extends UserActionPresenter {
         switch (index) {
             case 0:
                 browseEvents(EventPresenter.EventFilter.ALL);
+                break;
+            case 1:
+                getView().navigateToMessages();
                 break;
             default:
                 break;

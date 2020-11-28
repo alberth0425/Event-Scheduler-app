@@ -44,5 +44,6 @@ abstract public class UserActionPresenter {
         void setUserInfoLabelText(String text);
         void setActionLabelText(String text);
         void navigateToEvents(EventPresenter.EventFilter filter);
+        void navigateToMessages();
     }
 }

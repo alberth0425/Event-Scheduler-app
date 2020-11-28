@@ -7,7 +7,7 @@ import use_cases.AuthService;
 
 public class SpeakerActionPresenter extends UserActionPresenter {
     private final ObservableList<String> actionList = FXCollections.observableArrayList(
-            "Browse events", "My events"
+            "Browse events", "My events", "Messages"
     );
 
     public SpeakerActionPresenter(UserActionView view) {
@@ -31,6 +31,10 @@ public class SpeakerActionPresenter extends UserActionPresenter {
                 break;
             case 1:
                 browseEvents(EventPresenter.EventFilter.GIVING_SPEECH);
+                break;
+            case 2:
+                getView().navigateToMessages();
+                break;
             default:
                 break;
         }
