@@ -30,7 +30,9 @@ public class PersistenceStorage {
         ArrayList user_list = new ArrayList();
         user_list.add(lynn);
         //putUserRequest(user_list);
-        getRequest(USER_DB_URL);
+        for (Object user: getRequest(USER_DB_URL)) {
+            System.out.println(user.toString());
+        }
     }
 
     /**
@@ -147,7 +149,7 @@ public class PersistenceStorage {
      * @param inputURL a URL that contains all the information
      * @throws IOException throws Input/Output exception
      */
-    public static void getRequest(String inputURL) throws IOException {
+    public static <T> List<T> getRequest(String inputURL) throws IOException {
         StringBuilder returnedString = new StringBuilder();
         URL urlForInformation = new URL(inputURL);
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
@@ -160,10 +162,13 @@ public class PersistenceStorage {
         BufferedReader output = new BufferedReader(new InputStreamReader(con.getResponseCode() > 299 ? con.getErrorStream() : con.getInputStream()));
         String line;
         while ((line = output.readLine())!=null) returnedString.append(line);
-
         output.close();
         con.disconnect();
-        parseToString(returnedString.toString());
+        if (inputURL.equals(USER_DB_URL)) {
+            return (List<T>) parseToUserList(returnedString.toString());
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -265,12 +270,28 @@ public class PersistenceStorage {
         return new PrintWriter(bw);
     }
 
-    private static void parseToString(String response) {
+    private static List<User> parseToUserList(String response) {
+        ArrayList<User> userList = new ArrayList<>();
         JSONArray users = new JSONArray(response);
         for (int i = 0; i < users.length(); i++) {
             JSONObject user = users.getJSONObject(i);
-            System.out.println("User full name: " + user.getString("first_name") + " " + user.getString("last_name"));
+
+            switch (user.getString("user_type")) {
+                case "attendee":
+                    userList.add(new Attendee(user.getString("username"), user.getString("password")
+                            , user.getString("first_name"), user.getString("last_name")));
+                    break;
+                case "speaker":
+                    userList.add(new Speaker(user.getString("username"), user.getString("password")
+                            , user.getString("first_name"), user.getString("last_name")));
+                    break;
+                case "organizer":
+                    userList.add(new Organizer(user.getString("username"), user.getString("password")
+                            , user.getString("first_name"), user.getString("last_name")));
+                    break;
+            }
         }
+        return userList;
     }
     
 }
