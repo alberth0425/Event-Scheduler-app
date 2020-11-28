@@ -226,6 +226,36 @@ public class PersistenceStorage {
         System.out.println(con.getResponseCode());
     }
 
+    /**
+     * save all the events into the event database.
+     * @param events an input list that contains all the events we want to save
+     * @throws IOException throws input output exceptions
+     */
+    public static void putEventRequest(List<Event> events) throws IOException {
+        URL urlForInformation = new URL(EVENT_DB_URL);
+        HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
+
+        //Request setup
+        con.setDoOutput(true);
+        con.setRequestMethod("PUT");
+        con.addRequestProperty("Content-Type", "application/json");
+        con.setConnectTimeout(6000); // 6 secs
+        con.setReadTimeout(6000); // 6 secs
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        ArrayList<String> returnedList = new ArrayList<>();
+        for (Event event: events) {
+            System.out.println(event.toSavableString());
+            returnedList.add("{" + event.toSavableString() + "}");
+        }
+        System.out.println(returnedList.toString());
+        writer.write(returnedList.toString());
+        writer.flush();
+        writer.close();
+        con.disconnect();
+        System.out.println(con.getResponseCode());
+    }
+
 
     // --- Private Helpers ---
     private static PrintWriter getPrinterWriter(String path) throws IOException {
