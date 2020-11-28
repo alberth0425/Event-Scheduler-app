@@ -2,6 +2,7 @@ package use_cases;
 
 import entities.Agreement;
 import entities.Event;
+import entities.Room;
 import entities.User;
 
 import java.util.ArrayList;
@@ -34,6 +35,24 @@ public class AgreementService {
         Agreement agreement = new Agreement(username, firstName, lastName);
         allAgreements.put(username, agreement);
 
+    }
+
+    /**
+     * Initialize the agreements HashMap.
+     *
+     * @param agreements HashMap mapping username to agreement
+     */
+    public void setAgreements(HashMap<String, Agreement> agreements) {
+        this.allAgreements = agreements;
+    }
+
+    /**
+     * Get an ArrayList containing all rooms.
+     *
+     * @return the list of rooms
+     */
+    public List<Agreement> getAllAgreements() {
+        return new ArrayList<>(this.allAgreements.values());
     }
 
     public static class AgreementException extends Exception {}
