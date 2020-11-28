@@ -1,5 +1,7 @@
 package entities;
 
+import java.text.MessageFormat;
+
 public class Room implements Savable {
 
     private final int capacity;
@@ -53,6 +55,7 @@ public class Room implements Savable {
      */
     @Override
     public String toSavableString() {
-        return roomNumber + DELIMITER + capacity;
+        return MessageFormat.format("\"room_number\": \"{0}\",\"capacity\": \"{1}\"",roomNumber, capacity);
+
     }
 }

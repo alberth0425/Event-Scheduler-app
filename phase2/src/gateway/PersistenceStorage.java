@@ -14,6 +14,7 @@ public class PersistenceStorage {
      * Path constants for different Savable classes
      */
     private static final String USER_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/users";
+    private static final String ROOM_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/rooms";
 
     public static final String ATTENDEE_STORAGE_PATH = "./phase1/storage/attendees.txt";
     public static final String SPEAKER_STORAGE_PATH = "./phase1/storage/speakers.txt";
@@ -27,8 +28,8 @@ public class PersistenceStorage {
         User lynn = new Attendee("lynn", "1234","Lynn", "Qian");
         ArrayList user_list = new ArrayList();
         user_list.add(lynn);
-        putRequest(user_list);
-        getRequest();
+        //putUserRequest(user_list);
+        getRequest(USER_DB_URL);
     }
 
     /**
@@ -140,18 +141,14 @@ public class PersistenceStorage {
         }
     }
 
-
-    // --- Private Helpers ---
-    private static PrintWriter getPrinterWriter(String path) throws IOException {
-        FileWriter fw = new FileWriter(path, false);
-        BufferedWriter bw = new BufferedWriter(fw);
-
-        return new PrintWriter(bw);
-    }
-
-    public static void getRequest() throws IOException {
+    /**
+     * Print out the request in to the console from the input URL
+     * @param inputURL a URL that contains all the information
+     * @throws IOException throws Input/Output exception
+     */
+    public static void getRequest(String inputURL) throws IOException {
         StringBuilder returnedString = new StringBuilder();
-        URL urlForInformation = new URL(USER_DB_URL);
+        URL urlForInformation = new URL(inputURL);
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
 
         // Request setup
@@ -168,7 +165,12 @@ public class PersistenceStorage {
         parseToString(returnedString.toString());
     }
 
-    public static void putRequest(List<User> users) throws IOException {
+    /**
+     * Save all the users in a list into the user database.
+     * @param users a string that contains all the users we want to save
+     * @throws IOException throws input output exceptions
+     */
+    public static void putUserRequest(List<User> users) throws IOException {
         URL urlForInformation = new URL(USER_DB_URL);
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
 
@@ -193,7 +195,41 @@ public class PersistenceStorage {
         System.out.println(con.getResponseCode());
     }
 
-    public static void parseToString(String response) {
+    public static void putRoomRequest(List<Room> rooms) throws IOException {
+        URL urlForInformation = new URL(ROOM_DB_URL);
+        HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
+
+        //Request setup
+        con.setDoOutput(true);
+        con.setRequestMethod("PUT");
+        con.addRequestProperty("Content-Type", "application/json");
+        con.setConnectTimeout(6000); // 6 secs
+        con.setReadTimeout(6000); // 6 secs
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        ArrayList<String> returnedList = new ArrayList<>();
+        for (Room room : rooms) {
+            System.out.println(room.toSavableString());
+            returnedList.add("{" + room.toSavableString() + "}");
+        }
+        System.out.println(returnedList.toString());
+        writer.write(returnedList.toString());
+        writer.flush();
+        writer.close();
+        con.disconnect();
+        System.out.println(con.getResponseCode());
+    }
+
+
+    // --- Private Helpers ---
+    private static PrintWriter getPrinterWriter(String path) throws IOException {
+        FileWriter fw = new FileWriter(path, false);
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        return new PrintWriter(bw);
+    }
+
+    private static void parseToString(String response) {
         JSONArray users = new JSONArray(response);
         for (int i = 0; i < users.length(); i++) {
             JSONObject user = users.getJSONObject(i);
