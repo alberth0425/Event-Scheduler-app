@@ -10,7 +10,7 @@ public class PersistenceStorage {
      * Path constants for different Savable classes
      */
 
-    public static final String ATTENDEE_STORAGE_PATH = "./src/gateway/attendees.txt";
+    public static final String ATTENDEE_STORAGE_PATH = ".//src/gateway/attendees.txt";
     public static final String SPEAKER_STORAGE_PATH = "./src/gateway/speakers.txt";
     public static final String ORGANIZER_STORAGE_PATH = "./src/gateway/organizers.txt";
     public static final String EVENT_STORAGE_PATH = "./src/gateway/events.txt";
