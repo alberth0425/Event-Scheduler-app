@@ -3,6 +3,7 @@ package gateway;
 import entities.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import sun.net.www.protocol.file.Handler;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -28,13 +29,16 @@ public class PersistenceStorage {
     public static final String CONTACT_BOOK_PATH = "./phase1/storage/contact_book.txt";
 
     public static void main(String[] args) throws IOException {
-//        User lynn = new Attendee("lynn", "1234","Lynn", "Qian");
-//        List<User> userList = new ArrayList<>();
-//        userList.add(lynn);
-//        putUserRequest(userList);
-        for (User user: getRequest(USER_DB_URL, User.class)) {
-            System.out.println(user.toString());
-        }
+        Room room1 = new Room(12, 13);
+        Room room2 = new Room(14, 15);
+        Room room3 = new Room(16, 17);
+
+        ArrayList<Room> rooms = new ArrayList<>();
+        rooms.add(room1);
+        rooms.add(room2);
+        rooms.add(room3);
+        putRequest(rooms, Room.class);
+
     }
 
     /**
@@ -181,12 +185,26 @@ public class PersistenceStorage {
     }
 
     /**
-     * Save all the users in a list into the user database.
-     * @param users a string that contains all the users we want to save
-     * @throws IOException throws input output exceptions
+     *
+     * @param list the list of all inputs
+     * @param inputType the type of the input. Could be user, room, message or event.
+     * @param <T> The generic type.
+     * @throws IOException catch input output exceptions.
      */
-    public static void putUserRequest(List<User> users) throws IOException {
-        URL urlForInformation = new URL(USER_DB_URL);
+    public static <T> void putRequest(List<T> list, Class<T> inputType) throws IOException {
+
+        URL urlForInformation = null;
+        if (inputType.equals(User.class)) {
+            urlForInformation = new URL(USER_DB_URL);
+        } else if (inputType.equals(Event.class)) {
+            urlForInformation = new URL(EVENT_DB_URL);
+        } else if (inputType.equals(Room.class)) {
+            urlForInformation = new URL(ROOM_DB_URL);
+        } else if (inputType.equals(Message.class)) {
+            urlForInformation = new URL(MESSAGE_DB_URL);
+        }
+
+        assert urlForInformation != null;
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
 
         //Request setup
@@ -198,10 +216,28 @@ public class PersistenceStorage {
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
         ArrayList<String> returnedList = new ArrayList<>();
-        for (User user : users) {
-            System.out.println(user.toSavableString());
-            returnedList.add("{" + user.toSavableString() + "}");
+        if (inputType.equals(User.class)) {
+            for (T user: list) {
+                System.out.println(((User)user).toSavableString());
+                returnedList.add("{" + ((User)user).toSavableString() + "}");
+            }
+        } else if (inputType.equals(Event.class)) {
+            for (T event: list) {
+                System.out.println(((Event)event).toSavableString());
+                returnedList.add("{" + ((Event)event).toSavableString() + "}");
+            }
+        } else if (inputType.equals(Room.class)) {
+            for (T room: list) {
+                System.out.println(((Room)room).toSavableString());
+                returnedList.add("{" + ((Room)room).toSavableString() + "}");
+            }
+        } else {
+            for (T message: list) {
+                System.out.println(((Message)message).toSavableString());
+                returnedList.add("{" + ((Message)message).toSavableString() + "}");
+            }
         }
+
         System.out.println(returnedList.toString());
         writer.write(returnedList.toString());
         writer.flush();
@@ -209,67 +245,6 @@ public class PersistenceStorage {
         con.disconnect();
         System.out.println(con.getResponseCode());
     }
-
-    /**
-     * save all the rooms in the input list to the room database
-     * @param rooms an input list that contains all the rooms we want to save
-     * @throws IOException throws input output exceptions
-     */
-    public static void putRoomRequest(List<Room> rooms) throws IOException {
-        URL urlForInformation = new URL(ROOM_DB_URL);
-        HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
-
-        //Request setup
-        con.setDoOutput(true);
-        con.setRequestMethod("PUT");
-        con.addRequestProperty("Content-Type", "application/json");
-        con.setConnectTimeout(6000); // 6 secs
-        con.setReadTimeout(6000); // 6 secs
-
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        ArrayList<String> returnedList = new ArrayList<>();
-        for (Room room : rooms) {
-            System.out.println(room.toSavableString());
-            returnedList.add("{" + room.toSavableString() + "}");
-        }
-        System.out.println(returnedList.toString());
-        writer.write(returnedList.toString());
-        writer.flush();
-        writer.close();
-        con.disconnect();
-        System.out.println(con.getResponseCode());
-    }
-
-    /**
-     * save all the events into the event database.
-     * @param events an input list that contains all the events we want to save
-     * @throws IOException throws input output exceptions
-     */
-    public static void putEventRequest(List<Event> events) throws IOException {
-        URL urlForInformation = new URL(EVENT_DB_URL);
-        HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
-
-        //Request setup
-        con.setDoOutput(true);
-        con.setRequestMethod("PUT");
-        con.addRequestProperty("Content-Type", "application/json");
-        con.setConnectTimeout(6000); // 6 secs
-        con.setReadTimeout(6000); // 6 secs
-
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
-        ArrayList<String> returnedList = new ArrayList<>();
-        for (Event event: events) {
-            System.out.println(event.toSavableString());
-            returnedList.add("{" + event.toSavableString() + "}");
-        }
-        System.out.println(returnedList.toString());
-        writer.write(returnedList.toString());
-        writer.flush();
-        writer.close();
-        con.disconnect();
-        System.out.println(con.getResponseCode());
-    }
-
 
     // --- Private Helpers ---
     private static PrintWriter getPrinterWriter(String path) throws IOException {

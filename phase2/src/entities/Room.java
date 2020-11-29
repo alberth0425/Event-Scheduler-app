@@ -55,7 +55,7 @@ public class Room implements Savable {
      */
     @Override
     public String toSavableString() {
-        return MessageFormat.format("\"room_number\": \"{0}\",\"capacity\": \"{1}\"",roomNumber, capacity);
+        return MessageFormat.format("\"room_number\": {0},\"capacity\": {1}",roomNumber, capacity);
 
     }
 }
