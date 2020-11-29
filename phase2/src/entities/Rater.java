@@ -26,8 +26,11 @@ public class Rater extends User {
      */
     public Rater(String dataEntry) {
         super(dataEntry);
-
-        String[] entries = dataEntry.split(DELIMITER);
+        // convert from list of strings to list of integers for speakerIdRated.
+        String[] allId = dataEntry.split(DELIMITER)[5].split(",");
+        for (String rate: allId) {
+            this.speakerIdRated.add(Integer.parseInt(rate));
+        }
     }
 
     public List<Integer> getSpeakerIdRated() {
@@ -45,6 +48,12 @@ public class Rater extends User {
      */
     @Override
     public String toSavableString() {
-        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName;
+        // Make the list of speakerIdRated a string with commas in between to separate.
+        StringBuilder allIdRated = new StringBuilder();
+        for (Integer rate: speakerIdRated){
+            allIdRated.append(rate + ",");
+        }
+        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
+                DELIMITER + allIdRated;
     }
 }
