@@ -1,10 +1,9 @@
 package controllers;
 
 import entities.Rater;
-import entities.Speaker;
 import entities.User;
 import use_cases.AuthService;
-import use_cases.RaterService;
+import use_cases.RateService;
 
 import java.util.Scanner;
 
@@ -63,7 +62,7 @@ public class RaterController extends UserController {
             System.out.println("Please enter a rate between 1 to 10: ");
             int rate = Integer.parseInt(scanner.nextLine());
 
-            RaterService.shared.rateSpeaker(speaker, rater, rate);
+            RateService.shared.rateSpeaker(speaker, rater, rate);
 
             System.out.println("You have rated " + speakerUN + " successfully.");
 
@@ -73,11 +72,11 @@ public class RaterController extends UserController {
         } catch (NumberFormatException e) {
             System.out.println("Rate entered must be an integer between 1 to 10.");
             rateSpeaker();
-        } catch (RaterService.notSpeakerException e) {
+        } catch (RateService.notSpeakerException e) {
             System.out.println("Username given is not a Speaker username.");
-        } catch (RaterService.rateOutOfBoundException e) {
+        } catch (RateService.rateOutOfBoundException e) {
             System.out.println("Rate entered must be an integer between 1 to 10.");
-        } catch (RaterService.rateRepetitionException e) {
+        } catch (RateService.rateRepetitionException e) {
             System.out.println("You have already rated the speaker with username " + speakerUN +
                     ", please choose a speaker you haven't rated before");
         } catch (Exception e) {

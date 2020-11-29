@@ -3,10 +3,7 @@ package controllers;
 import entities.Event;
 import entities.Message;
 import entities.Speaker;
-import use_cases.AuthService;
-import use_cases.EventService;
-import use_cases.MessageService;
-import use_cases.RoomService;
+import use_cases.*;
 
 import java.util.List;
 
@@ -24,7 +21,7 @@ abstract public class UserController extends BaseController {
                 String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
                         ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
                         ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + ", Speaker rate: " +
-                        speaker.getAverageRate() + "\n";
+                        RateService.shared.getAverageRate(speaker.getId()) + "\n";
                 sb.append(eStr);
             } catch (AuthService.AuthException e) {
                 System.out.println("Speaker of event <" + event.getTitle() +
