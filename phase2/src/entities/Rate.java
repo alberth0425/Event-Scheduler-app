@@ -45,6 +45,10 @@ public class Rate implements Savable {
         return speakerRatedUsername;
     }
 
+    public Integer getRate() {
+        return rate;
+    }
+
     @Override
     public String toSavableString() {
         return rate + DELIMITER + raterUsername + DELIMITER + speakerRatedUsername;

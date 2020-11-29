@@ -10,7 +10,7 @@ import java.util.List;
 
 public class BaseController {
 
-    void load() {
+    void load() throws AuthService.AuthException {
         List<Attendee> attendees = PersistenceStorage.readEntities(PersistenceStorage.ATTENDEE_STORAGE_PATH, Attendee.class);
         List<Organizer> organizers = PersistenceStorage.readEntities(PersistenceStorage.ORGANIZER_STORAGE_PATH, Organizer.class);
         List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.SPEAKER_STORAGE_PATH, Speaker.class);
@@ -66,6 +66,29 @@ public class BaseController {
             agreementHashMap.put(agreement.getUsername(), agreement);
         }
         AgreementService.shared.setAgreements(agreementHashMap);
+
+        List<Rate> rates = PersistenceStorage.readEntities(PersistenceStorage.RATE_STORAGE_PATH, Rate.class);
+
+        HashMap<Integer, List<Integer>> raterToSpeakerRated = new HashMap<>();
+        HashMap<Integer, List<Integer>> speakerToRate = new HashMap<>();
+
+        for (Rate rate : rates) {
+            Integer speakerId = AuthService.shared.getUserByUsername(rate.getSpeakerRatedUsername()).getId();
+            Integer raterId = AuthService.shared.getUserByUsername(rate.getRaterUsername()).getId();
+
+            if (!raterToSpeakerRated.containsKey(raterId)) {
+                raterToSpeakerRated.put(raterId, new ArrayList<>());
+            }
+            raterToSpeakerRated.get(raterId).add(speakerId);
+
+            if (!speakerToRate.containsKey(speakerId)) {
+                speakerToRate.put(speakerId, new ArrayList<>());
+            }
+            speakerToRate.get(speakerId).add(rate.getRate());
+        }
+
+        RateService.shared.setRaterToSpeakerRated(raterToSpeakerRated);
+        RateService.shared.setSpeakerToRate(speakerToRate);
     }
 
     void save() {

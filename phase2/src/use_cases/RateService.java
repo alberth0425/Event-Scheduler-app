@@ -54,6 +54,14 @@ public class RateService {
         return sum/rate.size();
     }
 
+    public void setRaterToSpeakerRated(HashMap<Integer, List<Integer>> raterToSpeakerRated) {
+        this.raterToSpeakerRated = raterToSpeakerRated;
+    }
+
+    public void setSpeakerToRate(HashMap<Integer, List<Integer>> speakerToRate) {
+        this.speakerToRate = speakerToRate;
+    }
+
 
 
     public static class raterException extends Exception {}
