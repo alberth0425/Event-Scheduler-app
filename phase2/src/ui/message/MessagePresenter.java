@@ -35,8 +35,7 @@ public class MessagePresenter {
     }
 
     public void onSendMessage() {
-        // TODO: send message
-        System.out.println("Send message");
+        view.navigateToSendMessage();
     }
 
     public void onSelectMessage(int index) {
@@ -52,5 +51,6 @@ public class MessagePresenter {
     public interface MessageView {
         void setMessageTitleLabel(String text);
         void setMessageContentLabel(String text);
+        void navigateToSendMessage();
     }
 }

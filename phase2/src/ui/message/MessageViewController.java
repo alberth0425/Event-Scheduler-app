@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ui.BaseViewController;
+import ui.message.send_message.SendMessageViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
 
@@ -74,5 +75,10 @@ public class MessageViewController extends BaseViewController<Void> implements M
     @Override
     public void setMessageContentLabel(String text) {
         messageContentLabel.setText(text);
+    }
+
+    @Override
+    public void navigateToSendMessage() {
+        getNavigationController().navigate(SendMessageViewController.class);
     }
 }

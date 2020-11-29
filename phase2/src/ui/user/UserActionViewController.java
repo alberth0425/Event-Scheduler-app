@@ -7,6 +7,7 @@ import javafx.scene.control.ListView;
 import ui.BaseViewController;
 import ui.event.EventPresenter;
 import ui.event.EventViewController;
+import ui.login.LoginViewController;
 import ui.message.MessageViewController;
 import ui.navigation.FXMLFile;
 import ui.util.NoSelectionModel;
@@ -45,6 +46,11 @@ public class UserActionViewController extends BaseViewController<Void> implement
     @Override
     public void navigateToMessages() {
         getNavigationController().navigate(MessageViewController.class);
+    }
+
+    @Override
+    public void navigateToLogin() {
+        getNavigationController().navigate(LoginViewController.class);
     }
 
     class ActionCell extends ListCell<String> {
