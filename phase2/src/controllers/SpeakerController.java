@@ -43,7 +43,7 @@ public class SpeakerController extends UserController {
                         sendMessages();
                         break;
                     case 4:
-                        RateService.shared.getAverageRate(AuthService.shared.getCurrentUser().getId());
+                        RateService.shared.getAverageRate(AuthService.shared.getCurrentUser().getUsername());
                         break;
                     case 5:
                         exit = true;

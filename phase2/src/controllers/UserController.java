@@ -21,7 +21,7 @@ abstract public class UserController extends BaseController {
                 String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
                         ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
                         ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + ", Speaker rate: " +
-                        RateService.shared.getAverageRate(speaker.getId()) + "\n";
+                        RateService.shared.getAverageRate(speaker.getUsername()) + "\n";
                 sb.append(eStr);
             } catch (AuthService.AuthException e) {
                 System.out.println("Speaker of event <" + event.getTitle() +

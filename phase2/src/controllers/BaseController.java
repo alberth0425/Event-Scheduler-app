@@ -10,7 +10,7 @@ import java.util.List;
 
 public class BaseController {
 
-    void load() throws AuthService.AuthException {
+    void load() {
         List<Attendee> attendees = PersistenceStorage.readEntities(PersistenceStorage.ATTENDEE_STORAGE_PATH, Attendee.class);
         List<Organizer> organizers = PersistenceStorage.readEntities(PersistenceStorage.ORGANIZER_STORAGE_PATH, Organizer.class);
         List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.SPEAKER_STORAGE_PATH, Speaker.class);
@@ -69,22 +69,20 @@ public class BaseController {
 
         List<Rate> rates = PersistenceStorage.readEntities(PersistenceStorage.RATE_STORAGE_PATH, Rate.class);
 
-        HashMap<Integer, List<Integer>> raterToSpeakerRated = new HashMap<>();
-        HashMap<Integer, List<Integer>> speakerToRate = new HashMap<>();
+        HashMap<String, List<String>> raterToSpeakerRated = new HashMap<>();
+        HashMap<String, List<Integer>> speakerToRate = new HashMap<>();
 
         for (Rate rate : rates) {
-            Integer speakerId = AuthService.shared.getUserByUsername(rate.getSpeakerRatedUsername()).getId();
-            Integer raterId = AuthService.shared.getUserByUsername(rate.getRaterUsername()).getId();
 
-            if (!raterToSpeakerRated.containsKey(raterId)) {
-                raterToSpeakerRated.put(raterId, new ArrayList<>());
+            if (!raterToSpeakerRated.containsKey(rate.getRaterUsername())) {
+                raterToSpeakerRated.put(rate.getRaterUsername(), new ArrayList<>());
             }
-            raterToSpeakerRated.get(raterId).add(speakerId);
+            raterToSpeakerRated.get(rate.getRaterUsername()).add(rate.getSpeakerRatedUsername());
 
-            if (!speakerToRate.containsKey(speakerId)) {
-                speakerToRate.put(speakerId, new ArrayList<>());
+            if (!speakerToRate.containsKey(rate.getSpeakerRatedUsername())) {
+                speakerToRate.put(rate.getSpeakerRatedUsername(), new ArrayList<>());
             }
-            speakerToRate.get(speakerId).add(rate.getRate());
+            speakerToRate.get(rate.getSpeakerRatedUsername()).add(rate.getRate());
         }
 
         RateService.shared.setRaterToSpeakerRated(raterToSpeakerRated);
@@ -130,5 +128,9 @@ public class BaseController {
         // save all agreements to the storage
         List<Savable> agreements = new ArrayList<>(AgreementService.shared.getAllAgreements());
         PersistenceStorage.saveEntities(agreements,PersistenceStorage.AGREEMENT_STORAGE_PATH);
+
+        // save all rates to the storage
+        List<Savable> rates = new ArrayList<>(RateService.shared.getAllRate());
+        PersistenceStorage.saveEntities(rates,PersistenceStorage.RATE_STORAGE_PATH);
     }
 }
