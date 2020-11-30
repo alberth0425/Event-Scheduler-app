@@ -2,31 +2,27 @@ package use_cases;
 
 import entities.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 public class RaterService {
 
+    /**
+     * singleton implementation.
+     */
     public static RaterService shared = new RaterService();
-
-//    private HashMap<String, List<String>> raterToSpeakerRated = new HashMap<>();
-//    private HashMap<String, List<Integer>> speakerToRate = new HashMap<>();
-
-//    private List<Rate> allRate = new ArrayList<>();
-
-
     private RaterService() {}
 
+    /**
+     * rate speaker from rater with given rate
+     *
+     * @param speaker the speaker wanted to rate
+     * @param rater the rater who give rate to the speaker
+     * @param rate the rate given out by rater
+     */
     public void rateSpeaker(User speaker, Rater rater, int rate) throws notSpeakerException, rateRepetitionException,
             rateOutOfBoundException {
 
         if (!(speaker instanceof Speaker)) {
             throw new notSpeakerException();
         }
-//        if (raterToSpeakerRated.containsKey(rater.getUsername())) {
-//            if (raterToSpeakerRated.get(rater.getUsername()).contains(speaker.getUsername())) throw new rateRepetitionException();
-//        }
 
         if (rate < 1 || rate > 10) throw new rateOutOfBoundException();
 
@@ -34,44 +30,9 @@ public class RaterService {
 
         ((Speaker) speaker).addRate(rate);
         rater.addSpeakerIdRated(speaker.getId());
-
-
-//        Rate newRate = new Rate(rate, rater.getUsername(), speaker.getUsername());
-//        allRate.add(newRate);
-
-//        if (!raterToSpeakerRated.containsKey(rater.getUsername())) {
-//            raterToSpeakerRated.put(rater.getUsername(), new ArrayList<>());
-//        }
-//        raterToSpeakerRated.get(rater.getUsername()).add(speaker.getUsername());
-//
-//        if (!speakerToRate.containsKey(speaker.getUsername())) {
-//            raterToSpeakerRated.put(speaker.getUsername(), new ArrayList<>());
-//        }
-//        speakerToRate.get(speaker.getUsername()).add(rate);
-
     }
 
-//    public double getAverageRate(String speakerUN) {
-//        List<Integer> rate = speakerToRate.get(speakerUN);
-//        double sum = 0;
-//        for (int r: rate) {
-//            sum += r;
-//        }
-//        return sum/rate.size();
-//    }
-
-//    public void setRaterToSpeakerRated(HashMap<String, List<String>> raterToSpeakerRated) {
-//        this.raterToSpeakerRated = raterToSpeakerRated;
-//    }
-//
-//    public void setSpeakerToRate(HashMap<String, List<Integer>> speakerToRate) {
-//        this.speakerToRate = speakerToRate;
-//    }
-//
-//    public List<Rate> getAllRate() {
-//        return allRate;
-//    }
-
+    // Custom Exception Classes
 
     public static class raterException extends Exception {}
     public static class rateOutOfBoundException extends raterException {}
