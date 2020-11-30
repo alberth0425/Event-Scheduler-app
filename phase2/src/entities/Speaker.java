@@ -1,10 +1,11 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Speaker extends User {
-    protected List<Integer> allRate = new ArrayList<>();
+    protected List<String> allRate = new ArrayList<>();
     protected double averageRate;
 
     /**
@@ -26,14 +27,14 @@ public class Speaker extends User {
      */
     public Speaker(String dataEntry) {
         super(dataEntry);
-        this.averageRate = Double.parseDouble(dataEntry.split(DELIMITER)[5]);
+        this.allRate = new ArrayList<>(Arrays.asList(dataEntry.split(DELIMITER)[5].split("\\|")));
     }
 
     public void addRate(int rate) {
-        allRate.add(rate);
+        allRate.add(String.valueOf(rate));
         double sum = 0;
-        for (int r : allRate) {
-           sum += r;
+        for (String r : allRate) {
+           sum += Integer.parseInt(r);
         }
         averageRate = sum/allRate.toString().length();
 
@@ -46,7 +47,7 @@ public class Speaker extends User {
     @Override
     public String toSavableString() {
         return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
-                DELIMITER + averageRate;
+                DELIMITER + String.join("|", allRate);
     }
 }
 
