@@ -30,6 +30,11 @@ public class Speaker extends User {
         this.allRate = new ArrayList<>(Arrays.asList(dataEntry.split(DELIMITER)[5].split("\\|")));
     }
 
+    /**
+     * add rate to the allRate list.
+     *
+     * @param rate the rate given
+     */
     public void addRate(int rate) {
         allRate.add(String.valueOf(rate));
         double sum = 0;
@@ -40,10 +45,20 @@ public class Speaker extends User {
 
     }
 
+    /**
+     * return the average rate the speaker received.
+     *
+     * @return average rate the speaker received
+     */
     public Double getAverageRate() {
         return averageRate;
     }
 
+    /**
+     * turn the information of this speaker into a savable string.
+     *
+     * @return a savable string that contains all the information of this speaker
+     */
     @Override
     public String toSavableString() {
         return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
