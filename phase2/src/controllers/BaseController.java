@@ -40,6 +40,7 @@ public class BaseController {
         HashMap<String, List<Message>> messageRepository = new HashMap<>();
         for (Message message : messages) {
             String username = message.getReceiverUsername();
+            System.out.println("Hi");
             if (!messageRepository.containsKey(username)) {
                 messageRepository.put(username, new ArrayList<>());
             }
