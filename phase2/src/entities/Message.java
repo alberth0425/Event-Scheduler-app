@@ -4,6 +4,7 @@ import gateway.PersistenceStorage;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -136,6 +137,6 @@ public class Message implements Savable {
     @Override
     public String toSavableString() {
         return MessageFormat.format("\"message_id\": \"{0}\",\"text\": \"{1}\",\"sender_un\": \"{2}\", " +
-                "\"receiver_un\": \"{3}\",\"timestamp\": \"{4}\"", id, text, senderUsername, receiverUsername, timeStamp);
+                "\"receiver_un\": \"{3}\",\"timestamp\": {4}", id, text, senderUsername, receiverUsername, Long.toString(timeStamp));
     }
 }
