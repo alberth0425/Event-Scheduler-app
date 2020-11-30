@@ -1,8 +1,5 @@
 package entities;
 
-import gateway.PersistenceStorage;
-
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;

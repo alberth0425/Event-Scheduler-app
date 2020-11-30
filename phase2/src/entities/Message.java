@@ -1,13 +1,8 @@
 package entities;
 
-import gateway.PersistenceStorage;
-
-import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 public class Message implements Savable {
     private static int messageCount;
