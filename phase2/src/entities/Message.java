@@ -1,8 +1,12 @@
 package entities;
 
+import gateway.PersistenceStorage;
+
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class Message implements Savable {
     private static int messageCount;
@@ -10,8 +14,8 @@ public class Message implements Savable {
     private final String text;
     private final String senderUsername;
     private final String receiverUsername;
-    private final long timeStamp;  // message send time in millisecond
-    private final int id;
+    private final int id;           // TODO: change this to a string ID
+    private long timeStamp;         // message send time in millisecond
 
     /**
      * constructor for the message class
@@ -87,6 +91,13 @@ public class Message implements Savable {
     }
 
     /**
+     * setter for the timeStamp.
+     */
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    /**
      * Get formatted timestamp, format: dd/MM/yyyy HH:mm:ss
      * @return formatted String representation of the message timestamp
      */
@@ -95,6 +106,17 @@ public class Message implements Savable {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
         return dateFormat.format(date);
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "text='" + text + '\'' +
+                ", senderUsername='" + senderUsername + '\'' +
+                ", receiverUsername='" + receiverUsername + '\'' +
+                ", timeStamp=" + timeStamp +
+                ", id=" + id +
+                '}';
     }
 
     /**

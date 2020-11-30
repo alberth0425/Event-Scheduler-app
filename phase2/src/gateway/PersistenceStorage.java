@@ -178,8 +178,10 @@ public class PersistenceStorage {
         JSONArray messages = new JSONArray(response);
         for (int i = 0; i < messages.length(); i++) {
             JSONObject message = messages.getJSONObject(i);
-            messagesList.add(new Message(message.getString("text"), message.getString( "sender_un"),
-                    message.getString("receiver_un")));
+            Message msg = new Message(message.getString("text"), message.getString( "sender_un"),
+                    message.getString("receiver_un"));
+            msg.setTimeStamp(message.getLong("timestamp"));
+            messagesList.add(msg);
         }
         return messagesList;
     }
