@@ -65,7 +65,7 @@ public class OrganizerController extends UserController {
                         break;
 
                     default:
-                        System.out.println("Unknown action. Please enter digit between 1 and 8.");
+                        System.out.println("Unknown action. Please enter digit between 1 and 9.");
                         break;
                 }
 
@@ -75,7 +75,7 @@ public class OrganizerController extends UserController {
                     break;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Unknown action. Please enter digit between 1 and 8. ");
+                System.out.println("Unknown action. Please enter digit between 1 and 9. ");
                 break;
             }
 
@@ -156,7 +156,7 @@ public class OrganizerController extends UserController {
         } catch (AuthService.InvalidFieldException e) {
             System.out.println("Invalid " + e.getField() + " entered. Attendee does not create successfully");
         } catch (AuthService.UsernameAlreadyTakenException e) {
-            System.out.println("Username " + username + "already taken.");
+            System.out.println("Username " + username + " already taken.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + ". Attendee does not create " +
                     "successfully.");
@@ -186,7 +186,7 @@ public class OrganizerController extends UserController {
         } catch (AuthService.InvalidFieldException e) {
             System.out.println("Invalid " + e.getField() + " entered. Organizer does not create successfully");
         } catch (AuthService.UsernameAlreadyTakenException e) {
-            System.out.println("Username " + username + "already taken.");
+            System.out.println("Username " + username + " already taken.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + ". Organizer does not create " +
                     "successfully.");
@@ -226,7 +226,7 @@ public class OrganizerController extends UserController {
         } catch (AuthService.InvalidFieldException e) {
             System.out.println("Invalid " + e.getField() + " entered. Speaker does not create successfully");
         } catch (AuthService.UsernameAlreadyTakenException e) {
-            System.out.println("Username " + username + "already taken.");
+            System.out.println("Username " + username + " already taken.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + ". Speaker does not create " +
                     "successfully.");
@@ -281,7 +281,7 @@ public class OrganizerController extends UserController {
                         } catch (AuthService.InvalidFieldException e) {
                             System.out.println("Invalid " + e.getField() + " entered. Rater does not create successfully");
                         } catch (AuthService.UsernameAlreadyTakenException e) {
-                            System.out.println("Username " + username + "already taken.");
+                            System.out.println("Username " + username + " already taken.");
                         } catch (Exception e) {
                             System.out.println("Unknown exception: " + e.toString() + ". Rater does not create " +
                                     "successfully.");

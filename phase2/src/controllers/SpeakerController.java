@@ -43,7 +43,8 @@ public class SpeakerController extends UserController {
                         sendMessages();
                         break;
                     case 4:
-                        ((Speaker)AuthService.shared.getCurrentUser()).getAverageRate();
+                        double rate = ((Speaker)AuthService.shared.getCurrentUser()).getAverageRate();
+                        System.out.println("Your average rate is: " + rate);
                         break;
                     case 5:
                         exit = true;
