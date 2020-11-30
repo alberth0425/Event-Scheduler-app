@@ -47,11 +47,6 @@ public class Rater extends User {
      */
     @Override
     public String toSavableString() {
-        // Make the list of speakerIdRated a string with commas in between to separate.
-//        StringBuilder allIdRated = new StringBuilder();
-//        for (Integer rate: speakerIdRated){
-//            allIdRated.append(rate + ",");
-//        }
         return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
                 DELIMITER + String.join("|", speakerIdRated);
     }
