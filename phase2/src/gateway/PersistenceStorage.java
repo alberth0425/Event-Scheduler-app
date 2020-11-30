@@ -90,32 +90,26 @@ public class PersistenceStorage {
         ArrayList<String> returnedList = new ArrayList<>();
         if (inputType.equals(User.class)) {
             for (T user: list) {
-                System.out.println(((User)user).toSavableString());
                 returnedList.add("{" + ((User)user).toSavableString() + "}");
             }
         } else if (inputType.equals(Event.class)) {
             for (T event: list) {
-                System.out.println(((Event)event).toSavableString());
                 returnedList.add("{" + ((Event)event).toSavableString() + "}");
             }
         } else if (inputType.equals(Room.class)) {
             for (T room: list) {
-                System.out.println(((Room)room).toSavableString());
                 returnedList.add("{" + ((Room)room).toSavableString() + "}");
             }
         } else {
             for (T message: list) {
-                System.out.println(((Message)message).toSavableString());
                 returnedList.add("{" + ((Message)message).toSavableString() + "}");
             }
         }
 
-        System.out.println(returnedList.toString());
         writer.write(returnedList.toString());
         writer.flush();
         writer.close();
         con.disconnect();
-        System.out.println(con.getResponseCode());
     }
 
     // --- Private Helpers ---
