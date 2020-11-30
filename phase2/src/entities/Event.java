@@ -1,5 +1,8 @@
 package entities;
 
+import gateway.PersistenceStorage;
+
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -161,8 +164,18 @@ public class Event implements Savable {
      */
     @Override
     public String toSavableString() {
-        return MessageFormat.format("\"room_number\": \"{0}\",\"speaker_un\": \"{1}\",\"id\": \"{2}\", " +
-                "\"attendee_uns\": \"{3}\",\"starting_time\": \"{4}\",\"title\": \"{4}\"",roomNumber, speakerUN, id, attendeeUNs, startingTime, title);
+        StringBuilder attendeeUNBuilder = new StringBuilder();
+        attendeeUNBuilder.append("[");
+        for (String un : attendeeUNs) {
+            attendeeUNBuilder.append(MessageFormat.format("\"{0}\",", un));
+        }
+        // If there are at least 1 attendee, remove the last ","
+        if (attendeeUNs.size() >= 1) attendeeUNBuilder.deleteCharAt(attendeeUNBuilder.length() - 1);
+        attendeeUNBuilder.append("]");
+        String attendeesStr = attendeeUNBuilder.toString();
+
+        return MessageFormat.format("\"room_number\": {0},\"speaker_un\": \"{1}\",\"id\": \"{2}\", " +
+                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\"",roomNumber, speakerUN, id, attendeesStr, startingTime, title);
 
     }
 }

@@ -3,7 +3,6 @@ package gateway;
 import entities.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import sun.net.www.protocol.file.Handler;
 
 import java.io.*;
 import java.net.HttpURLConnection;
