@@ -28,7 +28,8 @@ public class Rater extends User {
     public Rater(String dataEntry) {
         super(dataEntry);
         //convert from list of strings to list of integers for speakerIdRated.
-        this.speakerIdRated = new ArrayList<>(Arrays.asList(dataEntry.split(DELIMITER)[5].split("\\|")));
+        this.speakerIdRated = dataEntry.split(DELIMITER).length < 6 ? new ArrayList<>() :
+                new ArrayList<>(Arrays.asList(dataEntry.split(DELIMITER)[5].split("\\|")));
     }
 
     public List<String> getSpeakerIdRated() {
