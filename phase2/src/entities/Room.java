@@ -48,6 +48,14 @@ public class Room implements Savable {
         return roomNumber;
     }
 
+    @Override
+    public String toString() {
+        return "Room{" +
+                "capacity=" + capacity +
+                ", roomNumber=" + roomNumber +
+                '}';
+    }
+
     /**
      * turn all the information for this room into a savable string.
      *
