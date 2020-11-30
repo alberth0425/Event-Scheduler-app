@@ -175,8 +175,8 @@ public class EventService {
 
     /**
      * get the list of events that a speaker is speaking at
-     * @param username
-     * @return
+     * @param username speaker username
+     * @return list of events by the input speaker
      */
     public List<Event> getEventsBySpeaker(String username){
         List<Event> events = new ArrayList<>();
