@@ -1,8 +1,6 @@
 package entities;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
 
 public class User implements Savable {
     protected static int numUser;
@@ -127,7 +125,18 @@ public class User implements Savable {
 
     @Override
     public String toString() {
-        return "User{" +
+        String userType;
+        if (this instanceof Attendee) {
+            userType = "Attendee";
+        } else if (this instanceof Organizer) {
+            userType = "Organizer";
+        } else if (this instanceof Speaker) {
+            userType = "Speaker";
+        } else {
+            userType = "Unkown User";
+        }
+
+        return userType + "{" +
                 "password='" + password + '\'' +
                 ", username='" + username + '\'' +
                 ", id=" + id +
