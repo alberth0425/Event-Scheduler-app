@@ -21,7 +21,7 @@ public class AttendeeSendMessagePresenter extends SendMessagePresenter {
     }
 
     @Override
-    void handleSendMessage(int index, String receiver, String content) {
+    void handleSendMessage(int receiverTypeIndex, String receiver, String content) {
         if (sendMessage(receiver, content)) {
             getView().navigateToMessages();
         } else {

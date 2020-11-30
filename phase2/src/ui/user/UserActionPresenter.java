@@ -11,10 +11,16 @@ import use_cases.AuthService;
 abstract public class UserActionPresenter {
     private final UserActionView view;
 
-    public UserActionPresenter(UserActionView view) {
+    UserActionPresenter(UserActionView view) {
         this.view = view;
     }
 
+    /**
+     * Create a new UserActionPresenter based on the current user type.
+     *
+     * @param view the view using this presenter
+     * @return an UserActionPresenter instance
+     */
     public static UserActionPresenter create(UserActionView view) {
         User user = AuthService.shared.getCurrentUser();
 
@@ -29,10 +35,21 @@ abstract public class UserActionPresenter {
         }
     }
 
+    /**
+     * Get the list of actions for the current user.
+     *
+     * @return the list of action names
+     */
     public abstract ObservableList<String> getActionList();
+
+    /**
+     * Perform an action.
+     *
+     * @param index the index of the selected action
+     */
     public abstract void onAction(int index);
 
-    public UserActionView getView() {
+    UserActionView getView() {
         return view;
     }
 

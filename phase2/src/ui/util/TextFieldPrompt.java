@@ -13,7 +13,8 @@ public class TextFieldPrompt {
      *
      * @param promptText the prompt text
      * @param buttonText the text to display on the button
-     * @param validator a validator that takes a string and returns the error message, or null if valid
+     * @param validator a validator that takes a string and returns the error message, or null if valid. The text field
+     *                  will dismiss whenever this returns null.
      * @param dismissAction the action to run when the text field dismisses
      * @return the node containing the text field
      */
@@ -44,6 +45,12 @@ public class TextFieldPrompt {
     }
 
     public interface Validator {
+        /**
+         * Get the error message for given text, or null if there is no error.
+         *
+         * @param text the text to validate
+         * @return the error message if there is an error, otherwise null
+         */
         String getError(String text);
     }
 

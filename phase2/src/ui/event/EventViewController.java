@@ -81,12 +81,10 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
         List<Node> buttons = new ArrayList<>();
         buttons.add(backButton);
 
-        if (index != -1) {
-            for (EventPresenter.EventAction action : presenter.getActionsForEvent(index)) {
-                Button button = new Button(action.getName());
-                button.setOnAction(event -> action.call());
-                buttons.add(button);
-            }
+        for (EventPresenter.EventAction action : presenter.getActionsForEvent(index)) {
+            Button button = new Button(action.getName());
+            button.setOnAction(event -> action.call());
+            buttons.add(button);
         }
 
         actionHBox.getChildren().setAll(buttons);

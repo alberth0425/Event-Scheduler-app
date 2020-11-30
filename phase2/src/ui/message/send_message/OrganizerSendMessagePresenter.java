@@ -42,10 +42,10 @@ public class OrganizerSendMessagePresenter extends SendMessagePresenter {
     }
 
     @Override
-    void handleSendMessage(int index, String receiver, String content) {
+    void handleSendMessage(int receiverTypeIndex, String receiver, String content) {
         List<String> usernames;
 
-        switch (index) {
+        switch (receiverTypeIndex) {
             case 0:
                 String currentUsername = AuthService.shared.getCurrentUser().getUsername();
                 usernames = AuthService.shared.getAllUsers()

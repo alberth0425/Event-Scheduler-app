@@ -40,11 +40,11 @@ public class SpeakerSendMessagePresenter extends SendMessagePresenter {
     }
 
     @Override
-    void handleSendMessage(int index, String receiver, String content) {
+    void handleSendMessage(int receiverTypeIndex, String receiver, String content) {
         List<String> usernames;
         String currentUsername = AuthService.shared.getCurrentUser().getUsername();
 
-        switch (index) {
+        switch (receiverTypeIndex) {
             case 0:
                 usernames = EventService.shared.getEventsBySpeaker(currentUsername)
                         .stream()

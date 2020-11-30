@@ -28,7 +28,7 @@ public class MessageViewController extends BaseViewController<Void> implements M
         ObservableList<TableColumn<MessageAdapter, ?>> columns = messagesTableView.getColumns();
 
         // Add table columns
-        TableColumn<MessageAdapter, Integer> idColumn = new TableColumn<>();
+        TableColumn<MessageAdapter, String> idColumn = new TableColumn<>();
         idColumn.setText("ID");
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         columns.add(idColumn);

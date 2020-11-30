@@ -15,6 +15,13 @@ public class NavigationController {
         this.scene = scene;
     }
 
+    /**
+     * Initialize a JavaFX Scene with the given view controller class as the root view.
+     *
+     * @param controllerClass the runtime class of the view controller
+     * @return the scene
+     * @throws IOException if there is an error loading the FXML file
+     */
     public static <P, T extends BaseViewController<P>> Scene initialize(Class<T> controllerClass) throws IOException {
         RootAndController<P, T> pair = load(getFXMLPath(controllerClass));
 
@@ -27,10 +34,21 @@ public class NavigationController {
         return scene;
     }
 
+    /**
+     * Navigate to the target view controller class with no initial parameters.
+     *
+     * @param controllerClass the runtime class of the destination view controller
+     */
     public <P, T extends BaseViewController<P>> void navigate(Class<T> controllerClass) {
         navigate(controllerClass, null);
     }
 
+    /**
+     * Navigate to the target view controller class with some initial parameters.
+     *
+     * @param controllerClass the runtime class of the destination view controller
+     * @param params the parameters used to initialize the view controller
+     */
     public <P, T extends BaseViewController<P>> void navigate(Class<T> controllerClass, P params) {
         try {
             RootAndController<P, T> pair = load(getFXMLPath(controllerClass));

@@ -7,8 +7,6 @@ import javafx.collections.ObservableList;
 import use_cases.AuthService;
 import use_cases.MessageService;
 
-import java.util.List;
-
 public abstract class SendMessagePresenter {
     private final SendMessageView view;
 
@@ -20,6 +18,12 @@ public abstract class SendMessagePresenter {
         this.view = view;
     }
 
+    /**
+     * Create a new UserActionPresenter based on the current user type.
+     *
+     * @param view the view using this presenter
+     * @return an UserActionPresenter instance
+     */
     public static SendMessagePresenter create(SendMessageView view) {
         User user = AuthService.shared.getCurrentUser();
 
@@ -32,30 +36,67 @@ public abstract class SendMessagePresenter {
         }
     }
 
+    /**
+     * Get the list of strings, each representing the receiver type.
+     *
+     * @return the list of receiver types
+     */
     public abstract ObservableList<String> getReceiverTypes();
 
+    /**
+     * Get the text prompt to show in the receiver text field for the receiver type at given index.
+     * If a text field is not needed, return null.
+     *
+     * @param index the index of the selected receiver type
+     * @return text prompt for the receiver text field if it is needed, otherwise null
+     */
     public abstract String getReceiverTextPrompt(int index);
 
-    abstract void handleSendMessage(int index, String receiver, String content);
+    /**
+     * Handle sending a message with given parameters.
+     *
+     * @param receiverTypeIndex the index of the receiver type
+     * @param receiver additional information about the receiver based on receiver type, or null if not needed
+     * @param content the text content of the message to be sent
+     */
+    abstract void handleSendMessage(int receiverTypeIndex, String receiver, String content);
 
-    public SendMessageView getView() {
-        return view;
-    }
-
+    /**
+     * Handle that a receiver type is selected.
+     *
+     * @param index the index of the receiver type
+     */
     public void onSelectReceiverType(int index) {
         receiverTypeIndex = index;
     }
 
+    /**
+     * Handle send message action.
+     */
     public void onSendMessage() {
         handleSendMessage(receiverTypeIndex, receiver, content);
     }
 
+    /**
+     * Set the receiver field.
+     *
+     * @param receiver the receiver string
+     */
     public void setReceiver(String receiver) {
         this.receiver = receiver;
     }
 
+    /**
+     * Set the message content.
+     *
+     * @param content the content string
+     */
     public void setContent(String content) {
         this.content = content;
+    }
+
+    SendMessageView getView() {
+        return view;
     }
 
     boolean sendMessage(String username, String content) {

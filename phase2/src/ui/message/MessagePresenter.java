@@ -16,6 +16,11 @@ public class MessagePresenter {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Construct a MessagePresenter with given view.
+     *
+     * @param view the view using this presenter
+     */
     public MessagePresenter(MessageView view) {
         this.view = view;
 
@@ -30,14 +35,27 @@ public class MessagePresenter {
         view.setMessageContentLabel("");
     }
 
+    /**
+     * Get the list of messages to display.
+     *
+     * @return a list of MessageAdapter
+     */
     public ObservableList<MessageAdapter> getMessageList() {
         return messages;
     }
 
+    /**
+     * Handle the send message action.
+     */
     public void onSendMessage() {
         view.navigateToSendMessage();
     }
 
+    /**
+     * Handle that a message has been selected.
+     *
+     * @param index the index of the selected message
+     */
     public void onSelectMessage(int index) {
         if (index == -1) {
             view.setMessageTitleLabel("");
