@@ -13,7 +13,7 @@ public class RateService {
     private HashMap<String, List<String>> raterToSpeakerRated = new HashMap<>();
     private HashMap<String, List<Integer>> speakerToRate = new HashMap<>();
 
-    private List<Rate> allRate = new ArrayList<>();
+//    private List<Rate> allRate = new ArrayList<>();
 
 
     private RateService() {}
@@ -24,12 +24,14 @@ public class RateService {
         if (!(speaker instanceof Speaker)) {
             throw new notSpeakerException();
         }
-        if (raterToSpeakerRated.get(rater.getUsername()).contains(speaker.getUsername())) throw new rateRepetitionException();
+        if (raterToSpeakerRated.containsKey(rater.getUsername())) {
+            if (raterToSpeakerRated.get(rater.getUsername()).contains(speaker.getUsername())) throw new rateRepetitionException();
+        }
 
         if (rate < 1 || rate > 10) throw new rateOutOfBoundException();
 
-        Rate newRate = new Rate(rate, rater.getUsername(), speaker.getUsername());
-        allRate.add(newRate);
+//        Rate newRate = new Rate(rate, rater.getUsername(), speaker.getUsername());
+//        allRate.add(newRate);
 
         if (!raterToSpeakerRated.containsKey(rater.getUsername())) {
             raterToSpeakerRated.put(rater.getUsername(), new ArrayList<>());
@@ -52,17 +54,17 @@ public class RateService {
         return sum/rate.size();
     }
 
-    public void setRaterToSpeakerRated(HashMap<String, List<String>> raterToSpeakerRated) {
-        this.raterToSpeakerRated = raterToSpeakerRated;
-    }
-
-    public void setSpeakerToRate(HashMap<String, List<Integer>> speakerToRate) {
-        this.speakerToRate = speakerToRate;
-    }
-
-    public List<Rate> getAllRate() {
-        return allRate;
-    }
+//    public void setRaterToSpeakerRated(HashMap<String, List<String>> raterToSpeakerRated) {
+//        this.raterToSpeakerRated = raterToSpeakerRated;
+//    }
+//
+//    public void setSpeakerToRate(HashMap<String, List<Integer>> speakerToRate) {
+//        this.speakerToRate = speakerToRate;
+//    }
+//
+//    public List<Rate> getAllRate() {
+//        return allRate;
+//    }
 
 
     public static class raterException extends Exception {}

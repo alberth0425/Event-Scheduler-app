@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Rater extends User {
-    //public List<Integer> speakerIdRated = new ArrayList<>();
+    public List<Integer> speakerIdRated = new ArrayList<>();
 
 
     /**
@@ -26,33 +26,33 @@ public class Rater extends User {
      */
     public Rater(String dataEntry) {
         super(dataEntry);
-        // convert from list of strings to list of integers for speakerIdRated.
-        //String[] allId = dataEntry.split(DELIMITER)[5].split(",");
-        //for (String rate: allId) {
-        //    this.speakerIdRated.add(Integer.parseInt(rate));
-        //}
+        //convert from list of strings to list of integers for speakerIdRated.
+        String[] allId = dataEntry.split(DELIMITER)[5].split(",");
+        for (String rate: allId) {
+            this.speakerIdRated.add(Integer.parseInt(rate));
+        }
     }
 
-    //public List<Integer> getSpeakerIdRated() {
-    //    return speakerIdRated;
-    //}
+    public List<Integer> getSpeakerIdRated() {
+        return speakerIdRated;
+    }
 
-    //public void addSpeakerIdRated(int id) {
-    //    speakerIdRated.add(id);
-    //}
+    public void addSpeakerIdRated(int id) {
+        speakerIdRated.add(id);
+    }
 
-    //**
-     //* turn the information of this user into a savable string.
-     //*
-     //* @return a savable string in the order of: id, username, password, firstname, lastname
-     //*/
-    //@Override
-    //public String toSavableString() {
+    /**
+     * turn the information of this user into a savable string.
+     *
+     * @return a savable string in the order of: id, username, password, firstname, lastname
+     */
+    @Override
+    public String toSavableString() {
         // Make the list of speakerIdRated a string with commas in between to separate.
-        //StringBuilder allIdRated = new StringBuilder();
-        //for (Integer rate: speakerIdRated){
-        //    allIdRated.append(rate + ",");
-        //}
-    //    return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName;
-   // }
+        StringBuilder allIdRated = new StringBuilder();
+        for (Integer rate: speakerIdRated){
+            allIdRated.append(rate + ",");
+        }
+        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName;
+    }
 }

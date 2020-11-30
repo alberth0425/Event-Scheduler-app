@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Speaker extends User {
-    //protected List<Integer> allRate = new ArrayList<>();
-    //protected StringBuilder allRate = new StringBuilder();
-    //protected double averageRate;
+    protected List<Integer> allRate = new ArrayList<>();
+    protected double averageRate;
 
     /**
      * the constructor for speaker class.
@@ -27,29 +26,27 @@ public class Speaker extends User {
      */
     public Speaker(String dataEntry) {
         super(dataEntry);
-        //this.averageRate = Double.parseDouble(dataEntry.split(DELIMITER)[5]);
+        this.averageRate = Double.parseDouble(dataEntry.split(DELIMITER)[5]);
     }
 
-    //public void addRate(int rate) {
-    //    allRate.append(String.valueOf(rate));
-    //    String[] a = allRate.toString().split(",");
-    //    double sum = 0;
-    //    for (String r : a) {
-     //      sum += Integer.parseInt(r);
-     //   }
-     //   averageRate = sum/allRate.toString().length();
+    public void addRate(int rate) {
+        allRate.add(rate);
+        double sum = 0;
+        for (int r : allRate) {
+           sum += r;
+        }
+        averageRate = sum/allRate.toString().length();
 
-     //   allRate.append(',');
-    //}
+    }
 
-    //public Double getAverageRate() {
-     //   return averageRate;
-    //}
+    public Double getAverageRate() {
+        return averageRate;
+    }
 
-    //@Override
-    //public String toSavableString() {
-    //    return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
-    //            DELIMITER + averageRate;
-    //}
+    @Override
+    public String toSavableString() {
+        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
+                DELIMITER + averageRate;
+    }
 }
 

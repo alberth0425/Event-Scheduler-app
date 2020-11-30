@@ -19,7 +19,6 @@ public class PersistenceStorage {
     public static final String CONTACT_BOOK_PATH = "./src/gateway/contact_book.txt";
     public static final String RATER_STORAGE_PATH= "./src/gateway/raters.txt";
     public static final String AGREEMENT_STORAGE_PATH= "./src/gateway/agreements.txt";
-    public static final String RATE_STORAGE_PATH= "./src/gateway/rates.txt";
 
     /**
      * Save input entries as a csv/txt file to the input path.
@@ -75,8 +74,6 @@ public class PersistenceStorage {
                     res.add((T) new Rater(nl));
                 } else if (returnType.equals(Agreement.class)) {
                     res.add((T) new Agreement(nl));
-                } else if (returnType.equals(Rate.class)) {
-                    res.add((T) new Rate(nl));
                 }
             }
             return res;
