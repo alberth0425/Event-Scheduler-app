@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -17,15 +18,6 @@ public class PersistenceStorage {
     private static final String ROOM_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/rooms";
     private static final String EVENT_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/events";
     private static final String MESSAGE_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/messages";
-
-
-    public static final String ATTENDEE_STORAGE_PATH = "./phase1/storage/attendees.txt";
-    public static final String SPEAKER_STORAGE_PATH = "./phase1/storage/speakers.txt";
-    public static final String ORGANIZER_STORAGE_PATH = "./phase1/storage/organizers.txt";
-    public static final String EVENT_STORAGE_PATH = "./phase1/storage/events.txt";
-    public static final String ROOM_STORAGE_PATH = "./phase1/storage/rooms.txt";
-    public static final String MESSAGE_STORAGE_PATH = "./phase1/storage/messages.txt";
-    public static final String CONTACT_BOOK_PATH = "./phase1/storage/contact_book.txt";
 
     public static void main(String[] args) throws IOException {
         Room room1 = new Room(12, 13);
@@ -41,122 +33,14 @@ public class PersistenceStorage {
     }
 
     /**
-     * Save input entries as a csv/txt file to the input path.
-     *
-     * @param entries to-be-saved entries, need to implement `Savable`
-     * @param path path of the saved file
-     */
-    public static void saveEntities(List<Savable> entries, String path) {
-        try {
-            PrintWriter pw = getPrinterWriter(path);
-
-            for (Savable e : entries) {
-                pw.println(e.toSavableString());
-            }
-            pw.flush();
-            pw.close();
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Fetch all entries from a csv/txt file and return the entries as an `ArrayList`.
-     *
-     * @param path path of the file, should use `returnType`'s corresponding static path constant
-     * @param returnType type of the entries in the file
-     * @param <T> type of the entries in the file
-     * @return an `ArrayList` of fetched `T`s
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> List<T> readEntities(String path, Class<T> returnType) {
-        List<T> res = new ArrayList<>();
-        try {
-            File eventFile = new File(path);
-            Scanner eventScanner = new Scanner(eventFile);
-
-            while (eventScanner.hasNext()) {
-                String nl = eventScanner.nextLine().trim();
-                if (returnType.equals(Event.class)) {
-                    res.add((T) new Event(nl));
-                } else if (returnType.equals(Attendee.class)) {
-                    res.add((T) new Attendee(nl));
-                } else if (returnType.equals(Speaker.class)) {
-                    res.add((T) new Speaker(nl));
-                } else if (returnType.equals(Organizer.class)) {
-                    res.add((T) new Organizer(nl));
-                } else if (returnType.equals(Room.class)) {
-                    res.add((T) new Room(nl));
-                } else if (returnType.equals(Message.class)) {
-                    res.add((T) new Message(nl));
-                }
-            }
-            return res;
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return res;
-        }
-    }
-
-    /**
-     * Save input contact book as a csv/txt file to the input path.
-     *
-     * @param contactBook to-be-saved contact book
-     * @param path path of the saved file
-     */
-    public static void saveContactBook(HashMap<String, List<String>> contactBook, String path) {
-        try {
-            PrintWriter pw = getPrinterWriter(path);
-
-            for (Map.Entry<String, List<String>> me : contactBook.entrySet()) {
-                pw.println(me.getKey() + Savable.DELIMITER + String.join(Savable.DELIMITER, me.getValue()));
-            }
-            pw.flush();
-            pw.close();
-            System.out.println("All entries saved to path: " + path);
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Fetch all contacts from a csv/txt file and return the contact book as an `HashMap<String, List<String>>`.
-     *
-     * @param path path of the file
-     * @return a `HashMap<String, List<String>>` representing the fetched contact book
-     */
-    public static HashMap<String, List<String>> readContactBook(String path) {
-        HashMap<String, List<String>> res = new HashMap<>();
-
-        try {
-            File eventFile = new File(path);
-            Scanner eventScanner = new Scanner(eventFile);
-
-            while (eventScanner.hasNext()) {
-                String[] usernames = eventScanner.nextLine().trim().split(Savable.DELIMITER);
-                List<String> contacts = Arrays.asList(Arrays.copyOfRange(usernames, 1, usernames.length));
-                String user = usernames[0];
-                res.put(user, contacts);
-            }
-            return res;
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return res;
-        }
-    }
-
-    /**
      * Print out the request in to the console from the input URL
-     * @param inputURL a URL that contains all the information
+     * @param returnType the type of wanted entities
      * @throws IOException throws Input/Output exception
      */
-    public static <T> List<T> getRequest(String inputURL, Class<T> returnType) throws IOException {
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> getRequest(Class<T> returnType) throws IOException {
         StringBuilder returnedString = new StringBuilder();
-        URL urlForInformation = new URL(inputURL);
+        URL urlForInformation = getURLByClass(returnType);
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
 
         // Request setup
@@ -169,18 +53,16 @@ public class PersistenceStorage {
         while ((line = output.readLine())!=null) returnedString.append(line);
         output.close();
         con.disconnect();
-        switch (inputURL) {
-            case USER_DB_URL:
-                return (List<T>) parseToUserList(returnedString.toString());
-            case ROOM_DB_URL:
-                return (List<T>) parseToRoomList(returnedString.toString());
-            case EVENT_DB_URL:
-                return (List<T>) parseToEventList(returnedString.toString());
-            case MESSAGE_DB_URL:
-                return (List<T>) parseToMessageList(returnedString.toString());
-            default:
-                return new ArrayList<>();
-        }
+
+        if (returnType.equals(User.class)) {
+            return (List<T>) parseToUserList(returnedString.toString());
+        } else if (returnType.equals(Room.class)) {
+            return (List<T>) parseToRoomList(returnedString.toString());
+        } else if (returnType.equals(Event.class)) {
+            return (List<T>) parseToEventList(returnedString.toString());
+        } else if (returnType.equals(Message.class)) {
+            return (List<T>) parseToMessageList(returnedString.toString());
+        } else return new ArrayList<>();
     }
 
     /**
@@ -192,16 +74,7 @@ public class PersistenceStorage {
      */
     public static <T> void putRequest(List<T> list, Class<T> inputType) throws IOException {
 
-        URL urlForInformation = null;
-        if (inputType.equals(User.class)) {
-            urlForInformation = new URL(USER_DB_URL);
-        } else if (inputType.equals(Event.class)) {
-            urlForInformation = new URL(EVENT_DB_URL);
-        } else if (inputType.equals(Room.class)) {
-            urlForInformation = new URL(ROOM_DB_URL);
-        } else if (inputType.equals(Message.class)) {
-            urlForInformation = new URL(MESSAGE_DB_URL);
-        }
+        URL urlForInformation = getURLByClass(inputType);
 
         assert urlForInformation != null;
         HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
@@ -246,12 +119,6 @@ public class PersistenceStorage {
     }
 
     // --- Private Helpers ---
-    private static PrintWriter getPrinterWriter(String path) throws IOException {
-        FileWriter fw = new FileWriter(path, false);
-        BufferedWriter bw = new BufferedWriter(fw);
-
-        return new PrintWriter(bw);
-    }
 
     private static List<User> parseToUserList(String response) {
         ArrayList<User> userList = new ArrayList<>();
@@ -292,8 +159,16 @@ public class PersistenceStorage {
         JSONArray events = new JSONArray(response);
         for (int i = 0; i < events.length(); i++) {
             JSONObject event = events.getJSONObject(i);
-            eventList.add(new Event(event.getString("title"), event.getString( "speaker_un"),
-                    event.getInt("starting_time"), event.getInt("room_number")));
+
+            // parse attendee usernames from JSONArray to List<String>
+            JSONArray attendeeUNsRaw = (JSONArray) event.get("attendee_uns");
+            List<String> attendeeUNs = new ArrayList<>();
+            for (int j = 0; j < attendeeUNsRaw.length(); j++) attendeeUNs.add(attendeeUNsRaw.getString(j));
+
+            Event evObj = new Event(event.getString("title"), event.getString( "speaker_un"),
+                    event.getInt("starting_time"), event.getInt("room_number"));
+            evObj.setAttendeeUNs(attendeeUNs);
+            eventList.add(evObj);
         }
         return eventList;
     }
@@ -307,5 +182,19 @@ public class PersistenceStorage {
                     message.getString("receiver_un")));
         }
         return messagesList;
+    }
+
+    private static <T> URL getURLByClass(Class<T> tClass) throws MalformedURLException {
+        URL resUrl = null;
+        if (tClass.equals(User.class)) {
+            resUrl = new URL(USER_DB_URL);
+        } else if (tClass.equals(Event.class)) {
+            resUrl = new URL(EVENT_DB_URL);
+        } else if (tClass.equals(Room.class)) {
+            resUrl = new URL(ROOM_DB_URL);
+        } else if (tClass.equals(Message.class)) {
+            resUrl = new URL(MESSAGE_DB_URL);
+        }
+        return resUrl;
     }
 }

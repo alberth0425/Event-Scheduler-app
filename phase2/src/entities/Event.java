@@ -141,6 +141,14 @@ public class Event implements Savable {
     }
 
     /**
+     * setter for attendee usernames list, should only be used in PersistenceStorage
+     * @param attendeeUNs the list of attendee user names
+     */
+    public void setAttendeeUNs(List<String> attendeeUNs) {
+        this.attendeeUNs = attendeeUNs;
+    }
+
+    /**
      * turn the information of this event into a string.
      *
      * @return the string that contains all the information of this event
