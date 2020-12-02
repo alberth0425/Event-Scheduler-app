@@ -66,27 +66,6 @@ public class BaseController {
             agreementHashMap.put(agreement.getUsername(), agreement);
         }
         AgreementService.shared.setAgreements(agreementHashMap);
-
-//        List<Rate> rates = PersistenceStorage.readEntities(PersistenceStorage.RATE_STORAGE_PATH, Rate.class);
-//
-//        HashMap<String, List<String>> raterToSpeakerRated = new HashMap<>();
-//        HashMap<String, List<Integer>> speakerToRate = new HashMap<>();
-//
-//        for (Rate rate : rates) {
-//
-//            if (!raterToSpeakerRated.containsKey(rate.getRaterUsername())) {
-//                raterToSpeakerRated.put(rate.getRaterUsername(), new ArrayList<>());
-//            }
-//            raterToSpeakerRated.get(rate.getRaterUsername()).add(rate.getSpeakerRatedUsername());
-//
-//            if (!speakerToRate.containsKey(rate.getSpeakerRatedUsername())) {
-//                speakerToRate.put(rate.getSpeakerRatedUsername(), new ArrayList<>());
-//            }
-//            speakerToRate.get(rate.getSpeakerRatedUsername()).add(rate.getRate());
-//        }
-//
-//        RateService.shared.setRaterToSpeakerRated(raterToSpeakerRated);
-//        RateService.shared.setSpeakerToRate(speakerToRate);
     }
 
     void save() {

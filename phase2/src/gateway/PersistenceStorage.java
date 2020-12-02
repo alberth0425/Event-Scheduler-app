@@ -70,7 +70,7 @@ public class PersistenceStorage {
                     res.add((T) new Room(nl));
                 } else if (returnType.equals(Message.class)) {
                     res.add((T) new Message(nl));
-                }else if (returnType.equals(Rater.class)) {
+                } else if (returnType.equals(Rater.class)) {
                     res.add((T) new Rater(nl));
                 } else if (returnType.equals(Agreement.class)) {
                     res.add((T) new Agreement(nl));
