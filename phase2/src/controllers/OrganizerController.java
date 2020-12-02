@@ -27,7 +27,8 @@ public class OrganizerController extends UserController {
             System.out.println("6. Assign speaker to event");
             System.out.println("7. View messages");
             System.out.println("8. Send messages");
-            System.out.println("9. Exit");
+            System.out.println("9. Change message status");
+            System.out.println("10. Exit");
 
             String content = scanner.nextLine();
             try {
@@ -61,7 +62,10 @@ public class OrganizerController extends UserController {
                         sendMessages();
                         break;
                     case 9:
-                        exit = true;
+                        changeMessageStatus();
+                        break;
+                    case 10:
+                    exit = true;
                         break;
 
                     default:
