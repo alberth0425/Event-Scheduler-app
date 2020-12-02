@@ -10,15 +10,15 @@ public class PersistenceStorage {
      * Path constants for different Savable classes
      */
 
-    public static final String ATTENDEE_STORAGE_PATH = "./src/gateway/attendees.txt";
-    public static final String SPEAKER_STORAGE_PATH = "./src/gateway/speakers.txt";
-    public static final String ORGANIZER_STORAGE_PATH = "./src/gateway/organizers.txt";
-    public static final String EVENT_STORAGE_PATH = "./src/gateway/events.txt";
-    public static final String ROOM_STORAGE_PATH = "./src/gateway/rooms.txt";
-    public static final String MESSAGE_STORAGE_PATH = "./src/gateway/messages.txt";
-    public static final String CONTACT_BOOK_PATH = "./src/gateway/contact_book.txt";
-    public static final String RATER_STORAGE_PATH= "./src/gateway/raters.txt";
-    public static final String AGREEMENT_STORAGE_PATH= "./src/gateway/agreements.txt";
+    public static final String ATTENDEE_STORAGE_PATH = "phase2/src/gateway/attendees.txt";
+    public static final String SPEAKER_STORAGE_PATH = "phase2/src/gateway/speakers.txt";
+    public static final String ORGANIZER_STORAGE_PATH = "phase2/src/gateway/organizers.txt";
+    public static final String EVENT_STORAGE_PATH = "phase2/src/gateway/events.txt";
+    public static final String ROOM_STORAGE_PATH = "phase2/src/gateway/rooms.txt";
+    public static final String MESSAGE_STORAGE_PATH = "phase2/src/gateway/messages.txt";
+    public static final String CONTACT_BOOK_PATH = "phase2/src/gateway/contact_book.txt";
+    public static final String RATER_STORAGE_PATH= "phase2/src/gateway/raters.txt";
+    public static final String AGREEMENT_STORAGE_PATH= "phase2/src/gateway/agreements.txt";
 
     /**
      * Save input entries as a csv/txt file to the input path.
@@ -58,8 +58,12 @@ public class PersistenceStorage {
 
             while (eventScanner.hasNext()) {
                 String nl = eventScanner.nextLine().trim();
-                if (returnType.equals(Event.class)) {
-                    res.add((T) new Event(nl));
+                if (returnType.equals(Talk.class)) {
+                    res.add((T) new Talk(nl));
+                } else if(returnType.equals(Party.class)){
+                    res.add((T) new Party(nl));
+                } else if (returnType.equals(PanelDiscussion.class)){
+                    res.add((T) new PanelDiscussion(nl));
                 } else if (returnType.equals(Attendee.class)) {
                     res.add((T) new Attendee(nl));
                 } else if (returnType.equals(Speaker.class)) {
