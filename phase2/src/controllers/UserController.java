@@ -1,10 +1,12 @@
 package controllers;
 
-import entities.Event;
-import entities.Message;
-import entities.Speaker;
-import use_cases.*;
+import entities.*;
+import use_cases.AuthService;
+import use_cases.EventService;
+import use_cases.MessageService;
+import use_cases.RoomService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 abstract public class UserController extends BaseController {
@@ -15,22 +17,56 @@ abstract public class UserController extends BaseController {
 
         StringBuilder sb = new StringBuilder();
         for (Event event : allEvents) {
-            try {
-                Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(event.getSpeakerUsername());
-
-                String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
-                        ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
-                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + ", Speaker rate: " +
-                        speaker.getAverageRate() + "\n";
-                sb.append(eStr);
-            } catch (AuthService.AuthException e) {
-                System.out.println("Speaker of event <" + event.getTitle() +
-                        "> with username: <" + event.getSpeakerUsername() + "> does not exist.");
-            } catch (RoomService.RoomException e) {
-                System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+            //if the event is a talk
+            if(event instanceof Talk) {
+                Talk talk = (Talk) event;
+                try {
+                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", Speaker: "
+                            + AuthService.shared.getUserByUsername(talk.getSpeakerUsername()).getFullname() +
+                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                    sb.append(eStr);
+                } catch (AuthService.AuthException e) {
+                    System.out.println("Speaker of event <" + event.getTitle() +
+                            "> with username: <" + talk.getSpeakerUsername() + "> does not exist.");
+                } catch (RoomService.RoomException e) {
+                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                }
+            }
+            //if the event is a party
+            else if(event instanceof Party) {
+                Party talk = (Party) event;
+                try {
+                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                    sb.append(eStr);
+                } catch (RoomService.RoomException e) {
+                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                }
+            }
+            //if the event is a panel discussion
+            else{
+                PanelDiscussion pd = (PanelDiscussion) event;
+                List<String> res = new ArrayList<>();
+                try {
+                    //Get the list of speaker names
+                    List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(pd.getSpeakerUNs());
+                    for (Speaker sp: speakers){
+                        res.add(sp.getFullname());
+                    }
+                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", Speakers: ["
+                            + res.toString() +
+                            "], Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                    sb.append(eStr);
+                } catch (AuthService.AuthException e) {
+                    System.out.println("One of the speaker usernames" + res + " of event <" + event.getTitle() +
+                            "> does not exist.");
+                } catch (RoomService.RoomException e) {
+                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                }
             }
         }
-
         System.out.println(sb.toString().trim());
     }
 

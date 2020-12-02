@@ -1,10 +1,14 @@
 package controllers;
 
-import entities.Event;
-import entities.Speaker;
+import entities.*;
 import entities.User;
-import use_cases.*;
+import use_cases.MessageService;
+import use_cases.EventService;
+import use_cases.AuthService;
+import use_cases.RoomService;
 
+import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,8 +27,7 @@ public class SpeakerController extends UserController {
                 System.out.println("1. Browse my events");
                 System.out.println("2. View messages");
                 System.out.println("3. Send messages");
-                System.out.println("4. View rate");
-                System.out.println("5. exit");
+                System.out.println("4. exit");
 
                 String action = scan.nextLine();
 
@@ -43,9 +46,6 @@ public class SpeakerController extends UserController {
                         sendMessages();
                         break;
                     case 4:
-                        ((Speaker)AuthService.shared.getCurrentUser()).getAverageRate();
-                        break;
-                    case 5:
                         exit = true;
                         break;
                     default:
@@ -114,18 +114,57 @@ public class SpeakerController extends UserController {
         StringBuilder sb = new StringBuilder();
         //traverse through the list of my events
         for (Event event : listOfMyEvents) {
-            try {
-                String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
-                        ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
-                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
-                sb.append(eStr);
-            } catch (AuthService.AuthException e) {
-                System.out.println("Speaker of event <" + event.getTitle() +
-                        "> with username: <" + event.getSpeakerUsername() + "> does not exist.");
-            } catch (RoomService.RoomException e) {
-                System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
-            } catch (Exception e) {
-                System.out.println("Unknown exception: " + e.toString());
+            //if the event is a talk
+            if (event instanceof Talk) {
+                Talk talk = (Talk) event;
+                try {
+                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", Speaker: " +
+                            AuthService.shared.getUserByUsername(talk.getSpeakerUsername()).getFullname() +
+                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                    sb.append(eStr);
+                } catch (AuthService.AuthException e) {
+                    System.out.println("Speaker of event <" + event.getTitle() +
+                            "> with username: <" + talk.getSpeakerUsername() + "> does not exist.");
+                } catch (RoomService.RoomException e) {
+                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                } catch (Exception e) {
+                    System.out.println("Unknown exception: " + e.toString());
+                }
+            }
+            //if the event is a party
+            else if(event instanceof Party){
+                try {
+                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                    sb.append(eStr);
+                } catch (RoomService.RoomException e) {
+                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                } catch (Exception e) {
+                    System.out.println("Unknown exception: " + e.toString());
+                }
+            }
+            //if the event is a Panel Discussion
+            else{
+                PanelDiscussion pd = (PanelDiscussion) event;
+                List<String> res = new ArrayList<>();
+                try {
+                    //Get the list of speaker names
+                    List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(pd.getSpeakerUNs());
+                    for (Speaker sp: speakers){
+                        res.add(sp.getFullname());
+                    }
+                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", Speakers: ["
+                            + res.toString() +
+                            "], Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                    sb.append(eStr);
+                } catch (AuthService.AuthException e) {
+                    System.out.println("One of the speaker usernames" + res + " of event <" + event.getTitle() +
+                            "> does not exist.");
+                } catch (RoomService.RoomException e) {
+                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                }
             }
         }
         System.out.println(sb.toString().trim());
@@ -133,6 +172,10 @@ public class SpeakerController extends UserController {
 
 
     // -- private helpers --
+
+    /**
+     * sends a message to all the attendees in all of this speaker's events
+     */
     private void sendToAllAttendeesAllEvents() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter message to send: ");
@@ -154,6 +197,9 @@ public class SpeakerController extends UserController {
         }
     }
 
+    /**
+     * sends a message to all the attendees in one of this speaker's events.
+     */
     private void sendToAllAttendeesOneEvent() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter event id: ");
@@ -195,6 +241,9 @@ public class SpeakerController extends UserController {
         }
     }
 
+    /**
+     * controller for sending a message to a particular person
+     */
     private void sendToOne(){
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter receiver username:");

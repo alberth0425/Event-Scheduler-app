@@ -1,62 +1,34 @@
 package entities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class Event implements Savable {
-    private static int eventCount;
+public abstract class Event implements Savable {
+    int id;
+    static int eventCount;
+    String title;
+    int startingTime;
+    int roomNumber;
+    int duration; //must be in full hours
+    //double duration;
 
-    private final String title;
-    private int roomNumber;
-    private final int startingTime;
-    private String speakerUN;
-    private List<String> attendeeUNs = new ArrayList<>();
-    private final int id;
-
-    /**
-     * constructor for the event class.
-     *
-     * @param title the title of this event
-     * @param speakerUN the speaker username of this event
-     * @param startingTime the starting time of this event
-     * @param roomNumber the room number of the room that this event is going to happen
-     */
-    public Event(String title, String speakerUN, int startingTime, int roomNumber) {
+    public Event(String title, int startingTime, int roomNumber, int duration){
         this.title = title;
-        this.speakerUN = speakerUN;
-        this.roomNumber = roomNumber;
         this.startingTime = startingTime;
-
+        this.roomNumber = roomNumber;
+        this.duration = duration;
         id = eventCount;
         eventCount += 1;
     }
 
-    /**
-     * construct event from a dataEntry.
-     *
-     * @param dataEntry the savable string that contains all the information of this event
-     */
-    public Event(String dataEntry) {
-        String[] entries = dataEntry.split(DELIMITER);
-        this.id = Integer.parseInt(entries[0]);
-        this.title = entries[1];
-        this.speakerUN = entries[2];
-        this.startingTime = Integer.parseInt(entries[3]);
-        this.roomNumber = Integer.parseInt(entries[4]);
-        this.attendeeUNs = entries.length < 6 ? new ArrayList<>() :
-                                                new ArrayList<>(Arrays.asList(entries[5].split("\\|")));
-
+    public Event(String dataEntry){
+        String[] entries = dataEntry.split(Savable.DELIMITER);
+        id = Integer.parseInt(entries[0]);
+        title = entries[1];
+        startingTime = Integer.parseInt(entries[3]);
+        roomNumber = Integer.parseInt(entries[4]);
+        duration = Integer.parseInt(entries[5]);
         eventCount += 1;
-    }
-
-    /**
-     *  getter for the id.
-     *
-     * @return the id of the event
-     */
-    public int getId() {
-        return id;
     }
 
     /**
@@ -69,12 +41,12 @@ public class Event implements Savable {
     }
 
     /**
-     *  getter for the speaker username.
+     *  getter for the id.
      *
-     * @return the username of the speaker for this event
+     * @return the id of the event
      */
-    public String getSpeakerUsername() {
-        return this.speakerUN;
+    public int getId() {
+        return id;
     }
 
     /**
@@ -96,31 +68,6 @@ public class Event implements Savable {
     }
 
     /**
-     *  getter for the attendees' username.
-     *
-     * @return the username of all the attndees of this event
-     */
-    public List<String> getAttendeeUNs() {
-        return attendeeUNs;
-    }
-
-    /**
-     * add a new attendee to this event.
-     * @param attendeeUN the username of this attendee
-     */
-    public void addAttendee(String attendeeUN) {
-        attendeeUNs.add(attendeeUN);
-    }
-
-    /**
-     * remove an attendee from this event.
-     * @param attendeeUN the username of this attendee
-     */
-    public void removeAttendee(String attendeeUN) {
-        attendeeUNs.remove(attendeeUN);
-    }
-
-    /**
      * setter of the room number.
      * @param roomNumber set the room number of where this event is going to happen
      */
@@ -128,29 +75,23 @@ public class Event implements Savable {
         this.roomNumber = roomNumber;
     }
 
-    /**
-     * setter for the speaker username.
-     * @param speakerUN the username of the speaker for this event
-     */
-    public void setSpeakerUN(String speakerUN) {
-        this.speakerUN = speakerUN;
-    }
+    public abstract List<String> getAttendeeUNs();
 
     /**
-     * turn the information of this event into a string.
-     *
-     * @return the string that contains all the information of this event
+     * An abstract method for adding a new attendee to this event.
+     * @param attendeeUN the username of this attendee
      */
-    @Override
-    public String toString() {
-        return "Event{" +
-                "title='" + title + '\'' +
-                ", roomNumber=" + roomNumber +
-                ", startingTime=" + startingTime +
-                ", speakerUN='" + speakerUN + '\'' +
-                ", attendeeUNs=" + attendeeUNs +
-                ", id=" + id +
-                '}';
+    public abstract void addAttendee(String attendeeUN);
+
+    /**
+     * abstract method for removing an attendee from this event.
+     * @param attendeeUN the username of this attendee
+     */
+
+    public abstract void removeAttendee(String attendeeUN);
+
+    public int getEndTime(){
+        return (startingTime + duration) % 24;
     }
 
     /**
@@ -160,7 +101,9 @@ public class Event implements Savable {
      */
     @Override
     public String toSavableString() {
-        return getId() + DELIMITER + getTitle() + DELIMITER + getSpeakerUsername() + DELIMITER + getStartingTime() + DELIMITER + getRoomNumber() +
-                DELIMITER + String.join("|", getAttendeeUNs());
+        return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
+                "null" + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
+                Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
+
 }

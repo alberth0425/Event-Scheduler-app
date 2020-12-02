@@ -6,6 +6,7 @@ import use_cases.EventService;
 import use_cases.MessageService;
 import use_cases.RoomService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -67,7 +68,7 @@ public class AttendeeController extends UserController {
                 System.out.println("Unknown action. Please enter digit between 1 and 7.");
                 break;
             }
-            }
+        }
 
     }
 
@@ -75,17 +76,59 @@ public class AttendeeController extends UserController {
         String username = AuthService.shared.getCurrentUser().getUsername();
         List<Event> events = EventService.shared.getEventsWithAttendee(username);
 
+        StringBuilder sb = new StringBuilder();
         System.out.println("The events you signed up for:");
         for (Event event : events) {
-            try {
-                String eventStr = "ID: " + event.getId() + ", Title: " + event.getTitle() +
-                        ", Speaker: " + AuthService.shared.getUserByUsername(event.getSpeakerUsername()).getFullname() +
-                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event);
-                System.out.println(eventStr);
-            } catch (Exception e) {
-                System.out.println("Unknown error: " + e.getMessage());
+            //if the event is a talk
+            if(event instanceof Talk) {
+                Talk talk = (Talk) event;
+                try {
+                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", Speaker: "
+                            + AuthService.shared.getUserByUsername(talk.getSpeakerUsername()).getFullname() +
+                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                    sb.append(eStr);
+                } catch (AuthService.AuthException e) {
+                    System.out.println("Speaker of event <" + event.getTitle() +
+                            "> with username: <" + talk.getSpeakerUsername() + "> does not exist.");
+                } catch (RoomService.RoomException e) {
+                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                }
+            }
+            //if the event is a party
+            else if(event instanceof Party) {
+                try {
+                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                    sb.append(eStr);
+                } catch (RoomService.RoomException e) {
+                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                }
+            }
+            //if the event is a panel discussion
+            else{
+                PanelDiscussion pd = (PanelDiscussion) event;
+                List<String> res = new ArrayList<>();
+                try {
+                    //Get the list of speaker names
+                    List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(pd.getSpeakerUNs());
+                    for (Speaker sp: speakers){
+                        res.add(sp.getFullname());
+                    }
+                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", Speakers: ["
+                            + res.toString() +
+                            "], Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                    sb.append(eStr);
+                } catch (AuthService.AuthException e) {
+                    System.out.println("One of the speaker usernames" + res + " of event <" + event.getTitle() +
+                            "> does not exist.");
+                } catch (RoomService.RoomException e) {
+                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                }
             }
         }
+        System.out.println(sb.toString().trim());
     }
 
     void signUpEvent() {
