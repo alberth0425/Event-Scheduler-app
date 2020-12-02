@@ -64,6 +64,8 @@ abstract public class UserController extends BaseController {
                             "> does not exist.");
                 } catch (RoomService.RoomException e) {
                     System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                } catch (NullPointerException e){
+                    System.out.println("Currently there is no events available for viewing");
                 }
             }
         }

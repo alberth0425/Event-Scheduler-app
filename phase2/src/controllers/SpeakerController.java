@@ -8,7 +8,6 @@ import use_cases.AuthService;
 import use_cases.RoomService;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -56,7 +55,7 @@ public class SpeakerController extends UserController {
 
                 if (exit)
                     break;
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Unknown action. Please enter digit between 1 and 4.");
                 break;
             }
@@ -97,7 +96,7 @@ public class SpeakerController extends UserController {
                 }
                 if (exit)
                     break;
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println("Unknown action. Please enter digit between 1 and 4.");
                 break;
             }
@@ -108,66 +107,71 @@ public class SpeakerController extends UserController {
      * See the list of events that this speaker holds a talk at
      */
     void browseMyEvents() {
-        //get the list of events for this speaker
-        List<Event> listOfMyEvents =
-                EventService.shared.getEventsBySpeaker(AuthService.shared.getCurrentUser().getUsername());
-        StringBuilder sb = new StringBuilder();
-        //traverse through the list of my events
-        for (Event event : listOfMyEvents) {
-            //if the event is a talk
-            if (event instanceof Talk) {
-                Talk talk = (Talk) event;
-                try {
-                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
-                            ", Speaker: " +
-                            AuthService.shared.getUserByUsername(talk.getSpeakerUsername()).getFullname() +
-                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
-                    sb.append(eStr);
-                } catch (AuthService.AuthException e) {
-                    System.out.println("Speaker of event <" + event.getTitle() +
-                            "> with username: <" + talk.getSpeakerUsername() + "> does not exist.");
-                } catch (RoomService.RoomException e) {
-                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
-                } catch (Exception e) {
-                    System.out.println("Unknown exception: " + e.toString());
-                }
-            }
-            //if the event is a party
-            else if(event instanceof Party){
-                try {
-                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
-                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
-                    sb.append(eStr);
-                } catch (RoomService.RoomException e) {
-                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
-                } catch (Exception e) {
-                    System.out.println("Unknown exception: " + e.toString());
-                }
-            }
-            //if the event is a Panel Discussion
-            else{
-                PanelDiscussion pd = (PanelDiscussion) event;
-                List<String> res = new ArrayList<>();
-                try {
-                    //Get the list of speaker names
-                    List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(pd.getSpeakerUNs());
-                    for (Speaker sp: speakers){
-                        res.add(sp.getFullname());
+        try {
+            //get the list of events for this speaker
+            List<Event> listOfMyEvents =
+                    EventService.shared.getEventsBySpeaker(AuthService.shared.getCurrentUser().getUsername());
+
+            StringBuilder sb = new StringBuilder();
+            //traverse through the list of my events
+            for (Event event : listOfMyEvents) {
+                //if the event is a talk
+                if (event instanceof Talk) {
+                    Talk talk = (Talk) event;
+                    try {
+                        String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                                ", Speaker: " +
+                                AuthService.shared.getUserByUsername(talk.getSpeakerUsername()).getFullname() +
+                                ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                        sb.append(eStr);
+                    } catch (AuthService.AuthException e) {
+                        System.out.println("Speaker of event <" + event.getTitle() +
+                                "> with username: <" + talk.getSpeakerUsername() + "> does not exist.");
+                    } catch (RoomService.RoomException e) {
+                        System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                    } catch (Exception e) {
+                        System.out.println("Unknown exception: " + e.toString());
                     }
-                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
-                            ", Speakers: ["
-                            + res.toString() +
-                            "], Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
-                    sb.append(eStr);
-                } catch (AuthService.AuthException e) {
-                    System.out.println("One of the speaker usernames" + res + " of event <" + event.getTitle() +
-                            "> does not exist.");
-                } catch (RoomService.RoomException e) {
-                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                }
+                //if the event is a party
+                else if (event instanceof Party) {
+                    try {
+                        String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                                ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                        sb.append(eStr);
+                    } catch (RoomService.RoomException e) {
+                        System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                    } catch (Exception e) {
+                        System.out.println("Unknown exception: " + e.toString());
+                    }
+                }
+                //if the event is a Panel Discussion
+                else {
+                    PanelDiscussion pd = (PanelDiscussion) event;
+                    List<String> res = new ArrayList<>();
+                    try {
+                        //Get the list of speaker names
+                        List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(pd.getSpeakerUNs());
+                        for (Speaker sp : speakers) {
+                            res.add(sp.getFullname());
+                        }
+                        String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                                ", Speakers: ["
+                                + res.toString() +
+                                "], Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                        sb.append(eStr);
+                    } catch (AuthService.AuthException e) {
+                        System.out.println("One of the speaker usernames" + res + " of event <" + event.getTitle() +
+                                "> does not exist.");
+                    } catch (RoomService.RoomException e) {
+                        System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
+                    }
                 }
             }
+            System.out.println(sb.toString().trim());
+        } catch (NullPointerException e) {
+            System.out.println("There is no events available for this speaker");
         }
-        System.out.println(sb.toString().trim());
     }
 
 
@@ -190,7 +194,7 @@ public class SpeakerController extends UserController {
                 }
             }
             System.out.println("Message sent successfully.");
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
@@ -223,8 +227,7 @@ public class SpeakerController extends UserController {
                             AuthService.shared.getUserByUsername(userName));
                 }
                 System.out.println("Message sent successfully.");
-            }
-            else{
+            } else {
                 System.out.println("Event with event id " + content + " is not your event, " +
                         "Message does not send successfully.");
             }
@@ -234,7 +237,7 @@ public class SpeakerController extends UserController {
                     "Message does not send successfully.");
         } catch (NumberFormatException e) {
             System.out.println("Invalid event id, please enter only digits. Message does not send successfully.");
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");
@@ -244,12 +247,12 @@ public class SpeakerController extends UserController {
     /**
      * controller for sending a message to a particular person
      */
-    private void sendToOne(){
+    private void sendToOne() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter receiver username:");
         String receiverUN = scan.nextLine();
 
-        try{
+        try {
             User receiver = AuthService.shared.getUserByUsername(receiverUN);
 
             System.out.println("Enter message to send:");
@@ -261,7 +264,7 @@ public class SpeakerController extends UserController {
         } catch (AuthService.UserDoesNotExistException e) {
             System.out.println("User with username " + receiverUN + " does not exist. " +
                     "Message does not send successfully.");
-        } catch(NullPointerException e){
+        } catch (NullPointerException e) {
             System.out.println("User must log in to send message. Message does not send successfully.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + " Message does not send successfully.");

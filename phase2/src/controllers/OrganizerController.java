@@ -218,7 +218,7 @@ public class OrganizerController extends UserController {
             System.out.println("User with username " + speaker + " does not exist." +
                     " Event does not create successfully.");
         } catch (NumberFormatException e) {
-            System.out.println("Starting time, room number and duration must be a numbers." +
+            System.out.println("Starting time, room number and duration must all be numbers." +
                     " Event does not create successfully.");
         } catch (RoomService.RoomException e) {
             System.out.println("Room with room number " + roomNumber + " does not exist." +
@@ -300,7 +300,7 @@ public class OrganizerController extends UserController {
                 AuthService.shared.getUserByUsername(username);
                 speakerUNs.add(username);
             } catch (AuthService.AuthException e) {
-                System.out.println("user with username: " + username + " is not found");
+                System.out.println("user with username '" + username + "' is not found");
             }
         }
         //check that there is at least a valid speaker in this panel discussion
@@ -327,7 +327,7 @@ public class OrganizerController extends UserController {
                 Room room = RoomService.shared.getRoom(rm);
 
                 try {
-                    //Call createEvent method in EventService to create an Event.
+                    //Call createPD method in EventService to create an Event.
                     EventService.shared.createPD(title, st, speakers, room, d);
                     System.out.println("Event created successfully.");
 
@@ -527,7 +527,7 @@ public class OrganizerController extends UserController {
                         //Get Event by searching the Event ID of the Event.
                         Event event = EventService.shared.getEventById(eventId);
 
-                        //Get the speaker of a certain Event.
+                        //set the speaker to talk
                         EventService.shared.setTalkSpeaker(speaker, event);
 
                     } catch (EventService.EventDoesNotExistException e) {
@@ -557,6 +557,8 @@ public class OrganizerController extends UserController {
             System.out.println("Unknown exception: " + e.toString());
         }
     }
+
+    private void assignSpeakerToTalk(Talk talk, Speaker speaker){}
 
     /**
      * The sendMessages method implements an application that
