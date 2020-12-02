@@ -9,7 +9,7 @@ public abstract class BaseViewController<P> {
      * Initialize the view controller with given parameter, which is passed by the view controller from which we are
      * navigating. This method is executed after the FXML file is loaded and JavaFX initialize method is called.
      *
-     * @param parameters
+     * @param parameters the initial parameters
      */
     public void initializeWithParameters(P parameters) {}
 

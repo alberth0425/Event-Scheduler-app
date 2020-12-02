@@ -10,6 +10,7 @@ import ui.event.EventViewController;
 import ui.login.LoginViewController;
 import ui.message.MessageViewController;
 import ui.navigation.FXMLFile;
+import ui.room.RoomViewController;
 import ui.util.NoSelectionModel;
 
 @FXMLFile("user_action.fxml")
@@ -46,6 +47,11 @@ public class UserActionViewController extends BaseViewController<Void> implement
     @Override
     public void navigateToMessages() {
         getNavigationController().navigate(MessageViewController.class);
+    }
+
+    @Override
+    public void navigateToRooms() {
+        getNavigationController().navigate(RoomViewController.class);
     }
 
     @Override

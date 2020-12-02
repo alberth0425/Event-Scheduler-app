@@ -7,7 +7,7 @@ import use_cases.AuthService;
 
 public class OrganizerActionPresenter extends UserActionPresenter {
     private final ObservableList<String> actionList = FXCollections.observableArrayList(
-            "Browse events", "Messages", "Log out"
+            "Browse events", "Messages", "Rooms", "Log out"
     );
 
     public OrganizerActionPresenter(UserActionView view) {
@@ -33,7 +33,11 @@ public class OrganizerActionPresenter extends UserActionPresenter {
                 getView().navigateToMessages();
                 break;
             case 2:
+                getView().navigateToRooms();
+                break;
+            case 3:
                 getView().navigateToLogin();
+                break;
             default:
                 break;
         }
