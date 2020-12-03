@@ -327,7 +327,7 @@ public class EventService {
         }
 
         // Check event starting time
-        if (startingTime < 9 || startingTime >= 17) throw new InvalidEventTimeException();
+        if (startingTime < 0 || startingTime >= 24) throw new InvalidEventTimeException();
         // create talk
         Event talk = new Talk(title, speaker.getUsername(), startingTime, room.getRoomNumber(), duration);
         allEvents.add(talk);
@@ -396,7 +396,7 @@ public class EventService {
         }
 
         //Check event starting time
-        if (startingTime < 9 || startingTime >= 17) throw new InvalidEventTimeException();
+        if (startingTime < 0 || startingTime >= 24) throw new InvalidEventTimeException();
         Event party = new Party(title, startingTime, room.getRoomNumber(), duration);
         allEvents.add(party);
     }
