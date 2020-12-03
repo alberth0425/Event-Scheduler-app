@@ -33,6 +33,8 @@ public class Message implements Savable {
         UUID uuid = UUID.randomUUID();
         id = uuid.toString();
 
+        isArchived = false;
+
     }
 
     /**
