@@ -165,7 +165,7 @@ public class AttendeeController extends UserController {
                     " Message does not send successfully.");
         }
     }
-}
+
 
     private void setroomcapacityforcurrentEvent(){
         Scanner scanner = new Scanner(System.in);
@@ -179,7 +179,7 @@ public class AttendeeController extends UserController {
 
             //enter the eventid of the event
             int eventId = Integer.parseInt(content);
-            int capacity = Integer.parseInt(input)
+            int capacity = Integer.parseInt(input);
             EventService.shared.getCapacity(eventId);
 
 
