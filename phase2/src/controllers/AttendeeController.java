@@ -166,31 +166,4 @@ public class AttendeeController extends UserController {
         }
     }
 
-
-    private void setroomcapacityforcurrentEvent(){
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Enter the eventid of the event:");
-
-        String content = scanner.nextLine();
-        System.out.println("Please enter the capacity of the event");
-        String input = scanner.nextLine();
-        try{
-
-            //enter the eventid of the event
-            int eventId = Integer.parseInt(content);
-            int capacity = Integer.parseInt(input);
-            EventService.shared.getCapacity(eventId);
-
-
-            String message = scanner.nextLine();
-
-
-        } catch (IllegalArgumentException capacity) {
-
-            System.out.println("The capacity entered is out of range and should be greater than 0.");
-        }
-
-    }
-
 }
