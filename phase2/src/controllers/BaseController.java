@@ -15,6 +15,9 @@ public class BaseController {
         List<Organizer> organizers = PersistenceStorage.readEntities(PersistenceStorage.ORGANIZER_STORAGE_PATH, Organizer.class);
         List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.SPEAKER_STORAGE_PATH, Speaker.class);
         List<Rater> raters = PersistenceStorage.readEntities(PersistenceStorage.RATER_STORAGE_PATH, Rater.class);
+        List<Talk> talks = PersistenceStorage.readEntities(PersistenceStorage.TALK_STORAGE_PATH, Talk.class);
+        List<Party> parties = PersistenceStorage.readEntities(PersistenceStorage.PARTY_STORAGE_PATH, Party.class);
+        List<PanelDiscussion> PDs = PersistenceStorage.readEntities(PersistenceStorage.PD_STORAGE_PATH, PanelDiscussion.class);
 
         HashMap<String, User> users = new HashMap<>();
         for (User user : attendees) {
@@ -46,7 +49,11 @@ public class BaseController {
         }
         MessageService.shared.setMessageRepository(messageRepository);
 
-        List<Event> events = PersistenceStorage.readEntities(PersistenceStorage.EVENT_STORAGE_PATH, Event.class);
+        //load events
+        List<Event> events = new ArrayList<>();
+        events.addAll(talks);
+        events.addAll(parties);
+        events.addAll(PDs);
 
         EventService.shared.setAllEvents(events);
 
@@ -58,7 +65,8 @@ public class BaseController {
         }
         RoomService.shared.setRooms(roomHashMap);
 
-        List<Agreement> agreements = PersistenceStorage.readEntities(PersistenceStorage.AGREEMENT_STORAGE_PATH, Agreement.class);
+        List<Agreement> agreements =
+                PersistenceStorage.readEntities(PersistenceStorage.AGREEMENT_STORAGE_PATH, Agreement.class);
 
         HashMap<String, Agreement> agreementHashMap = new HashMap<>();
 
@@ -69,9 +77,23 @@ public class BaseController {
     }
 
     void save() {
-        // save all event to the storage
-        List<Savable> events = new ArrayList<>(EventService.shared.getAllEvents());
-        PersistenceStorage.saveEntities(events,PersistenceStorage.EVENT_STORAGE_PATH);
+        // save all events to the storage
+        List<Event> events = new ArrayList<>(EventService.shared.getAllEvents());
+        List<Savable> talks = new ArrayList<>();
+        List<Savable> parties = new ArrayList<>();
+        List<Savable> PDs = new ArrayList<>();
+        for (Event event: events){
+            if (event instanceof Talk){
+                talks.add(event);
+            } else if(event instanceof Party){
+                parties.add(event);
+            } else{
+                PDs.add(event);
+            }
+        }
+        PersistenceStorage.saveEntities(talks,PersistenceStorage.TALK_STORAGE_PATH);
+        PersistenceStorage.saveEntities(parties,PersistenceStorage.PARTY_STORAGE_PATH);
+        PersistenceStorage.saveEntities(PDs,PersistenceStorage.PD_STORAGE_PATH);
 
         // save all users to the storage
         List<User> users = new ArrayList<>(AuthService.shared.getAllUsers());

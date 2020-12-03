@@ -130,6 +130,20 @@ public class EventService {
         //check that event is a panel discussion
         checkEventIsPD(event);
 
+        // Check for double booking
+        for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
+            if (e instanceof Talk) {
+                Talk talk = (Talk) e;
+                checkDoubleBookSpeakerTalk(talk, newSpeaker);
+            } else if(e instanceof PanelDiscussion){
+                PanelDiscussion pd = (PanelDiscussion) e;
+                checkDoubleBookSpeakerPD(pd, newSpeaker);
+            }
+        }
+        //assign the speaker to event
+        PanelDiscussion pd = (PanelDiscussion) event;
+        pd.addSpeakerUN(newSpeaker.getUsername());
+
     }
 
     public void setPDSpeaker(List<Speaker> newSpeakers, Event event) throws EventException {

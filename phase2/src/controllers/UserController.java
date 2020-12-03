@@ -20,10 +20,12 @@ abstract public class UserController extends BaseController {
             //if the event is a talk
             if(event instanceof Talk) {
                 Talk talk = (Talk) event;
+                //Talk display message
                 try {
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
                             ", Speaker: "
                             + AuthService.shared.getUserByUsername(talk.getSpeakerUsername()).getFullname() +
+                            ", From: " + talk.getStartingTime() + " - " + talk.getEndTime() +
                             ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
                     sb.append(eStr);
                 } catch (AuthService.AuthException e) {
@@ -35,9 +37,10 @@ abstract public class UserController extends BaseController {
             }
             //if the event is a party
             else if(event instanceof Party) {
-                Party talk = (Party) event;
+                Party party = (Party) event;
                 try {
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                            ", From: " + party.getStartingTime() + " - " + party.getEndTime() +
                             ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
                     sb.append(eStr);
                 } catch (RoomService.RoomException e) {
@@ -57,7 +60,8 @@ abstract public class UserController extends BaseController {
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
                             ", Speakers: ["
                             + res.toString() +
-                            "], Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                            "], From: " + pd.getStartingTime() + " - " + pd.getEndTime() +
+                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
                     sb.append(eStr);
                 } catch (AuthService.AuthException e) {
                     System.out.println("One of the speaker usernames" + res + " of event <" + event.getTitle() +

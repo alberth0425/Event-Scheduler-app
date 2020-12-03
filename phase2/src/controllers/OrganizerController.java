@@ -357,11 +357,12 @@ public class OrganizerController extends UserController {
             } catch (AuthService.AuthException e) {
                 System.out.println("User with username is not found");
             }
-        } catch(EventService.NotEnoughSpeakersException e){
+        } catch (EventService.NotEnoughSpeakersException e) {
             System.out.println("Number of speakers must be >= 1 in a Panel Discussion");
             System.out.println("Event creation was unsuccessful");
         }
     }
+
     /**
      * The createRoom method implements an application that
      * let Organizers create Room.
@@ -468,10 +469,9 @@ public class OrganizerController extends UserController {
                         System.out.println("Speaker " + speakerUN + " is assigned to event successfully.");
                     }
                     //add a speaker to a panel discussion
-                    else if(event instanceof PanelDiscussion){
+                    else if (event instanceof PanelDiscussion) {
                         EventService.shared.addSpeakerToPD(speaker, event);
-                    }
-                    else{
+                    } else {
                         throw new EventService.CannotAddSpeakerToPartyException();
                     }
                 } catch (EventService.EventDoesNotExistException e) {
@@ -480,10 +480,9 @@ public class OrganizerController extends UserController {
                 } catch (EventService.SpeakerDoubleBookException e) {
                     System.out.println("Speaker is not available at this event with event ID "
                             + eventId + "'s time. Speaker assigned unsuccessfully.");
-                } catch (EventService.CannotAddSpeakerToPartyException e){
+                } catch (EventService.CannotAddSpeakerToPartyException e) {
                     System.out.println("Speaker cannot be added to a party");
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.out.println("Unknown Exception: " + e.toString());
                 }
             } catch (NumberFormatException e) {
@@ -523,13 +522,23 @@ public class OrganizerController extends UserController {
                 try {
                     int eventId = Integer.parseInt(id);
                     try {
+                        Event e = EventService.shared.getEventById(eventId);
+                        if (e instanceof Talk) {
+                            //Get Event by searching the Event ID of the Event.
+                            Event event = EventService.shared.getEventById(eventId);
 
-                        //Get Event by searching the Event ID of the Event.
-                        Event event = EventService.shared.getEventById(eventId);
+                            //set the speaker to talk
+                            EventService.shared.setTalkSpeaker(speaker, event);
+                        } else if (e instanceof PanelDiscussion) {
+                            //Get Event by searching the Event ID of the Event.
+                            Event event = EventService.shared.getEventById(eventId);
 
-                        //set the speaker to talk
-                        EventService.shared.setTalkSpeaker(speaker, event);
-
+                            //assign the speaker to the panel discussion
+                            EventService.shared.addSpeakerToPD(speaker, event);
+                        } else {
+                            assigned = false;
+                            System.out.println("Cannot assign speakers to a party");
+                        }
                     } catch (EventService.EventDoesNotExistException e) {
                         System.out.println("Event with event id " + eventId + " does not exist. Speaker assigned " +
                                 "unsuccessfully.");
@@ -556,9 +565,8 @@ public class OrganizerController extends UserController {
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString());
         }
-    }
 
-    private void assignSpeakerToTalk(Talk talk, Speaker speaker){}
+    }
 
     /**
      * The sendMessages method implements an application that
