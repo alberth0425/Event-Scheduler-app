@@ -28,7 +28,8 @@ public class OrganizerController extends UserController {
             System.out.println("5. Assign speaker to event");
             System.out.println("6. View messages");
             System.out.println("7. Send messages");
-            System.out.println("8. Exit");
+            System.out.println("8. reset event capacity");
+            System.out.println("9. Exit");
 
             String content = scanner.nextLine();
             try {
@@ -59,6 +60,9 @@ public class OrganizerController extends UserController {
                         sendMessages();
                         break;
                     case 8:
+                        resetEventCapacity();
+                        break;
+                    case 9:
                         exit = true;
                         break;
 
@@ -576,13 +580,11 @@ public class OrganizerController extends UserController {
         System.out.println("Please enter the capacity of the event");
         String input = scanner.nextLine();
         try{
-
             //enter the event id of the event
             int eventId = Integer.parseInt(content);
             int capacity = Integer.parseInt(input);
             EventService.shared.getCapacity(eventId);
             String message = scanner.nextLine();
-
         } catch (IllegalArgumentException | EventService.EventException capacity) {
 
             System.out.println("The capacity entered is out of range and should be greater than 0.");
