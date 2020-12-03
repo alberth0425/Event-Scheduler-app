@@ -574,19 +574,22 @@ public class OrganizerController extends UserController {
     private void resetEventCapacity() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter the event id of the event:");
+        System.out.println("Enter the event id of the event: ");
+        String content_id = scanner.nextLine();
+        System.out.println("Please enter the capacity of the event: ");
+        String content_ca = scanner.nextLine();
 
-        String content = scanner.nextLine();
-        System.out.println("Please enter the capacity of the event");
-        String input = scanner.nextLine();
         try{
             //enter the event id of the event
-            int eventId = Integer.parseInt(content);
-            int capacity = Integer.parseInt(input);
-            EventService.shared.getCapacity(eventId);
-            String message = scanner.nextLine();
-        } catch (IllegalArgumentException | EventService.EventException capacity) {
+            int eventId = Integer.parseInt(content_id);
+            int capacity = Integer.parseInt(content_ca);
+            Event event = EventService.shared.getEventById(eventId);
+            EventService.shared.setCapacity(capacity, event);
 
+        } catch (EventService.EventException e) {
+            System.out.println("Event with event id " + content_id + " does not exist. " +
+                    "Message does not send successfully.");
+        }catch (IllegalArgumentException capacity) {
             System.out.println("The capacity entered is out of range and should be greater than 0.");
         }
 
