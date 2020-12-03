@@ -32,8 +32,10 @@ public class LoginController extends BaseController {
             userController = new AttendeeController();
         } else if (user instanceof Organizer) {
             userController = new OrganizerController();
-        } else {
+        } else if (user instanceof Speaker) {
             userController = new SpeakerController();
+        } else {
+            userController = new RaterController();
         }
 
         userController.run();

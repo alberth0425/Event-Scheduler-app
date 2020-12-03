@@ -1,11 +1,9 @@
 package controllers;
 
 import entities.Event;
+import entities.Speaker;
 import entities.User;
-import use_cases.MessageService;
-import use_cases.EventService;
-import use_cases.AuthService;
-import use_cases.RoomService;
+import use_cases.*;
 
 import java.util.List;
 import java.util.Scanner;
@@ -25,7 +23,8 @@ public class SpeakerController extends UserController {
                 System.out.println("1. Browse my events");
                 System.out.println("2. View messages");
                 System.out.println("3. Send messages");
-                System.out.println("4. exit");
+                System.out.println("4. View rate");
+                System.out.println("5. exit");
 
                 String action = scan.nextLine();
 
@@ -44,6 +43,10 @@ public class SpeakerController extends UserController {
                         sendMessages();
                         break;
                     case 4:
+                        double rate = ((Speaker)AuthService.shared.getCurrentUser()).getAverageRate();
+                        System.out.println("Your average rate is: " + rate);
+                        break;
+                    case 5:
                         exit = true;
                         break;
                     default:

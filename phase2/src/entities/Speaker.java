@@ -1,6 +1,11 @@
 package entities;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Speaker extends User {
+    protected List<String> allRate = new ArrayList<>();
 
     /**
      * the constructor for speaker class.
@@ -21,5 +26,27 @@ public class Speaker extends User {
      */
     public Speaker(String dataEntry) {
         super(dataEntry);
+        this.allRate = dataEntry.split(DELIMITER).length < 6 ? new ArrayList<>() :
+                new ArrayList<>(Arrays.asList(dataEntry.split(DELIMITER)[5].split("\\|")));
+    }
+
+    public void addRate(int rate) {
+        allRate.add(String.valueOf(rate));
+
+    }
+
+    public Double getAverageRate() {
+        double sum = 0;
+        for (String r : allRate) {
+            sum += Integer.parseInt(r);
+        }
+        return sum/allRate.size();
+    }
+
+    @Override
+    public String toSavableString() {
+        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
+                DELIMITER + String.join("|", allRate);
     }
 }
+

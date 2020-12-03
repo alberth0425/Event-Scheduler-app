@@ -1,10 +1,7 @@
 package controllers;
 
 import entities.*;
-import use_cases.AuthService;
-import use_cases.EventService;
-import use_cases.MessageService;
-import use_cases.RoomService;
+import use_cases.*;
 
 import java.util.Scanner;
 
@@ -23,13 +20,14 @@ public class OrganizerController extends UserController {
         while (true) {
             System.out.println("Select an action:");
             System.out.println("1. Browse events");
-            System.out.println("2. Create speaker account");
+            System.out.println("2. Create account");
             System.out.println("3. Create new event");
-            System.out.println("4. Create new room");
-            System.out.println("5. Assign speaker to event");
-            System.out.println("6. View messages");
-            System.out.println("7. Send messages");
-            System.out.println("8. Exit");
+            System.out.println("4. Cancel event");
+            System.out.println("5. Create new room");
+            System.out.println("6. Assign speaker to event");
+            System.out.println("7. View messages");
+            System.out.println("8. Send messages");
+            System.out.println("9. Exit");
 
             String content = scanner.nextLine();
             try {
@@ -42,29 +40,32 @@ public class OrganizerController extends UserController {
                         browseEvents();
                         break;
                     case 2:
-                        createSpeaker();
+                        createAccount();
                         break;
                     case 3:
                         createEvent();
                         break;
                     case 4:
-                        createRoom();
+                        cancelEvent();
                         break;
                     case 5:
-                        assignSpeakerToEvent();
+                        createRoom();
                         break;
                     case 6:
-                        viewMessages();
+                        assignSpeakerToEvent();
                         break;
                     case 7:
-                        sendMessages();
+                        viewMessages();
                         break;
                     case 8:
+                        sendMessages();
+                        break;
+                    case 9:
                         exit = true;
                         break;
 
                     default:
-                        System.out.println("Unknown action. Please enter digit between 1 and 8.");
+                        System.out.println("Unknown action. Please enter digit between 1 and 9.");
                         break;
                 }
 
@@ -74,12 +75,124 @@ public class OrganizerController extends UserController {
                     break;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Unknown action. Please enter digit between 1 and 8. ");
+                System.out.println("Unknown action. Please enter digit between 1 and 9. ");
                 break;
             }
 
         }
     }
+
+
+    private void createAccount(){
+        try {
+            while (true) {
+                System.out.println("Select an action:");
+                System.out.println("1. Create speaker account ");
+                System.out.println("2. Create attendee account");
+                System.out.println("3. Create organizer account");
+                System.out.println("4. Create rater account");
+                System.out.println("5. Exit");
+
+                String content = scanner.nextLine();
+                int choice = Integer.parseInt(content);
+
+                boolean exit = false;
+
+                switch (choice) {
+                    case 1:
+                        createSpeaker();
+                        break;
+                    case 2:
+                        createAttendee();
+                        break;
+                    case 3:
+                        createOrganizer();
+                        break;
+                    case 4:
+                        createRater();
+                        break;
+                    case 5:
+                        exit = true;
+                        break;
+
+                    default:
+                        System.out.println("Unknown action. Please enter digit between 1 and 4.");
+                        break;
+                }
+
+                save();
+                if (exit) {
+                    run();
+                    break;
+                }
+
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Unknown action. Please enter digit between 1 and 4.");
+            createAccount();
+        }
+    }
+
+    private void createAttendee(){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter your username: ");
+        String username = scan.nextLine();
+
+        System.out.println("Please enter your password: ");
+        String password = scan.nextLine();
+
+        System.out.println("Please enter your first name: ");
+        String firstName = scan.nextLine();
+
+        System.out.println("PLease enter your last name: ");
+        String lastName = scan.nextLine();
+
+        try {
+            //Call createUser method in AuthService to create an attendee account.
+            AuthService.shared.createUser(username, password, firstName,
+                    lastName, AuthService.UserType.ATTENDEE);
+            System.out.println("Attendee created successfully.");
+
+        } catch (AuthService.InvalidFieldException e) {
+            System.out.println("Invalid " + e.getField() + " entered. Attendee does not create successfully");
+        } catch (AuthService.UsernameAlreadyTakenException e) {
+            System.out.println("Username " + username + " already taken.");
+        } catch (Exception e) {
+            System.out.println("Unknown exception: " + e.toString() + ". Attendee does not create " +
+                    "successfully.");
+        }
+    }
+
+    private void createOrganizer(){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter your username: ");
+        String username = scan.nextLine();
+
+        System.out.println("Please enter your password: ");
+        String password = scan.nextLine();
+
+        System.out.println("Please enter your first name: ");
+        String firstName = scan.nextLine();
+
+        System.out.println("PLease enter your last name: ");
+        String lastName = scan.nextLine();
+
+        try {
+            //Call createUser method in AuthService to create an Organizer account.
+            AuthService.shared.createUser(username, password, firstName,
+                    lastName, AuthService.UserType.ORGANIZER);
+            System.out.println("Organizer created successfully.");
+
+        } catch (AuthService.InvalidFieldException e) {
+            System.out.println("Invalid " + e.getField() + " entered. Organizer does not create successfully");
+        } catch (AuthService.UsernameAlreadyTakenException e) {
+            System.out.println("Username " + username + " already taken.");
+        } catch (Exception e) {
+            System.out.println("Unknown exception: " + e.toString() + ". Organizer does not create " +
+                    "successfully.");
+        }
+    }
+
 
     /**
      * The createSpeaker method implements an application that
@@ -109,16 +222,97 @@ public class OrganizerController extends UserController {
         } catch (AuthService.UserDoesNotExistException e) {
             System.out.println("User with username " + username + " does not exist. " + "Speaker does not create " +
                     "successfully.");
+            // TODO: 需要catch这个exception吗？This includes all user types.
         } catch (AuthService.InvalidFieldException e) {
             System.out.println("Invalid " + e.getField() + " entered. Speaker does not create successfully");
         } catch (AuthService.UsernameAlreadyTakenException e) {
-            System.out.println("Username " + username + "already taken.");
+            System.out.println("Username " + username + " already taken.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + ". Speaker does not create " +
                     "successfully.");
         }
 
     }
+
+    /**
+     * The createRater method implements an application that
+     * let Organizer create Rater account.
+     *
+     */
+    private void createRater() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter your username: ");
+        String username = scan.nextLine();
+
+        System.out.println("Please enter your password: ");
+        String password = scan.nextLine();
+
+        System.out.println("Please enter your first name: ");
+        String firstName = scan.nextLine();
+
+        System.out.println("PLease enter your last name: ");
+        String lastName = scan.nextLine();
+
+
+        System.out.println("To rate a speaker, please sign this agreement:" );
+        System.out.println("I, " + firstName + " " + lastName + ", agree to respect every speaker I rate, " +
+                    "and to rate every speaker using professional attitude in which I will not give out rate on my own " +
+                    "personal emotion.");
+        System.out.println("1. I agree");
+        System.out.println("2. I do not agree");
+        String agree = scan.nextLine();
+        try{
+            int choice = Integer.parseInt(agree);
+
+            boolean exit = false;
+
+            switch (choice) {
+                case 1:
+                    // Signing agreement first before creating a Rater
+                    try{
+                        AgreementService.shared.signAgreement(username, firstName, lastName);
+                        System.out.println("Agreement signed successfully.");
+                        try {
+                            //Call createUser method in AuthService to create a Rater account.
+                            AuthService.shared.createUser(username, password, firstName,
+                                    lastName, AuthService.UserType.RATER);
+                            System.out.println("Rater created successfully.");
+
+                        } catch (AuthService.InvalidFieldException e) {
+                            System.out.println("Invalid " + e.getField() + " entered. Rater does not create successfully");
+                        } catch (AuthService.UsernameAlreadyTakenException e) {
+                            System.out.println("Username " + username + " already taken.");
+                        } catch (Exception e) {
+                            System.out.println("Unknown exception: " + e.toString() + ". Rater does not create " +
+                                    "successfully.");
+                        }
+                    } catch (AgreementService.AgreementAlreadyExistException e) {
+                        System.out.println("Agreement already exists, no need to sign again.");
+                    }
+
+                    break;
+
+                case 2:
+                    System.out.println("To become a rater, agreement needs to be signed.");
+                    System.out.println("Rater does not create successfully.");
+                    exit = true;
+                    break;
+
+                default:
+                    System.out.println("Unknown action. Please enter digit between 1 and 2.");
+                    break;
+            }
+
+            save();
+            if (exit) {
+                createAccount();
+            }
+        } catch (NumberFormatException e) {
+        System.out.println("Unknown action. Please enter digit between 1 and 2.");
+        }
+
+    }
+
     /**
      * The createEvent method implements an application that
      * let Organizers create Event.
@@ -143,7 +337,7 @@ public class OrganizerController extends UserController {
             int rm = Integer.parseInt(roomNumber);
 
             //Get the Speaker by searching the username of the Speaker.
-            Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);
+            Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);//TODO 加exception如果输进去的不是speaker
 
             //Get the Room by searching the room number.
             Room room = RoomService.shared.getRoom(rm);
@@ -179,6 +373,32 @@ public class OrganizerController extends UserController {
         } catch (RoomService.RoomException e) {
             System.out.println("Room with room number " + roomNumber + " does not exist." +
                     " Event does not create successfully.");
+        }
+    }
+
+
+    /**
+     * Cancel Event
+     *
+     */
+    private void cancelEvent() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter the event id: ");
+        String Id = scanner.nextLine();
+
+        try {
+            int eventId = Integer.parseInt(Id);
+
+            EventService.shared.cancelEvent(eventId);
+
+            System.out.println("Event cancelled. ");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter digit only.");
+        } catch (EventService.EventDoesNotExistException e) {
+            System.out.println("Event with ID " + Id +  " does not exist. ");
+        } catch (EventService.EventException e) {
+            System.out.println("Unknown exception: " + e.toString() + " Event does not cancelled successfully.");
         }
     }
 

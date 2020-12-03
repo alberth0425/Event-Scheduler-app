@@ -35,12 +35,11 @@ public class User implements Savable {
      *                  the order of the string is: id, username, password, first name and last name
      */
     public User(String dataEntry) {
-        String[] entries = dataEntry.split(DELIMITER);
-        this.id = Integer.parseInt(entries[0]);
-        this.username = entries[1];
-        this.password = entries[2];
-        this.firstName = entries[3];
-        this.lastName = entries[4];
+        this.id = Integer.parseInt(dataEntry.split(DELIMITER)[0]);
+        this.username = dataEntry.split(DELIMITER)[1];
+        this.password = dataEntry.split(DELIMITER)[2];
+        this.firstName = dataEntry.split(DELIMITER)[3];
+        this.lastName = dataEntry.split(DELIMITER)[4];
 
         numUser += 1;
     }

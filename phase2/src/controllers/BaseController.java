@@ -2,10 +2,7 @@ package controllers;
 
 import entities.*;
 import gateway.PersistenceStorage;
-import use_cases.AuthService;
-import use_cases.EventService;
-import use_cases.MessageService;
-import use_cases.RoomService;
+import use_cases.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +14,7 @@ public class BaseController {
         List<Attendee> attendees = PersistenceStorage.readEntities(PersistenceStorage.ATTENDEE_STORAGE_PATH, Attendee.class);
         List<Organizer> organizers = PersistenceStorage.readEntities(PersistenceStorage.ORGANIZER_STORAGE_PATH, Organizer.class);
         List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.SPEAKER_STORAGE_PATH, Speaker.class);
+        List<Rater> raters = PersistenceStorage.readEntities(PersistenceStorage.RATER_STORAGE_PATH, Rater.class);
 
         HashMap<String, User> users = new HashMap<>();
         for (User user : attendees) {
@@ -26,6 +24,9 @@ public class BaseController {
             users.put(user.getUsername(), user);
         }
         for (User user : speakers) {
+            users.put(user.getUsername(), user);
+        }
+        for (User user : raters) {
             users.put(user.getUsername(), user);
         }
         AuthService.shared.setUsers(users);
@@ -56,6 +57,36 @@ public class BaseController {
             roomHashMap.put(room.getRoomNumber(), room);
         }
         RoomService.shared.setRooms(roomHashMap);
+
+        List<Agreement> agreements = PersistenceStorage.readEntities(PersistenceStorage.AGREEMENT_STORAGE_PATH, Agreement.class);
+
+        HashMap<String, Agreement> agreementHashMap = new HashMap<>();
+
+        for (Agreement agreement: agreements) {
+            agreementHashMap.put(agreement.getUsername(), agreement);
+        }
+        AgreementService.shared.setAgreements(agreementHashMap);
+
+//        List<Rate> rates = PersistenceStorage.readEntities(PersistenceStorage.RATE_STORAGE_PATH, Rate.class);
+//
+//        HashMap<String, List<String>> raterToSpeakerRated = new HashMap<>();
+//        HashMap<String, List<Integer>> speakerToRate = new HashMap<>();
+//
+//        for (Rate rate : rates) {
+//
+//            if (!raterToSpeakerRated.containsKey(rate.getRaterUsername())) {
+//                raterToSpeakerRated.put(rate.getRaterUsername(), new ArrayList<>());
+//            }
+//            raterToSpeakerRated.get(rate.getRaterUsername()).add(rate.getSpeakerRatedUsername());
+//
+//            if (!speakerToRate.containsKey(rate.getSpeakerRatedUsername())) {
+//                speakerToRate.put(rate.getSpeakerRatedUsername(), new ArrayList<>());
+//            }
+//            speakerToRate.get(rate.getSpeakerRatedUsername()).add(rate.getRate());
+//        }
+//
+//        RateService.shared.setRaterToSpeakerRated(raterToSpeakerRated);
+//        RateService.shared.setSpeakerToRate(speakerToRate);
     }
 
     void save() {
@@ -68,6 +99,8 @@ public class BaseController {
         List<Savable> attendees = new ArrayList<>();
         List<Savable> organizers = new ArrayList<>();
         List<Savable> speakers = new ArrayList<>();
+        List<Savable> raters = new ArrayList<>();
+
         for (User u : users) {
             if (u instanceof Attendee) {
                 attendees.add(u);
@@ -75,11 +108,14 @@ public class BaseController {
                 organizers.add(u);
             } else if (u instanceof Speaker) {
                 speakers.add(u);
+            } else if (u instanceof Rater) {
+                raters.add(u);
             }
         }
         PersistenceStorage.saveEntities(attendees,PersistenceStorage.ATTENDEE_STORAGE_PATH);
         PersistenceStorage.saveEntities(organizers,PersistenceStorage.ORGANIZER_STORAGE_PATH);
         PersistenceStorage.saveEntities(speakers,PersistenceStorage.SPEAKER_STORAGE_PATH);
+        PersistenceStorage.saveEntities(raters, PersistenceStorage.RATER_STORAGE_PATH);
 
         // save all rooms to the storage
         List<Savable> rooms = new ArrayList<>(RoomService.shared.getAllRooms());
@@ -88,5 +124,10 @@ public class BaseController {
         // save all messages to the storage
         List<Savable> messages = new ArrayList<>(MessageService.shared.getAllMessages());
         PersistenceStorage.saveEntities(messages,PersistenceStorage.MESSAGE_STORAGE_PATH);
+
+        // save all agreements to the storage
+        List<Savable> agreements = new ArrayList<>(AgreementService.shared.getAllAgreements());
+        PersistenceStorage.saveEntities(agreements,PersistenceStorage.AGREEMENT_STORAGE_PATH);
+
     }
 }
