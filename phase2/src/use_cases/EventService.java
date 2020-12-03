@@ -243,6 +243,27 @@ public class EventService {
 
     // --- Custom Exceptions ---
 
+
+    /**
+     * set the capacity of this event, make sure the attendees are less than or equal to the room capacity.
+     */
+
+    public void setCapacity(int capacity, Event event) {
+
+
+        if (capacity < 0 || event.getAttendeeUNs().size() > capacity) {
+
+            throw new IllegalArgumentException();
+
+        }
+        event.setCapacity(capacity);
+
+    }
+
+    public int getCapacity(Integer eventId) throws EventException {
+        return getEventById(eventId).getCapacity();
+    }
+
     public static class EventException extends Exception {}
     public static class InvalidEventTimeException extends EventException {}
     public static class EventDoesNotExistException extends EventException {}

@@ -14,6 +14,7 @@ public class Event implements Savable {
     private List<String> attendeeUNs = new ArrayList<>();
     private final int id;
 
+    private int capacity;
     /**
      * constructor for the event class.
      *
@@ -104,6 +105,13 @@ public class Event implements Savable {
         return attendeeUNs;
     }
 
+    public int getCapacity(){
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
     /**
      * add a new attendee to this event.
      * @param attendeeUN the username of this attendee
