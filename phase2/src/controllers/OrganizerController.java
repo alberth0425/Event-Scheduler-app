@@ -137,9 +137,13 @@ public class OrganizerController extends UserController {
         System.out.println("Please enter the room number: ");
         String roomNumber = scanner.nextLine();
 
+        System.out.println("Please enter the capacity of the event: ");
+        String capacity = scanner.nextLine();
+
         try {
             int st = Integer.parseInt(startingTime);
             int rm = Integer.parseInt(roomNumber);
+            int ca = Integer.parseInt(capacity);
 
             //Get the Speaker by searching the username of the Speaker.
             Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);
@@ -149,7 +153,7 @@ public class OrganizerController extends UserController {
 
             try {
                 //Call createEvent method in EventService to create an Event.
-                EventService.shared.createEvent(title, st, sp, room);
+                EventService.shared.createEvent(title, st, sp, room, ca);
                 System.out.println("Event created successfully." );
 
 
@@ -165,6 +169,9 @@ public class OrganizerController extends UserController {
                         " Event does not create successfully.");
             }catch(EventService.RoomDoubleBookException e){
                 System.out.println("The room is not available at this time."  +
+                        " Event does not create successfully.");
+            }catch (EventService.RoomNotEnoughException e) {
+                System.out.println("The room is not enough to hold all the people in this event." +
                         " Event does not create successfully.");
             }catch (Exception e) {
                 System.out.println("Unknown Exception: " + e.toString() + ". Event does not create successfully.");
@@ -560,26 +567,23 @@ public class OrganizerController extends UserController {
         }
     }
 
-    private void setroomcapacityforcurrentEvent(){
+    private void resetEventCapacity() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter the eventid of the event:");
+        System.out.println("Enter the event id of the event:");
 
         String content = scanner.nextLine();
         System.out.println("Please enter the capacity of the event");
         String input = scanner.nextLine();
         try{
 
-            //enter the eventid of the event
+            //enter the event id of the event
             int eventId = Integer.parseInt(content);
-            int capacity = Integer.parseInt(input)
+            int capacity = Integer.parseInt(input);
             EventService.shared.getCapacity(eventId);
-
-
             String message = scanner.nextLine();
 
-
-        } catch (IllegalArgumentException capacity) {
+        } catch (IllegalArgumentException | EventService.EventException capacity) {
 
             System.out.println("The capacity entered is out of range and should be greater than 0.");
         }
