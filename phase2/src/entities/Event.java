@@ -91,7 +91,7 @@ public abstract class Event implements Savable {
     public abstract void removeAttendee(String attendeeUN);
 
     public int getEndTime(){
-        return (startingTime + duration) % 24;
+        return startingTime + duration;
     }
 
     /**

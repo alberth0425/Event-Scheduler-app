@@ -208,6 +208,8 @@ public class OrganizerController extends UserController {
             } catch (EventService.InvalidEventTimeException e) {
                 System.out.println("The event starting time (" + startingTime + ") is invalid." +
                         " Event does not create successfully.");
+            } catch (EventService.InvalidEndTimeException e) {
+                System.out.println("Event must end before 12 midnight");
             } catch (EventService.RoomDoubleBookException e) {
                 System.out.println("The room is not available at this time." +
                         " Event does not create successfully.");
@@ -264,6 +266,8 @@ public class OrganizerController extends UserController {
             } catch (EventService.InvalidEventTimeException e) {
                 System.out.println("The event starting time (" + startingTime + ") is invalid." +
                         " Event does not create successfully.");
+            } catch (EventService.InvalidEndTimeException e) {
+                System.out.println("Event must end before 12 midnight");
             } catch (EventService.RoomDoubleBookException e) {
                 System.out.println("The room is not available at this time." +
                         " Event does not create successfully.");
@@ -331,7 +335,6 @@ public class OrganizerController extends UserController {
                     EventService.shared.createPD(title, st, speakers, room, d);
                     System.out.println("Event created successfully.");
 
-
                 } catch (EventService.EventDoesNotExistException e) {
                     System.out.println("Event does not exist." + " Event does not create successfully.");
                 } catch (EventService.SpeakerDoubleBookException e) {
@@ -345,6 +348,8 @@ public class OrganizerController extends UserController {
                 } catch (EventService.RoomDoubleBookException e) {
                     System.out.println("The room is not available at this time." +
                             " Event does not create successfully.");
+                } catch (EventService.InvalidEndTimeException e) {
+                    System.out.println("Event must end before 12 midnight");
                 } catch (Exception e) {
                     System.out.println("Unknown Exception: " + e.toString() + ". Event does not create successfully.");
                 }
