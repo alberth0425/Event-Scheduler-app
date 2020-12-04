@@ -63,5 +63,6 @@ abstract public class UserActionPresenter {
         void navigateToMessages();
         void navigateToLogin();
         void navigateToRate();
+        void navigateToCreateEvent();
     }
 }

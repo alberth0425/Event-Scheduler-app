@@ -3,7 +3,7 @@ package ui;
 import ui.navigation.NavigationController;
 
 public abstract class BaseViewController<P> {
-    private NavigationController navigationController;
+    private static NavigationController navigationController;
 
     /**
      * Initialize the view controller with given parameter, which is passed by the view controller from which we are
