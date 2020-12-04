@@ -106,5 +106,6 @@ public class Main extends Application {
         // save all messages to the storage
         List<Savable> messages = new ArrayList<>(MessageService.shared.getAllMessages());
         PersistenceStorage.saveEntities(messages,PersistenceStorage.MESSAGE_STORAGE_PATH);
+
     }
 }

@@ -20,6 +20,8 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
     public TableView<EventAdapter> eventTableView;
     public Button backButton;
     public HBox actionHBox;
+    public Label errorLabel;
+
 
     // Text field to display above TableView when prompted. Initialized when needed
     private Node promptTextField;
@@ -65,6 +67,11 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
 
         // Add text field to container above actions
         containerVBox.getChildren().add(1, promptTextField);
+    }
+
+    @Override
+    public void setError(String error) {
+        errorLabel.setText(error);
     }
 
     private void dismissTextField() {
