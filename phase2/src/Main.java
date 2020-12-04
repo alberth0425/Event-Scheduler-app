@@ -5,10 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ui.login.LoginViewController;
 import ui.navigation.NavigationController;
-import use_cases.AuthService;
-import use_cases.EventService;
-import use_cases.MessageService;
-import use_cases.RoomService;
+import use_cases.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +32,7 @@ public class Main extends Application {
         List<Attendee> attendees = PersistenceStorage.readEntities(PersistenceStorage.ATTENDEE_STORAGE_PATH, Attendee.class);
         List<Organizer> organizers = PersistenceStorage.readEntities(PersistenceStorage.ORGANIZER_STORAGE_PATH, Organizer.class);
         List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.SPEAKER_STORAGE_PATH, Speaker.class);
+        List<Rater> raters = PersistenceStorage.readEntities(PersistenceStorage.RATER_STORAGE_PATH, Rater.class);
 
         HashMap<String, User> users = new HashMap<>();
         for (User user : attendees) {
@@ -44,6 +42,9 @@ public class Main extends Application {
             users.put(user.getUsername(), user);
         }
         for (User user : speakers) {
+            users.put(user.getUsername(), user);
+        }
+        for (User user : raters) {
             users.put(user.getUsername(), user);
         }
         AuthService.shared.setUsers(users);
@@ -74,6 +75,15 @@ public class Main extends Application {
             roomHashMap.put(room.getRoomNumber(), room);
         }
         RoomService.shared.setRooms(roomHashMap);
+
+        List<Agreement> agreements = PersistenceStorage.readEntities(PersistenceStorage.AGREEMENT_STORAGE_PATH, Agreement.class);
+
+        HashMap<String, Agreement> agreementHashMap = new HashMap<>();
+
+        for (Agreement agreement: agreements) {
+            agreementHashMap.put(agreement.getUsername(), agreement);
+        }
+        AgreementService.shared.setAgreements(agreementHashMap);
     }
 
     public static void save() {
@@ -86,6 +96,8 @@ public class Main extends Application {
         List<Savable> attendees = new ArrayList<>();
         List<Savable> organizers = new ArrayList<>();
         List<Savable> speakers = new ArrayList<>();
+        List<Savable> raters = new ArrayList<>();
+
         for (User u : users) {
             if (u instanceof Attendee) {
                 attendees.add(u);
@@ -93,11 +105,14 @@ public class Main extends Application {
                 organizers.add(u);
             } else if (u instanceof Speaker) {
                 speakers.add(u);
+            } else if (u instanceof Rater) {
+                raters.add(u);
             }
         }
         PersistenceStorage.saveEntities(attendees,PersistenceStorage.ATTENDEE_STORAGE_PATH);
         PersistenceStorage.saveEntities(organizers,PersistenceStorage.ORGANIZER_STORAGE_PATH);
         PersistenceStorage.saveEntities(speakers,PersistenceStorage.SPEAKER_STORAGE_PATH);
+        PersistenceStorage.saveEntities(raters, PersistenceStorage.RATER_STORAGE_PATH);
 
         // save all rooms to the storage
         List<Savable> rooms = new ArrayList<>(RoomService.shared.getAllRooms());
@@ -106,6 +121,10 @@ public class Main extends Application {
         // save all messages to the storage
         List<Savable> messages = new ArrayList<>(MessageService.shared.getAllMessages());
         PersistenceStorage.saveEntities(messages,PersistenceStorage.MESSAGE_STORAGE_PATH);
+
+        // save all agreements to the storage
+        List<Savable> agreements = new ArrayList<>(AgreementService.shared.getAllAgreements());
+        PersistenceStorage.saveEntities(agreements,PersistenceStorage.AGREEMENT_STORAGE_PATH);
 
     }
 }

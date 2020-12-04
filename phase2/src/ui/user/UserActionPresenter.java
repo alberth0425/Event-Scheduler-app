@@ -1,9 +1,6 @@
 package ui.user;
 
-import entities.Attendee;
-import entities.Organizer;
-import entities.Speaker;
-import entities.User;
+import entities.*;
 import javafx.collections.ObservableList;
 import ui.event.EventPresenter;
 import use_cases.AuthService;
@@ -30,6 +27,8 @@ abstract public class UserActionPresenter {
             return new OrganizerActionPresenter(view);
         } else if (user instanceof Speaker) {
             return new SpeakerActionPresenter(view);
+        } else if (user instanceof Rater) {
+            return new RaterActionPresenter(view);
         } else {
             return null;
         }
@@ -63,5 +62,6 @@ abstract public class UserActionPresenter {
         void navigateToEvents(EventPresenter.EventFilter filter);
         void navigateToMessages();
         void navigateToLogin();
+        void navigateToRate();
     }
 }

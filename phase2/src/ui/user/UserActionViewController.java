@@ -9,6 +9,7 @@ import ui.event.EventPresenter;
 import ui.event.EventViewController;
 import ui.login.LoginViewController;
 import ui.message.MessageViewController;
+import ui.rate.RateViewController;
 import ui.navigation.FXMLFile;
 import ui.util.NoSelectionModel;
 
@@ -51,6 +52,11 @@ public class UserActionViewController extends BaseViewController<Void> implement
     @Override
     public void navigateToLogin() {
         getNavigationController().navigate(LoginViewController.class);
+    }
+
+    @Override
+    public void navigateToRate() {
+        getNavigationController().navigate(RateViewController.class);
     }
 
     class ActionCell extends ListCell<String> {
