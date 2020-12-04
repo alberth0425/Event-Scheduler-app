@@ -1,36 +1,40 @@
-package ui.user;
+package ui.user.create_account;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ui.event.EventPresenter;
+import ui.message.send_message.SendMessagePresenter;
+import ui.user.OrganizerActionPresenter;
+import ui.user.OrganizerActionViewController;
+import ui.user.UserActionPresenter;
 import use_cases.AuthService;
 
-public class OrganizerActionPresenter extends UserActionPresenter {
+public class CreateAccountPresenter extends OrganizerActionPresenter {
+
     private final ObservableList<String> actionList = FXCollections.observableArrayList(
-            "Browse events", "Messages", "Create Account", "Log out"
+            "Create Speaker", "Create Attendee", "Create Organizer", "Create Rater"
     );
 
-    public OrganizerActionPresenter(UserActionView view) {
+    public CreateAccountPresenter(UserActionPresenter.UserActionView view) {
         super(view);
 
-        getView().setUserInfoLabelText("You have logged in as: " + AuthService.shared.getCurrentUser().getUsername()
-                + " (Organizer)");
-        getView().setActionLabelText("Select an action:");
     }
 
     @Override
     public ObservableList<String> getActionList() {
         return actionList;
     }
+    public ObservableList<String> getActionList() {
+        return actionList;
+    }
 
-    @Override
     public void onAction(int index) {
         switch (index) {
             case 0:
-                browseEvents(EventPresenter.EventFilter.ALL);
+
                 break;
             case 1:
-                getView().navigateToMessages();
+                create
                 break;
             case 2:
                 OrganizerActionViewController.navigateToCreateAccounts();

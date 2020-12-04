@@ -144,8 +144,18 @@ public class EventPresenter {
         }));
 
         actions.add(new EventAction("Cancel event", () -> {
-            // TODO: cancel event after use case is done
-            System.out.println("Cancelling event");
+            try {
+                EventService.shared.cancelEvent(event.getId());
+                refresh();
+
+            } catch (NumberFormatException e) {
+                view.setError("Please enter digit only.");
+            } catch (EventService.EventDoesNotExistException e) {
+                view.setError("Event with ID " + event.getId() +  " does not exist. ");
+            } catch (EventService.EventException e) {
+                view.setError("Unknown exception: " + e.toString() + " Event does not cancelled successfully.");
+            }
+
         }));
 
         return actions;
@@ -256,7 +266,7 @@ public class EventPresenter {
 
     public interface EventView {
         void displayTextField(String promptText, TextFieldPrompt.Validator validator);
-
+        void setError(String error);
         void refreshActionButtons();
         void refreshTableView();
 
