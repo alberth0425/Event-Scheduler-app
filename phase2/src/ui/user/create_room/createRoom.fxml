@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ui.user.create_room.createRoomViewController"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <VBox layoutX="14.0" prefHeight="391.0" prefWidth="491.0" spacing="10" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <Label text="Create Room">
+                <font>
+                    <Font size="18.0" />
+                </font></Label>
+            <Label text="Please enter the room number" />
+            <TextField fx:id="roomNumberTextField" promptText="room number" />
+            <Label text="Please enter the room capacity" />
+            <TextField fx:id="roomCapacityTextField" promptText="capacity" />
+            <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#confirmButtonAction" text="Confirm" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
+            <Label fx:id="errorLabel" textFill="RED" />
+        </VBox>
+    </children>
+
+</AnchorPane>
