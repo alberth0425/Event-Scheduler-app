@@ -18,7 +18,7 @@ public abstract class BaseViewController<P> {
      *
      * @return the navigation controller
      */
-    public NavigationController getNavigationController() {
+    public static NavigationController getNavigationController() {
         return navigationController;
     }
 
