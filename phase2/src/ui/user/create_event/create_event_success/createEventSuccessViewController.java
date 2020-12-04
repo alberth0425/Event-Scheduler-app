@@ -5,7 +5,7 @@ import ui.BaseViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
 
-@FXMLFile("rateSuccess.fxml")
+@FXMLFile("createEventSuccess.fxml")
 public class createEventSuccessViewController extends BaseViewController<Void> {
 
     public void exitButtonAction(ActionEvent actionEvent) {

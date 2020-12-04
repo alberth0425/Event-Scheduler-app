@@ -34,8 +34,10 @@ public class OrganizerActionPresenter extends UserActionPresenter {
                 break;
             case 2:
                 OrganizerActionViewController.navigateToCreateAccounts();
+                break;
             case 3:
                 getView().navigateToCreateEvent();
+                break;
             case 4:
                 getView().navigateToLogin();
             default:

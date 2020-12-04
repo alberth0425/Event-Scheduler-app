@@ -6,6 +6,7 @@ import javafx.scene.control.TextField;
 import ui.BaseViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
+import ui.user.create_event.create_event_success.createEventSuccessViewController;
 
 @FXMLFile("createEvent.fxml")
 public class createEventViewController extends BaseViewController<Void> implements createEventPresenter.createEventView{
@@ -52,7 +53,7 @@ public class createEventViewController extends BaseViewController<Void> implemen
 
     @Override
     public void navigateToSuccessCreateEvent() {
-        getNavigationController().navigate(createEventViewController.class);
+        getNavigationController().navigate(createEventSuccessViewController.class);
     }
 
 }
