@@ -2,8 +2,6 @@ package ui.rate;
 
 import entities.Rater;
 import entities.User;
-import sun.applet.Main;
-import ui.login.LoginPresenter;
 import use_cases.AuthService;
 import use_cases.RaterService;
 
@@ -23,7 +21,7 @@ public class RatePresenter {
             User speaker = AuthService.shared.getUserByUsername(view.getSpeakerUsername());
             Rater rater = (Rater) AuthService.shared.getCurrentUser();
             RaterService.shared.rateSpeaker(speaker, rater, view.getRate());
-            // TODO pop up window showing rate success and return to the main raterActionPresenter
+            view.navigateToSuccessRateView();
 
 
 
