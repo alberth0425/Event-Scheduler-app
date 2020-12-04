@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.rate.RateViewController">
+   <children>
+      <VBox layoutX="14.0" prefHeight="391.0" prefWidth="491.0" spacing="10" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label text="Rate speaker">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <Label text="Enter the speaker's username you want to rate">
+               <font>
+                  <Font size="13.0" />
+               </font></Label>
+            <TextField fx:id="speakerUNTextField" promptText="Enter the speaker's username you want to rate" />
+            <Label text="Please enter a rate between 1 to 10">
+               <font>
+                  <Font size="13.0" />
+               </font></Label>
+            <TextField fx:id="rateGivenTextField" promptText="Please enter a rate between 1 to 10" />
+            <Button fx:id="okButton" mnemonicParsing="false" onAction="#OkButtonAction" text="Ok" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
+            <Label fx:id="errorLabel" textFill="RED" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
