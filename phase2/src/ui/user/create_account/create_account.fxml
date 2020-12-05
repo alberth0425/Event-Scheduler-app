@@ -12,7 +12,6 @@
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <ComboBox fx:id="userComboBox" prefWidth="150.0" promptText="Create:" />
-                  <TextField fx:id="userTypeTextField" promptText="" />
                </children>
             </HBox>
             <Label fx:id="usernameInfoLabel" text="Please enter your username:" />
@@ -25,6 +24,7 @@
             <TextField fx:id="lastNameTextField" promptText="Enter the last name" />
             <Button fx:id="okButton" mnemonicParsing="false" onAction="#OkButtonAction" text="Ok" />
             <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
+            <Label fx:id="errorLabel" textFill="RED" />
          </children>
       </VBox>
    </children>

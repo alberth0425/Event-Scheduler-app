@@ -1,6 +1,8 @@
 package ui.user.create_account;
 
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,13 +14,15 @@ import javafx.scene.control.TextField;
 import ui.BaseViewController;
 import ui.message.send_message.SendMessagePresenter;
 import ui.navigation.FXMLFile;
+import ui.user.OrganizerActionPresenter;
+import ui.user.UserActionViewController;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 @FXMLFile("create_account.fxml")
 public class CreateAccountViewController extends BaseViewController<Void> implements CreateAccountPresenter.CreateAccountView {
-    public ComboBox<String> userTypeComboBox;
 
     private CreateAccountPresenter presenter = new CreateAccountPresenter(this);
 
@@ -28,7 +32,6 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
     public TextField firstNameTextField;
     public TextField lastNameTextField;
     public Label errorLabel;
-    public TextField userTypeTextField;
 
 
 
@@ -37,42 +40,35 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
 
         // TODO: maybe replace the receiver text field with a combo box
 
-        userTypeComboBox.setItems(presenter.getUserTypes());
-        userTypeComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-            presenter.onSelectUserType((Integer) newValue);
-
-            userTypeTextField.setText("");
-
-            String prompt = presenter.getReceiverTextPrompt((Integer) newValue);
-            if (prompt == null) {
-                userTypeTextField.setVisible(false);
-            } else {
-                userTypeTextField.setVisible(true);
-                userTypeTextField.setPromptText(prompt);
-            }
+        userComboBox.setItems(presenter.getUserTypes());
+        userComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            int selectedIndex = (int) newValue;
+            userComboBox.getSelectionModel().select(selectedIndex);
+            presenter.onSelectUserType(selectedIndex);
         });
 
-        userTypeComboBox.getSelectionModel().select(0);
-
-        userTypeTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            presenter.setUser(newValue);
-        });
-
-        usernameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            presenter.setUsername(newValue);
-        });
-        passwordTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            presenter.setPassword(newValue);
-        });
-        firstNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            presenter.setFirstName(newValue);
-        });
-        lastNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            presenter.setLastName(newValue);
-        });
 
     }
 
+    @Override
+    public String getUsername() {
+        return usernameTextField.getText();
+    }
+
+    @Override
+    public String getPassword() {
+        return passwordTextField.getText();
+    }
+
+    @Override
+    public String getFirstName() {
+        return firstNameTextField.getText();
+    }
+
+    @Override
+    public String getLastName() {
+        return lastNameTextField.getText();
+    }
 
     @Override
     public void setError(String error) {
@@ -84,6 +80,7 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
     }
 
     public void backButtonAction(ActionEvent actionEvent) {
+        getNavigationController().navigate(UserActionViewController.class);
     }
 
 }
