@@ -1,12 +1,11 @@
 package ui.rate;
 
-import com.sun.xml.internal.ws.util.StringUtils;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import ui.BaseViewController;
-import ui.rate.RatePresenter;
 import ui.navigation.FXMLFile;
+import ui.rate.rateSuccess.rateSuccessViewController;
 import ui.user.UserActionViewController;
 
 @FXMLFile("rate.fxml")
@@ -42,6 +41,6 @@ public class RateViewController extends BaseViewController<Void> implements Rate
 
     @Override
     public void navigateToSuccessRateView() {
-
+        getNavigationController().navigate(rateSuccessViewController.class);
     }
 }

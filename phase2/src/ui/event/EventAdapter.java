@@ -2,6 +2,8 @@ package ui.event;
 
 import entities.Event;
 import entities.Room;
+import entities.Speaker;
+import use_cases.AuthService;
 
 public class EventAdapter {
     private final Event event;
@@ -82,6 +84,15 @@ public class EventAdapter {
      */
     public String getCapacity() {
         return event.getAttendeeUNs().size() + " / " + room.getCapacity();
+    }
+
+    /**
+     * Get the rate of the speaker.
+     *
+     * @return the rate of the speaker
+     */
+    public String getRate() throws AuthService.AuthException {
+        return Double.toString(((Speaker)AuthService.shared.getUserByUsername(event.getSpeakerUsername())).getAverageRate());
     }
 
     /**
