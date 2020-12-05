@@ -19,8 +19,12 @@
            <TextField fx:id="speakerUNTextField" promptText="speaker's username" />
            <Label text="Please enter the room number" />
            <TextField fx:id="roomNumberTextField" promptText="room number" />
-           <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#confirmButtonAction" text="Confirm" />
-           <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
+           <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                   <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#confirmButtonAction" text="Confirm" />
+                   <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
+               </children>
+           </HBox>
            <Label fx:id="errorLabel" textFill="RED" />
        </VBox>
    </children>

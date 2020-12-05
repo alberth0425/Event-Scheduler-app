@@ -22,8 +22,11 @@
                   <Font size="13.0" />
                </font></Label>
             <TextField fx:id="rateGivenTextField" promptText="Please enter a rate between 1 to 10" />
-            <Button fx:id="okButton" mnemonicParsing="false" onAction="#OkButtonAction" text="Ok" />
-            <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Button fx:id="okButton" mnemonicParsing="false" onAction="#OkButtonAction" text="Confirm" />
+                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
+               </children></HBox>
             <Label fx:id="errorLabel" textFill="RED" />
          </children>
       </VBox>

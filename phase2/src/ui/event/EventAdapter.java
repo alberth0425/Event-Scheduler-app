@@ -4,6 +4,7 @@ import entities.Event;
 import entities.Room;
 import entities.Speaker;
 import use_cases.AuthService;
+import use_cases.EventService;
 
 public class EventAdapter {
     private final Event event;
@@ -92,7 +93,8 @@ public class EventAdapter {
      * @return the rate of the speaker
      */
     public String getRate() throws AuthService.AuthException {
-        return Double.toString(((Speaker)AuthService.shared.getUserByUsername(event.getSpeakerUsername())).getAverageRate());
+        Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(event.getSpeakerUsername());
+        return Double.toString(speaker.getAverageRate());
     }
 
     /**
