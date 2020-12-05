@@ -370,6 +370,7 @@ public class EventService {
         if (startingTime < 0 || startingTime >= 24 ) throw new InvalidEventTimeException();
         List<String> speakerUNs = getListOfUNsBySpeakers(speakers);
         Event event = new PanelDiscussion(title, speakerUNs, startingTime, room.getRoomNumber(), duration);
+        System.out.println("PD has been created");
         allEvents.add(event);
     }
 

@@ -104,7 +104,7 @@ public class PanelDiscussion extends Event {
     @Override
     public String toSavableString() {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
-                getSpeakerUNs() + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
+                String.join("|",getSpeakerUNs()) + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
                 Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
 
