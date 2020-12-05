@@ -200,7 +200,7 @@ public class EventService {
      * @throws SpeakerDoubleBookException if the input speaker is already scheduled to another event at the same time
      * @throws RoomDoubleBookException if the input room is already scheduled to another event at the same time
      */
-    public Event createEvent(String title, int startingTime, Speaker speaker, Room room) throws EventException,
+    public Event createEvent(String title, int startingTime, Speaker speaker, Room room, int capacity) throws EventException,
             RoomService.RoomException {
         // Check double booking exceptions (both speaker and room)
         for (Event event : this.getEventsByStartTime(startingTime)) {
@@ -211,8 +211,9 @@ public class EventService {
 
         // Check event starting time
         if (startingTime < 9 || startingTime >= 17) throw new InvalidEventTimeException();
+        if (capacity > room.getCapacity()) throw new RoomNotEnoughException();
 
-        Event event = new Event(title, speaker.getUsername(), startingTime, room.getRoomNumber());
+        Event event = new Event(title, speaker.getUsername(), startingTime, room.getRoomNumber(), capacity);
         allEvents.add(event);
 
         return event;
@@ -243,6 +244,27 @@ public class EventService {
 
     // --- Custom Exceptions ---
 
+
+    /**
+     * set the capacity of this event, make sure the attendees are less than or equal to the room capacity.
+     */
+
+    public void setCapacity(int capacity, Event event) {
+
+
+        if (capacity < 0 || event.getAttendeeUNs().size() > capacity) {
+
+            throw new IllegalArgumentException();
+
+        }
+        event.setCapacity(capacity);
+
+    }
+
+    public int getCapacity(Integer eventId) throws EventException {
+        return getEventById(eventId).getCapacity();
+    }
+
     public static class EventException extends Exception {}
     public static class InvalidEventTimeException extends EventException {}
     public static class EventDoesNotExistException extends EventException {}
@@ -250,5 +272,5 @@ public class EventService {
     public static class SpeakerDoubleBookException extends EventException {}
     public static class RoomFullException extends EventException {}
     public static class AttendeeScheduleConflictException extends EventException {}
-
+    public static class RoomNotEnoughException extends EventException {}
 }

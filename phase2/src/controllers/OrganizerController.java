@@ -17,7 +17,6 @@ public class OrganizerController extends UserController {
         oc.run();
         }
 
-
     @Override
     void run() {
         while (true) {
@@ -29,7 +28,8 @@ public class OrganizerController extends UserController {
             System.out.println("5. Assign speaker to event");
             System.out.println("6. View messages");
             System.out.println("7. Send messages");
-            System.out.println("8. Exit");
+            System.out.println("8. reset event capacity");
+            System.out.println("9. Exit");
 
             String content = scanner.nextLine();
             try {
@@ -60,6 +60,9 @@ public class OrganizerController extends UserController {
                         sendMessages();
                         break;
                     case 8:
+                        resetEventCapacity();
+                        break;
+                    case 9:
                         exit = true;
                         break;
 
@@ -138,9 +141,13 @@ public class OrganizerController extends UserController {
         System.out.println("Please enter the room number: ");
         String roomNumber = scanner.nextLine();
 
+        System.out.println("Please enter the capacity of the event: ");
+        String capacity = scanner.nextLine();
+
         try {
             int st = Integer.parseInt(startingTime);
             int rm = Integer.parseInt(roomNumber);
+            int ca = Integer.parseInt(capacity);
 
             //Get the Speaker by searching the username of the Speaker.
             Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);
@@ -150,7 +157,7 @@ public class OrganizerController extends UserController {
 
             try {
                 //Call createEvent method in EventService to create an Event.
-                EventService.shared.createEvent(title, st, sp, room);
+                EventService.shared.createEvent(title, st, sp, room, ca);
                 System.out.println("Event created successfully." );
 
 
@@ -166,6 +173,9 @@ public class OrganizerController extends UserController {
                         " Event does not create successfully.");
             }catch(EventService.RoomDoubleBookException e){
                 System.out.println("The room is not available at this time."  +
+                        " Event does not create successfully.");
+            }catch (EventService.RoomNotEnoughException e) {
+                System.out.println("The room is not enough to hold all the people in this event." +
                         " Event does not create successfully.");
             }catch (Exception e) {
                 System.out.println("Unknown Exception: " + e.toString() + ". Event does not create successfully.");
@@ -560,6 +570,31 @@ public class OrganizerController extends UserController {
             System.out.println("User must log in to send message. Message does not send successfully.");
         }
     }
+
+    private void resetEventCapacity() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter the event id of the event: ");
+        String content_id = scanner.nextLine();
+        System.out.println("Please enter the capacity of the event: ");
+        String content_ca = scanner.nextLine();
+
+        try{
+            //enter the event id of the event
+            int eventId = Integer.parseInt(content_id);
+            int capacity = Integer.parseInt(content_ca);
+            Event event = EventService.shared.getEventById(eventId);
+            EventService.shared.setCapacity(capacity, event);
+
+        } catch (EventService.EventException e) {
+            System.out.println("Event with event id " + content_id + " does not exist. " +
+                    "Message does not send successfully.");
+        }catch (IllegalArgumentException capacity) {
+            System.out.println("The capacity entered is out of range and should be greater than 0.");
+        }
+
+    }
+
 }
 
 

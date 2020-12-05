@@ -13,6 +13,7 @@ public class Event implements Savable {
     private String speakerUN;
     private List<String> attendeeUNs = new ArrayList<>();
     private final int id;
+    private int capacity;
 
     /**
      * constructor for the event class.
@@ -21,12 +22,14 @@ public class Event implements Savable {
      * @param speakerUN the speaker username of this event
      * @param startingTime the starting time of this event
      * @param roomNumber the room number of the room that this event is going to happen
+     * @param capacity the capacity of the room
      */
-    public Event(String title, String speakerUN, int startingTime, int roomNumber) {
+    public Event(String title, String speakerUN, int startingTime, int roomNumber, int capacity) {
         this.title = title;
         this.speakerUN = speakerUN;
         this.roomNumber = roomNumber;
         this.startingTime = startingTime;
+        this.capacity = capacity;
 
         id = eventCount;
         eventCount += 1;
@@ -104,6 +107,23 @@ public class Event implements Savable {
         return attendeeUNs;
     }
 
+    /**
+     *  getter for the capacity of the room.
+     *
+     * @return the capacity of the room.
+     */
+    public int getCapacity(){
+        return capacity;
+    }
+
+    /**
+     * setter for the capacity of the room
+     *
+     * @param capacity the number of people this room can hold
+     */
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
     /**
      * add a new attendee to this event.
      * @param attendeeUN the username of this attendee
