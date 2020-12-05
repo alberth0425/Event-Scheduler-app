@@ -16,6 +16,7 @@ import ui.message.send_message.SendMessagePresenter;
 import ui.navigation.FXMLFile;
 import ui.user.OrganizerActionPresenter;
 import ui.user.UserActionViewController;
+import ui.user.create_account.create_account_successfully.CreateAccountSucessViewController;
 
 import javax.swing.*;
 import java.net.URL;
@@ -73,6 +74,11 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
     @Override
     public void setError(String error) {
         errorLabel.setText(error);
+    }
+
+    @Override
+    public void navigateToCreateAccountSuccessfully() {
+        getNavigationController().navigate(CreateAccountSucessViewController.class);
     }
 
     public void OkButtonAction(ActionEvent actionEvent) {

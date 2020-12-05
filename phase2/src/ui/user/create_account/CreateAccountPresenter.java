@@ -45,8 +45,6 @@ public class CreateAccountPresenter {
     }
 
 
-
-
     /**
      * Handle the ok button action.
      */
@@ -57,7 +55,8 @@ public class CreateAccountPresenter {
                     //Call createUser method in AuthService to create a speaker account.
                     AuthService.shared.createUser(view.getUsername(), view.getPassword(), view.getFirstName(),
                             view.getLastName(), AuthService.UserType.SPEAKER);
-                    // TODO: pop up window to indicate success?
+
+                    view.navigateToCreateAccountSuccessfully();
 
                 } catch (AuthService.InvalidFieldException e) {
                     view.setError("Invalid " + e.getField() + " entered. Speaker does not create successfully");
@@ -74,7 +73,7 @@ public class CreateAccountPresenter {
                     AuthService.shared.createUser(view.getUsername(), view.getPassword(), view.getFirstName(),
                             view.getLastName(), AuthService.UserType.ORGANIZER);
 
-                    //System.out.println("Organizer created successfully.");
+                    view.navigateToCreateAccountSuccessfully();
 
                 } catch (AuthService.InvalidFieldException e) {
                     view.setError("Invalid " + e.getField() + " entered. Organizer does not create successfully");
@@ -90,7 +89,8 @@ public class CreateAccountPresenter {
                     //Call createUser method in AuthService to create an attendee account.
                     AuthService.shared.createUser(view.getUsername(), view.getPassword(), view.getFirstName(),
                             view.getLastName(), AuthService.UserType.ATTENDEE);
-                    // success window ?("Attendee created successfully.");
+
+                    view.navigateToCreateAccountSuccessfully();
 
                 } catch (AuthService.InvalidFieldException e) {
                     view.setError("Invalid " + e.getField() + " entered. Attendee does not create successfully");
@@ -108,13 +108,12 @@ public class CreateAccountPresenter {
         handleOkButton(userTypeIndex);
     }
 
-
-
     public interface CreateAccountView {
         String getUsername();
         String getPassword();
         String getFirstName();
         String getLastName();
         void setError(String error);
+        void navigateToCreateAccountSuccessfully();
     }
 }

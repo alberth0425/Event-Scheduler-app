@@ -12,6 +12,8 @@ import ui.message.MessageViewController;
 import ui.rate.RateViewController;
 import ui.navigation.FXMLFile;
 import ui.user.create_account.CreateAccountViewController;
+import ui.user.create_event.createEventViewController;
+import ui.user.create_room.createRoomViewController;
 import ui.util.NoSelectionModel;
 
 @FXMLFile("user_action.fxml")
@@ -63,6 +65,16 @@ public class UserActionViewController extends BaseViewController<Void> implement
     @Override
     public void navigateToCreateAccounts() {
         getNavigationController().navigate(CreateAccountViewController.class);
+    }
+
+    @Override
+    public void navigateToCreateEvent() {
+        getNavigationController().navigate(createEventViewController.class);
+    }
+
+    @Override
+    public void navigateToCreateRoom() {
+        getNavigationController().navigate(createRoomViewController.class);
     }
 
     class ActionCell extends ListCell<String> {

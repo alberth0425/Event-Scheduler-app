@@ -64,5 +64,9 @@ abstract public class UserActionPresenter {
         void navigateToLogin();
         void navigateToRate();
         void navigateToCreateAccounts();
+
+        void navigateToCreateEvent();
+
+        void navigateToCreateRoom();
     }
 }
