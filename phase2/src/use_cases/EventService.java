@@ -250,14 +250,18 @@ public class EventService {
      */
 
     public void setCapacity(int capacity, Event event) {
+        try {
+            Room room = getRoom(event.getRoomNumber());
 
+            if (capacity < 0 || event.getAttendeeUNs().size() > capacity || capacity > room.getCapacity()) {
+                throw new IllegalArgumentException();
+            }
 
-        if (capacity < 0 || event.getAttendeeUNs().size() > capacity) {
+            event.setCapacity(capacity);
 
+        } catch (RoomService.RoomException e) {
             throw new IllegalArgumentException();
-
         }
-        event.setCapacity(capacity);
 
     }
 

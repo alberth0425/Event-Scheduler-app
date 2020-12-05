@@ -148,6 +148,22 @@ public class EventPresenter {
                 });
             }));
 
+            actions.add(new EventAction("Change capacity", () -> {
+                view.displayTextField("Capacity", capacityStr -> {
+                    try {
+                        int capacity = Integer.parseInt(capacityStr);
+                        EventService.shared.setCapacity(capacity, event);
+                        refresh();
+                        return null;
+
+                    } catch (NumberFormatException e) {
+                        return "Invalid number " + capacityStr;
+                    } catch (IllegalArgumentException e) {
+                        return "Capacity is either smaller than current number of attendees or exceeds room limit.";
+                    }
+                });
+            }));
+
             actions.add(new EventAction("Cancel event", () -> {
                 // TODO: cancel event after use case is done
                 System.out.println("Cancelling event");

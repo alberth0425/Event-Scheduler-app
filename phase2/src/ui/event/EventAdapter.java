@@ -81,7 +81,7 @@ public class EventAdapter {
      * @return string displaying capacity of the event
      */
     public String getCapacity() {
-        return event.getAttendeeUNs().size() + " / " + room.getCapacity();
+        return event.getAttendeeUNs().size() + " / " + event.getCapacity();
     }
 
     /**
