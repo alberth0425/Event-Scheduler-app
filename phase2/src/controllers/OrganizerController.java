@@ -65,7 +65,7 @@ public class OrganizerController extends UserController {
                         changeMessageStatus();
                         break;
                     case 10:
-                    exit = true;
+                        exit = true;
                         break;
 
                     default:

@@ -115,6 +115,7 @@ public class Message implements Savable {
      */
     @Override
     public String toSavableString() {
-        return id + DELIMITER + text + DELIMITER + senderUsername + DELIMITER + receiverUsername + DELIMITER + timeStamp;
+        return id + DELIMITER + text + DELIMITER + senderUsername + DELIMITER + receiverUsername + DELIMITER + timeStamp
+                + DELIMITER + isArchived;
     }
 }
