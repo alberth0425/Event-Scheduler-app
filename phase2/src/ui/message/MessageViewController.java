@@ -10,11 +10,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ui.BaseViewController;
-import ui.event.EventPresenter;
 import ui.message.send_message.SendMessageViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
-import ui.util.TextFieldPrompt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,8 +109,6 @@ public class MessageViewController extends BaseViewController<Void> implements M
         int index = messagesTableView.getSelectionModel().getSelectedIndex();
 
         List<Node> buttons = new ArrayList<>();
-        buttons.add(backButton);
-        buttons.add(sendMessageButton);
 
         for (MessagePresenter.MessageAction action : presenter.getActionsForMessage(index)) {
             Button button = new Button(action.getName());
@@ -128,20 +124,4 @@ public class MessageViewController extends BaseViewController<Void> implements M
         messagesTableView.refresh();
     }
 
-//    @Override
-//    public void displayTextField(String promptText, TextFieldPrompt.Validator validator) {
-//        dismissTextField();
-//
-//        promptTextField = TextFieldPrompt.create(promptText, "Ok", validator, this::dismissTextField);
-//
-//        // Add text field to container above actions
-//        containerVBox.getChildren().add(1, promptTextField);
-//    }
-//
-//    private void dismissTextField() {
-//        if (promptTextField != null) {
-//            containerVBox.getChildren().remove(promptTextField);
-//            promptTextField = null;
-//        }
-//    }
 }

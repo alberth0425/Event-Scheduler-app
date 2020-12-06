@@ -3,18 +3,12 @@ package ui.message;
 import entities.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ui.event.EventAdapter;
-import ui.event.EventPresenter;
-import ui.util.TextFieldPrompt;
 import use_cases.AuthService;
-import use_cases.EventService;
 import use_cases.MessageService;
-import use_cases.RoomService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
