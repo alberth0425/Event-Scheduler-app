@@ -25,10 +25,11 @@ public class createEventPresenter {
         try {
             String title = view.getEventTitle();
             int startingTime = view.getStartingTime();
+            int capacity = view.getCapacity();
             Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(view.getSpeakerUN()); //TODO 加exception如果输进去的不是speaker
             Room room = RoomService.shared.getRoom(view.getRoomNumber());
 
-            EventService.shared.createEvent(title, startingTime, speaker, room);
+            EventService.shared.createEvent(title, startingTime, speaker, room, capacity);
 
 
             view.navigateToSuccessCreateEvent();
@@ -57,6 +58,7 @@ public class createEventPresenter {
     public interface createEventView {
         String getEventTitle();
         int getStartingTime();
+        int getCapacity();
         String getSpeakerUN();
         int getRoomNumber();
         void setError(String error);

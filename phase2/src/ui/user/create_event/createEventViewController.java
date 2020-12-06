@@ -14,6 +14,7 @@ public class createEventViewController extends BaseViewController<Void> implemen
     public TextField startingTimeTextField;
     public TextField speakerUNTextField;
     public TextField roomNumberTextField;
+    public TextField capacityTextField;
     public Label errorLabel;
 
     private final createEventPresenter presenter = new createEventPresenter(this);
@@ -34,6 +35,11 @@ public class createEventViewController extends BaseViewController<Void> implemen
     @Override
     public int getStartingTime() {
         return Integer.parseInt(startingTimeTextField.getText());
+    }
+
+    @Override
+    public int getCapacity() {
+        return Integer.parseInt(capacityTextField.getText());
     }
 
     @Override

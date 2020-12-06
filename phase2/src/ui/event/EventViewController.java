@@ -70,10 +70,10 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
         containerVBox.getChildren().add(1, promptTextField);
     }
 
-    @Override
-    public void setError(String error) {
-        errorLabel.setText(error);
-    }
+//    @Override
+//    public void setError(String error) {
+//        errorLabel.setText(error);
+//    }
 
     private void dismissTextField() {
         if (promptTextField != null) {
