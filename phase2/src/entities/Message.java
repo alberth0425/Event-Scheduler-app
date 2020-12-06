@@ -2,15 +2,16 @@ package entities;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 public class Message implements Savable {
-    private static int messageCount;
 
     private final String text;
     private final String senderUsername;
     private final String receiverUsername;
     private final long timeStamp;  // message send time in millisecond
-    private final int id;
+    private final String id;
+    public boolean isArchived; // if this message is archived or not
 
     /**
      * constructor for the message class
@@ -29,8 +30,11 @@ public class Message implements Savable {
         timeStamp = date.getTime();
 
         // Set id
-        id = messageCount;
-        messageCount += 1;
+        UUID uuid = UUID.randomUUID();
+        id = uuid.toString();
+
+        isArchived = false;
+
     }
 
     /**
@@ -40,13 +44,12 @@ public class Message implements Savable {
      */
     public Message(String dataEntry) {
         String[] entries = dataEntry.split(DELIMITER);
-        this.id = Integer.parseInt(entries[0]);
+        this.id = entries[0];
         this.text = entries[1];
         this.senderUsername = entries[2];
         this.receiverUsername = entries[3];
         this.timeStamp = Long.parseLong(entries[4]);
 
-        messageCount += 1;
     }
 
     /**
@@ -101,7 +104,7 @@ public class Message implements Savable {
      *
      * @return the id of this message
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -112,6 +115,7 @@ public class Message implements Savable {
      */
     @Override
     public String toSavableString() {
-        return id + DELIMITER + text + DELIMITER + senderUsername + DELIMITER + receiverUsername + DELIMITER + timeStamp;
+        return id + DELIMITER + text + DELIMITER + senderUsername + DELIMITER + receiverUsername + DELIMITER + timeStamp
+                + DELIMITER + isArchived;
     }
 }
