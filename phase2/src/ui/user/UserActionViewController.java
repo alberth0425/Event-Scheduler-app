@@ -11,6 +11,7 @@ import ui.login.LoginViewController;
 import ui.message.MessageViewController;
 import ui.rate.RateViewController;
 import ui.navigation.FXMLFile;
+import ui.room.RoomViewController;
 import ui.user.create_account.CreateAccountViewController;
 import ui.user.create_event.createEventViewController;
 import ui.user.create_room.createRoomViewController;
@@ -75,6 +76,11 @@ public class UserActionViewController extends BaseViewController<Void> implement
     @Override
     public void navigateToCreateRoom() {
         getNavigationController().navigate(createRoomViewController.class);
+    }
+
+    @Override
+    public void navigateToRooms() {
+        getNavigationController().navigate(RoomViewController.class);
     }
 
     class ActionCell extends ListCell<String> {
