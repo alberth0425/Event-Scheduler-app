@@ -58,8 +58,7 @@ public class EventPresenter {
                 new EventTableColumn("Speaker", "speaker"),
                 new EventTableColumn("Room", "room"),
                 new EventTableColumn("Time", "time"),
-                new EventTableColumn("Capacity", "capacity"),
-                new EventTableColumn("Speaker Rate", "rate")
+                new EventTableColumn("Capacity", "capacity")
         );
 
         User user = AuthService.shared.getCurrentUser();
@@ -81,83 +80,95 @@ public class EventPresenter {
         List<EventAction> actions = new ArrayList<>();
         User user = AuthService.shared.getCurrentUser();
 
+        if (user instanceof Attendee) {
+            actions.addAll(getAttendeeEventActions(index));
+        } else if (user instanceof Organizer) {
+            actions.addAll(getOrganizerEventActions(index));
+        }
+
+        return actions;
+    }
+
+    private List<EventAction> getAttendeeEventActions(int index) {
+        List<EventAction> actions = new ArrayList<>();
+        Attendee user = (Attendee) AuthService.shared.getCurrentUser();
+
         if (index != -1) {
-            // An event is selected
             Event event = eventList.get(index).getEvent();
 
-            if (user instanceof Attendee) {
-                actions.addAll(getAttendeeEventActions((Attendee) user, event));
-            } else if (user instanceof Organizer) {
-                actions.addAll(getOrganizerEventActions(event));
+            // TODO: refactor things like this into use case
+            if (event.getAttendeeUNs().contains(user.getUsername())) {
+                // User signed up for this event
+                actions.add(new EventAction("Cancel sign up", () -> {
+                    try {
+                        EventService.shared.removeEventAttendee(user, event);
+                        refresh();
+                    } catch (EventService.EventException e) {
+                        System.out.println("Failed to cancel sign up: " + e.getMessage());
+                    }
+                }));
+            } else {
+                actions.add(new EventAction("Sign up", () -> {
+                    try {
+                        EventService.shared.addEventAttendee(user, event);
+                        refresh();
+                    } catch (EventService.EventException | RoomService.RoomException e) {
+                        System.out.println("Failed to sign up: " + e.getMessage());
+                    }
+                }));
             }
         }
 
         return actions;
     }
 
-    private List<EventAction> getAttendeeEventActions(Attendee user, Event event) {
+    private List<EventAction> getOrganizerEventActions(int index) {
         List<EventAction> actions = new ArrayList<>();
 
-        // TODO: refactor things like this into use case
-        if (event.getAttendeeUNs().contains(user.getUsername())) {
-            // User signed up for this event
-            actions.add(new EventAction("Cancel sign up", () -> {
-                try {
-                    EventService.shared.removeEventAttendee(user, event);
-                    refresh();
-                } catch (EventService.EventException e) {
-                    System.out.println("Failed to cancel sign up: " + e.getMessage());
-                }
+        actions.add(new EventAction("Create event", view::navigateToCreateEvent));
+
+        if (index != -1) {
+            Event event = eventList.get(index).getEvent();
+
+            actions.add(new EventAction("Change speaker", () -> {
+                view.displayTextField("Speaker ID", speakerId -> {
+                    try {
+                        Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(speakerId);
+                        EventService.shared.setEventSpeaker(speaker, event);
+                        refresh();
+                        return null;
+
+                    } catch (AuthService.AuthException | ClassCastException e) {
+                        return "No speaker with ID " + speakerId + ".";
+                    } catch (EventService.SpeakerDoubleBookException e) {
+                        return "Speaker double book.";
+                    } catch (EventService.EventException e) {
+                        return "Unknown error when changing speaker.";
+                    }
+                });
             }));
-        } else {
-            actions.add(new EventAction("Sign up", () -> {
-                try {
-                    EventService.shared.addEventAttendee(user, event);
-                    refresh();
-                } catch (EventService.EventException | RoomService.RoomException e) {
-                    System.out.println("Failed to sign up: " + e.getMessage());
-                }
+
+            actions.add(new EventAction("Change capacity", () -> {
+                view.displayTextField("Capacity", capacityStr -> {
+                    try {
+                        int capacity = Integer.parseInt(capacityStr);
+                        EventService.shared.setCapacity(capacity, event);
+                        refresh();
+                        return null;
+
+                    } catch (NumberFormatException e) {
+                        return "Invalid number " + capacityStr;
+                    } catch (IllegalArgumentException e) {
+                        return "Capacity is either smaller than current number of attendees or exceeds room limit.";
+                    }
+                });
+            }));
+
+            actions.add(new EventAction("Cancel event", () -> {
+                // TODO: cancel event after use case is done
+                System.out.println("Cancelling event");
             }));
         }
-
-        return actions;
-    }
-
-    private List<EventAction> getOrganizerEventActions(Event event) {
-        List<EventAction> actions = new ArrayList<>();
-
-        actions.add(new EventAction("Change speaker", () -> {
-            view.displayTextField("Speaker ID", speakerId -> {
-                try {
-                    Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(speakerId);
-                    EventService.shared.setEventSpeaker(speaker, event);
-                    refresh();
-                    return null;
-
-                } catch (AuthService.AuthException | ClassCastException e) {
-                    return "No speaker with ID " + speakerId + ".";
-                } catch (EventService.SpeakerDoubleBookException e) {
-                    return "Speaker double book.";
-                } catch (EventService.EventException e) {
-                    return "Unknown error when changing speaker.";
-                }
-            });
-        }));
-
-        actions.add(new EventAction("Cancel event", () -> {
-            try {
-                EventService.shared.cancelEvent(event.getId());
-                refresh();
-
-            } catch (NumberFormatException e) {
-                view.setError("Please enter digit only.");
-            } catch (EventService.EventDoesNotExistException e) {
-                view.setError("Event with ID " + event.getId() +  " does not exist. ");
-            } catch (EventService.EventException e) {
-                view.setError("Unknown exception: " + e.toString() + " Event does not cancelled successfully.");
-            }
-
-        }));
 
         return actions;
     }
@@ -267,7 +278,7 @@ public class EventPresenter {
 
     public interface EventView {
         void displayTextField(String promptText, TextFieldPrompt.Validator validator);
-        void setError(String error);
+
         void refreshActionButtons();
         void refreshTableView();
 
@@ -275,5 +286,7 @@ public class EventPresenter {
             refreshTableView();
             refreshActionButtons();
         }
+
+        void navigateToCreateEvent();
     }
 }

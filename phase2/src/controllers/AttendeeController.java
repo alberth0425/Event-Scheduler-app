@@ -165,4 +165,5 @@ public class AttendeeController extends UserController {
                     " Message does not send successfully.");
         }
     }
+
 }
