@@ -73,4 +73,14 @@ public class MessageAdapter {
     public String getFormattedTime() {
         return dateFormat.format(new Date(message.getTimeStamp()));
     }
+
+    /**
+     * Get the receiver's username of the message.
+     *
+     * @return the receiver username
+     */
+    public String getArchiveState() {
+        if (message.isArchived) return "Archived";
+        return "Unarchived";
+    }
 }

@@ -336,9 +336,13 @@ public class OrganizerController extends UserController {
         System.out.println("Please enter the room number: ");
         String roomNumber = scanner.nextLine();
 
+        System.out.println("Please enter the event capacity: ");
+        String eventcapacity = scanner.nextLine();
+
         try {
             int st = Integer.parseInt(startingTime);
             int rm = Integer.parseInt(roomNumber);
+            int capacity = Integer.parseInt(eventcapacity);
 
             //Get the Speaker by searching the username of the Speaker.
             Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);//TODO 加exception如果输进去的不是speaker
@@ -346,9 +350,10 @@ public class OrganizerController extends UserController {
             //Get the Room by searching the room number.
             Room room = RoomService.shared.getRoom(rm);
 
+
             try {
                 //Call createEvent method in EventService to create an Event.
-                EventService.shared.createEvent(title, st, sp, room);
+                EventService.shared.createEvent(title, st, sp, room, capacity);
                 System.out.println("Event created successfully." );
 
 

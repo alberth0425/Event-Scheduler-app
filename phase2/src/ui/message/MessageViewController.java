@@ -3,23 +3,30 @@ package ui.message;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import ui.BaseViewController;
 import ui.message.send_message.SendMessageViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
+import ui.util.TextFieldPrompt;
 
 @FXMLFile("message.fxml")
 public class MessageViewController extends BaseViewController<Void> implements MessagePresenter.MessageView {
     public TableView<MessageAdapter> messagesTableView;
     public Label messageTitleLabel;
     public Label messageContentLabel;
+    public VBox containerVBox;
 
     private MessagePresenter presenter;
+
+    // Text field to display above TableView when prompted. Initialized when needed
+    private Node promptTextField;
 
     @Override
     public void initializeWithParameters(Void parameters) {
@@ -47,6 +54,11 @@ public class MessageViewController extends BaseViewController<Void> implements M
         formattedTimeColumn.setText("Time");
         formattedTimeColumn.setCellValueFactory(new PropertyValueFactory<>("formattedTime"));
         columns.add(formattedTimeColumn);
+
+        TableColumn<MessageAdapter, String> archiveStateColumn = new TableColumn<>();
+        archiveStateColumn.setText("Archive State");
+        archiveStateColumn.setCellValueFactory(new PropertyValueFactory<>("archiveState"));
+        columns.add(archiveStateColumn);
 
         // Sort by reverse chronological order by default
         formattedTimeColumn.setComparator(formattedTimeColumn.getComparator().reversed());
@@ -80,5 +92,22 @@ public class MessageViewController extends BaseViewController<Void> implements M
     @Override
     public void navigateToSendMessage() {
         getNavigationController().navigate(SendMessageViewController.class);
+    }
+
+    @Override
+    public void displayTextField(String promptText, TextFieldPrompt.Validator validator) {
+        dismissTextField();
+
+        promptTextField = TextFieldPrompt.create(promptText, "Ok", validator, this::dismissTextField);
+
+        // Add text field to container above actions
+        containerVBox.getChildren().add(1, promptTextField);
+    }
+
+    private void dismissTextField() {
+        if (promptTextField != null) {
+            containerVBox.getChildren().remove(promptTextField);
+            promptTextField = null;
+        }
     }
 }
