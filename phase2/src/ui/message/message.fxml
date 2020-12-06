@@ -3,19 +3,22 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.message.MessageViewController">
+<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.message.MessageViewController">
    <children>
-      <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-            <VBox spacing="10.0">
+      <SplitPane dividerPositions="0.7" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <VBox fx:id="containerVBox" prefHeight="480.0" prefWidth="395.0" spacing="10.0">
             <TableView fx:id="messagesTableView">
             </TableView>
-            <HBox spacing="10.0">
+            <HBox  spacing="10.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
-                  <Button mnemonicParsing="false" onAction="#sendMessageAction" text="Send Message" />
+                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
+                  <Button fx:id="sendMessageButton" mnemonicParsing="false" onAction="#sendMessageAction" text="Send Message" />
                </children></HBox>
+            <HBox fx:id="actionHBox" spacing="10.0">
+                <children>
+            </children></HBox>
             </VBox>
-            <VBox spacing="10.0">
+            <VBox prefHeight="478.0" prefWidth="284.0" spacing="10.0">
                <children>
                   <Label fx:id="messageTitleLabel" text="Message" />
                <Label fx:id="messageContentLabel" text="Some message content" wrapText="true" />

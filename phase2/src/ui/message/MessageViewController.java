@@ -1,20 +1,23 @@
 package ui.message;
 
+import entities.Message;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ui.BaseViewController;
+import ui.event.EventPresenter;
 import ui.message.send_message.SendMessageViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
 import ui.util.TextFieldPrompt;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @FXMLFile("message.fxml")
 public class MessageViewController extends BaseViewController<Void> implements MessagePresenter.MessageView {
@@ -22,6 +25,9 @@ public class MessageViewController extends BaseViewController<Void> implements M
     public Label messageTitleLabel;
     public Label messageContentLabel;
     public VBox containerVBox;
+    public HBox actionHBox;
+    public Button backButton;
+    public Button sendMessageButton;
 
     private MessagePresenter presenter;
 
@@ -67,7 +73,13 @@ public class MessageViewController extends BaseViewController<Void> implements M
         messagesTableView.setItems(presenter.getMessageList());
         messagesTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         messagesTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> presenter.onSelectMessage((Integer) newValue));
+            Platform.runLater(() -> {
+                presenter.onSelectMessage((Integer) newValue);
+                if (!oldValue.equals(newValue)) {
+                    refreshActionButtons();
+                }
+
+            });
         });
     }
 
@@ -95,19 +107,41 @@ public class MessageViewController extends BaseViewController<Void> implements M
     }
 
     @Override
-    public void displayTextField(String promptText, TextFieldPrompt.Validator validator) {
-        dismissTextField();
+    public void refreshActionButtons() {
+        int index = messagesTableView.getSelectionModel().getSelectedIndex();
 
-        promptTextField = TextFieldPrompt.create(promptText, "Ok", validator, this::dismissTextField);
+        List<Node> buttons = new ArrayList<>();
+        buttons.add(backButton);
+        buttons.add(sendMessageButton);
 
-        // Add text field to container above actions
-        containerVBox.getChildren().add(1, promptTextField);
-    }
-
-    private void dismissTextField() {
-        if (promptTextField != null) {
-            containerVBox.getChildren().remove(promptTextField);
-            promptTextField = null;
+        for (MessagePresenter.MessageAction action : presenter.getActionsForMessage(index)) {
+            Button button = new Button(action.getName());
+            button.setOnAction(event -> action.call());
+            buttons.add(button);
         }
+
+        actionHBox.getChildren().setAll(buttons);
     }
+
+    @Override
+    public void refreshTableView() {
+        messagesTableView.refresh();
+    }
+
+//    @Override
+//    public void displayTextField(String promptText, TextFieldPrompt.Validator validator) {
+//        dismissTextField();
+//
+//        promptTextField = TextFieldPrompt.create(promptText, "Ok", validator, this::dismissTextField);
+//
+//        // Add text field to container above actions
+//        containerVBox.getChildren().add(1, promptTextField);
+//    }
+//
+//    private void dismissTextField() {
+//        if (promptTextField != null) {
+//            containerVBox.getChildren().remove(promptTextField);
+//            promptTextField = null;
+//        }
+//    }
 }

@@ -127,6 +127,11 @@ public class MessageService {
         }
     }
 
+    public void deleteSingleMessages(String receiverUN, Message message){
+        if (messageRepository.containsKey(receiverUN) && messageRepository.get(receiverUN).contains(message)) {
+            messageRepository.get(receiverUN).remove(message);
+        }
+    }
 
 
     public void archiveMessage(String receiverUN){

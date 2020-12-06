@@ -58,7 +58,8 @@ public class EventPresenter {
                 new EventTableColumn("Speaker", "speaker"),
                 new EventTableColumn("Room", "room"),
                 new EventTableColumn("Time", "time"),
-                new EventTableColumn("Capacity", "capacity")
+                new EventTableColumn("Capacity", "capacity"),
+                new EventTableColumn("Speaker rate", "rate")
         );
 
         User user = AuthService.shared.getCurrentUser();

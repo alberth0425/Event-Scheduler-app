@@ -3,16 +3,22 @@ package ui.message;
 import entities.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ui.event.EventAdapter;
 import ui.event.EventPresenter;
 import ui.util.TextFieldPrompt;
 import use_cases.AuthService;
 import use_cases.EventService;
 import use_cases.MessageService;
+import use_cases.RoomService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MessagePresenter {
     private final MessageView view;
@@ -78,62 +84,36 @@ public class MessagePresenter {
      * @param index the index of the selected event, or -1 if nothing is selected
      * @return a list of MessageAction
      */
-    public List<EventPresenter.EventAction> getActionsForMessage(int index) {
-        List<EventPresenter.EventAction> actions = new ArrayList<>();
-        User user = AuthService.shared.getCurrentUser();
+    public List<MessageAction> getActionsForMessage(int index) {
+        List<MessageAction> actions = new ArrayList<>();
 
         actions.addAll(getMessageAction(index));
 
         return actions;
     }
 
-    private List<EventPresenter.EventAction> getMessageAction(int index) {
-        List<EventPresenter.EventAction> actions = new ArrayList<>();
-
-        // TODO send message?
-//        actions.add(new EventPresenter.EventAction("Create event", view::navigateToCreateEvent));
+    private List<MessageAction> getMessageAction(int index) {
+        List<MessageAction> actions = new ArrayList<>();
 
         if (index != -1) {
             Message message = messages.get(index).getMessage();
 
             actions.add(new MessageAction("Delete Message", () -> {
-                view.displayTextField("Speaker ID", speakerId -> {
-                    try {
-                        Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(speakerId);
-                        EventService.shared.setEventSpeaker(speaker, event);
-                        refresh();
-                        return null;
-
-                    } catch (AuthService.AuthException | ClassCastException e) {
-                        return "No speaker with ID " + speakerId + ".";
-                    } catch (EventService.SpeakerDoubleBookException e) {
-                        return "Speaker double book.";
-                    } catch (EventService.EventException e) {
-                        return "Unknown error when changing speaker.";
-                    }
-                });
+                MessageService.shared.deleteSingleMessages(AuthService.shared.getCurrentUser().getUsername(), message);
+                refresh();
             }));
 
-            actions.add(new EventPresenter.EventAction("Change capacity", () -> {
-                view.displayTextField("Capacity", capacityStr -> {
-                    try {
-                        int capacity = Integer.parseInt(capacityStr);
-                        EventService.shared.setCapacity(capacity, event);
-                        refresh();
-                        return null;
-
-                    } catch (NumberFormatException e) {
-                        return "Invalid number " + capacityStr;
-                    } catch (IllegalArgumentException e) {
-                        return "Capacity is either smaller than current number of attendees or exceeds room limit.";
-                    }
-                });
-            }));
-
-            actions.add(new EventPresenter.EventAction("Cancel event", () -> {
-                // TODO: cancel event after use case is done
-                System.out.println("Cancelling event");
-            }));
+            if (message.isArchived) {
+                actions.add(new MessageAction("Mark as unarchive", () -> {
+                    message.setUnarchived();
+                    refresh();
+                }));
+            } else {
+                actions.add(new MessageAction("Mark as archive", () -> {
+                    message.setArchived();
+                    refresh();
+                }));;
+            }
         }
 
         return actions;
@@ -149,7 +129,7 @@ public class MessagePresenter {
         }
 
         /**
-         * Get the name of the event action.
+         * Get the name of the message action.
          *
          * @return the name
          */
@@ -158,11 +138,31 @@ public class MessagePresenter {
         }
 
         /**
-         * Run the event action.
+         * Run the message action.
          */
         public void call() {
             callback.run();
         }
+    }
+
+    private void refresh() {
+        refreshMessages();
+        // Table view is updated automatically when list changes
+        view.refreshActionButtons();
+    }
+
+    private void refreshMessages() {
+        Stream<Message> messages = MessageService.shared.getAllMessages().stream();
+        String currentUsername = AuthService.shared.getCurrentUser().getUsername();
+
+        messages = messages.filter(message -> message.getReceiverUsername().contains(currentUsername));
+
+        List<MessageAdapter> messageList = messages
+                .map(message -> new MessageAdapter(message, DATE_FORMAT))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        this.messages.setAll(messageList);
     }
 
     private interface MessageActionCallback {
@@ -173,6 +173,15 @@ public class MessagePresenter {
         void setMessageTitleLabel(String text);
         void setMessageContentLabel(String text);
         void navigateToSendMessage();
-        void displayTextField(String promptText, TextFieldPrompt.Validator validator);
+
+        void refreshActionButtons();
+        void refreshTableView();
+
+        default void refresh() {
+            refreshTableView();
+            refreshActionButtons();
+        }
+
+
     }
 }

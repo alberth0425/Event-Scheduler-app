@@ -109,6 +109,20 @@ public class Message implements Savable {
     }
 
     /**
+     * set message to archived
+     */
+    public void setArchived(){
+        isArchived = true;
+    }
+
+    /**
+     * set message to unarchived
+     */
+    public void setUnarchived(){
+        isArchived = false;
+    }
+
+    /**
      * turn the information of this message into a savable string.
      *
      * @return a savable string
