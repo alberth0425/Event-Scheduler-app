@@ -53,7 +53,7 @@ public class EventService {
 
         // Check if attendee has another event at the same time
         for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
-            if (e.getId() != event.getId()) {
+            if (!e.getUUID().equals(event.getUUID())) {
                 for (String a : event.getAttendeeUNs()) {
                     if (a.equals(attendee.getUsername())) throw new AttendeeScheduleConflictException();
                 }
@@ -90,7 +90,7 @@ public class EventService {
 
         // Check for double booking
         for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
-            if (e.getRoomNumber() == newRoom.getRoomNumber() && e.getId() != event.getId())
+            if (e.getRoomNumber() == newRoom.getRoomNumber() && !e.getUUID().equals(event.getUUID()))
                 throw new RoomDoubleBookException();
         }
 
@@ -110,7 +110,7 @@ public class EventService {
 
         // Check for double booking
         for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
-            if (e.getSpeakerUsername().equals(newSpeaker.getUsername()) && e.getId() != event.getId())
+            if (e.getSpeakerUsername().equals(newSpeaker.getUsername()) && !e.getUUID().equals(event.getUUID()))
                 throw new SpeakerDoubleBookException();
         }
 
@@ -144,13 +144,13 @@ public class EventService {
     /**
      * Get an event by input id.
      *
-     * @param id id of the event
+     * @param uuid uuid of the event
      * @return the event represented by the input id
      * @throws EventException if all stored events do not have the input id
      */
-    public Event getEventById(Integer id) throws EventException {
+    public Event getEventById(String uuid) throws EventException {
         for (Event event: allEvents) {
-            if (id == event.getId()) return event;
+            if (uuid.equals(event.getUUID())) return event;
         }
 
         throw new EventDoesNotExistException();
@@ -196,11 +196,10 @@ public class EventService {
      * @param startingTime starting time of the event
      * @param speaker speaker of the event
      * @param room room of the event
-     * @return the created event object
      * @throws SpeakerDoubleBookException if the input speaker is already scheduled to another event at the same time
      * @throws RoomDoubleBookException if the input room is already scheduled to another event at the same time
      */
-    public Event createEvent(String title, int startingTime, Speaker speaker, Room room) throws EventException,
+    public void createEvent(String title, int startingTime, Speaker speaker, Room room) throws EventException,
             RoomService.RoomException {
         // Check double booking exceptions (both speaker and room)
         for (Event event : this.getEventsByStartTime(startingTime)) {
@@ -215,7 +214,6 @@ public class EventService {
         Event event = new Event(title, speaker.getUsername(), startingTime, room.getRoomNumber());
         allEvents.add(event);
 
-        return event;
     }
 
     /**

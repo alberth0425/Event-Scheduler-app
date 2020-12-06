@@ -4,16 +4,16 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class Event implements Savable {
-    private static int eventCount;
 
     private final String title;
     private int roomNumber;
     private final int startingTime;
     private String speakerUN;
     private List<String> attendeeUNs = new ArrayList<>();
-    private final int id;
+    private String uuid;
 
     /**
      * constructor for the event class.
@@ -29,35 +29,23 @@ public class Event implements Savable {
         this.roomNumber = roomNumber;
         this.startingTime = startingTime;
 
-        id = eventCount;
-        eventCount += 1;
+        uuid = UUID.randomUUID().toString();
     }
 
     /**
-     * construct event from a dataEntry.
+     *  getter for the uuid.
      *
-     * @param dataEntry the savable string that contains all the information of this event
+     * @return the uuid of the event
      */
-    public Event(String dataEntry) {
-        String[] entries = dataEntry.split(DELIMITER);
-        this.id = Integer.parseInt(entries[0]);
-        this.title = entries[1];
-        this.speakerUN = entries[2];
-        this.startingTime = Integer.parseInt(entries[3]);
-        this.roomNumber = Integer.parseInt(entries[4]);
-        this.attendeeUNs = entries.length < 6 ? new ArrayList<>() :
-                                                new ArrayList<>(Arrays.asList(entries[5].split("\\|")));
-
-        eventCount += 1;
+    public String getUUID() {
+        return uuid;
     }
 
     /**
-     *  getter for the id.
-     *
-     * @return the id of the event
+     *  setter for the uuid.
      */
-    public int getId() {
-        return id;
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
     }
 
     /**
@@ -158,7 +146,7 @@ public class Event implements Savable {
                 ", startingTime=" + startingTime +
                 ", speakerUN='" + speakerUN + '\'' +
                 ", attendeeUNs=" + attendeeUNs +
-                ", id=" + id +
+                ", uuid=" + uuid +
                 '}';
     }
 
@@ -179,8 +167,8 @@ public class Event implements Savable {
         attendeeUNBuilder.append("]");
         String attendeesStr = attendeeUNBuilder.toString();
 
-        return MessageFormat.format("\"room_number\": {0},\"speaker_un\": \"{1}\",\"id\": \"{2}\", " +
-                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\"",roomNumber, speakerUN, id, attendeesStr, startingTime, title);
+        return MessageFormat.format("\"room_number\": {0},\"speaker_un\": \"{1}\",\"uuid\": \"{2}\", " +
+                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\"",roomNumber, speakerUN, uuid, attendeesStr, startingTime, title);
 
     }
 }

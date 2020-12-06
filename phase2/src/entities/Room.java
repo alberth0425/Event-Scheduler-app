@@ -19,18 +19,6 @@ public class Room implements Savable {
     }
 
     /**
-     * construct room from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents room
-     *                  first one is the room number, and second one is the capacity
-     */
-    public Room(String dataEntry) {
-        String[] entries = dataEntry.split(DELIMITER);
-        this.capacity = Integer.parseInt(entries[1]);
-        this.roomNumber = Integer.parseInt(entries[0]);
-    }
-
-    /**
      * getter for capacity.
      *
      * @return the capacity of the room

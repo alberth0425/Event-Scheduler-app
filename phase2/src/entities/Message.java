@@ -35,22 +35,6 @@ public class Message implements Savable {
     }
 
     /**
-     * construct message from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents a message
-     */
-    public Message(String dataEntry) {
-        String[] entries = dataEntry.split(DELIMITER);
-        this.id = Integer.parseInt(entries[0]);
-        this.text = entries[1];
-        this.senderUsername = entries[2];
-        this.receiverUsername = entries[3];
-        this.timeStamp = Long.parseLong(entries[4]);
-
-        messageCount += 1;
-    }
-
-    /**
      * getter for the text.
      *
      * @return the text of this message

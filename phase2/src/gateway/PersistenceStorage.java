@@ -162,6 +162,7 @@ public class PersistenceStorage {
             Event evObj = new Event(event.getString("title"), event.getString( "speaker_un"),
                     event.getInt("starting_time"), event.getInt("room_number"));
             evObj.setAttendeeUNs(attendeeUNs);
+            evObj.setUUID(event.getString("uuid"));
             eventList.add(evObj);
         }
         return eventList;

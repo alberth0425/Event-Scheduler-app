@@ -13,13 +13,4 @@ public class Organizer extends User {
     public Organizer(String username, String password, String firstName, String lastName) {
         super(username, password, firstName, lastName);
     }
-
-    /**
-     * construct organizer from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents organizer
-     */
-    public Organizer(String dataEntry) {
-        super(dataEntry);
-    }
 }

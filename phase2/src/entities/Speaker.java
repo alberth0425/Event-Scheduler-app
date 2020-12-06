@@ -13,13 +13,4 @@ public class Speaker extends User {
     public Speaker(String username, String password, String firstName, String lastName) {
         super(username, password, firstName, lastName);
     }
-
-    /**
-     * construct speaker from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents speaker
-     */
-    public Speaker(String dataEntry) {
-        super(dataEntry);
-    }
 }

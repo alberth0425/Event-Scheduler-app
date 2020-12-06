@@ -31,23 +31,6 @@ public class User implements Savable {
     }
 
     /**
-     * construct user from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents this user
-     *                  the order of the string is: id, username, password, first name and last name
-     */
-    public User(String dataEntry) {
-        String[] entries = dataEntry.split(DELIMITER);
-        this.id = Integer.parseInt(entries[0]);
-        this.username = entries[1];
-        this.password = entries[2];
-        this.firstName = entries[3];
-        this.lastName = entries[4];
-
-        numUser += 1;
-    }
-
-    /**
      *  getter for the username.
      *
      * @return the name of the user
