@@ -19,19 +19,6 @@ public class PersistenceStorage {
     private static final String EVENT_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/events";
     private static final String MESSAGE_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/messages";
 
-    public static void main(String[] args) throws IOException {
-        Room room1 = new Room(12, 13);
-        Room room2 = new Room(14, 15);
-        Room room3 = new Room(16, 17);
-
-        ArrayList<Room> rooms = new ArrayList<>();
-        rooms.add(room1);
-        rooms.add(room2);
-        rooms.add(room3);
-        putRequest(rooms, Room.class);
-
-    }
-
     /**
      * Print out the request in to the console from the input URL
      * @param returnType the type of wanted entities
@@ -74,15 +61,15 @@ public class PersistenceStorage {
      */
     public static <T> void putRequest(List<T> list, Class<T> inputType) throws IOException {
 
-        URL urlForInformation = getURLByClass(inputType);
+        URL url = getURLByClass(inputType);
 
-        assert urlForInformation != null;
-        HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
+        assert url != null;
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
         //Request setup
-        con.setDoOutput(true);
         con.setRequestMethod("PUT");
-        con.addRequestProperty("Content-Type", "application/json");
+        con.setDoOutput(true);
+        con.addRequestProperty("Content-Type", "text/plain");
         con.setConnectTimeout(6000); // 6 secs
         con.setReadTimeout(6000); // 6 secs
 
@@ -109,6 +96,7 @@ public class PersistenceStorage {
         writer.write(returnedList.toString());
         writer.flush();
         writer.close();
+        con.getResponseCode();
         con.disconnect();
     }
 
@@ -162,7 +150,7 @@ public class PersistenceStorage {
             Event evObj = new Event(event.getString("title"), event.getString( "speaker_un"),
                     event.getInt("starting_time"), event.getInt("room_number"));
             evObj.setAttendeeUNs(attendeeUNs);
-            evObj.setUUID(event.getString("uuid"));
+            evObj.setUUID(event.getString("id"));
             eventList.add(evObj);
         }
         return eventList;

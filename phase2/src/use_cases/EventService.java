@@ -4,13 +4,22 @@ import entities.Attendee;
 import entities.Event;
 import entities.Room;
 import entities.Speaker;
+import gateway.PersistenceStorage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 // TODO: double check this
 
 public class EventService {
+
+    public static void main(String[] args) throws IOException {
+        Event e = new Event("Event3", "spk-1", 14, 3);
+        List<Event> events = new ArrayList<>();
+        events.add(e);
+        PersistenceStorage.putRequest(events, Event.class);
+    }
 
     /**
      * singleton implementation.

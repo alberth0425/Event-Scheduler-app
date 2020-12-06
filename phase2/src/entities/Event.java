@@ -167,7 +167,7 @@ public class Event implements Savable {
         attendeeUNBuilder.append("]");
         String attendeesStr = attendeeUNBuilder.toString();
 
-        return MessageFormat.format("\"room_number\": {0},\"speaker_un\": \"{1}\",\"uuid\": \"{2}\", " +
+        return MessageFormat.format("\"room_number\": {0},\"speaker_un\": \"{1}\",\"id\": \"{2}\", " +
                 "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\"",roomNumber, speakerUN, uuid, attendeesStr, startingTime, title);
 
     }

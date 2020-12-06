@@ -70,8 +70,8 @@ public class OrganizerSendMessagePresenter extends SendMessagePresenter {
                 break;
             case 3:
                 try {
-                    Integer eventId = Integer.parseInt(receiver);
-                    Event event = EventService.shared.getEventById(eventId);
+//                    Integer eventId = Integer.parseInt(receiver);
+                    Event event = EventService.shared.getEventById(receiver);
                     usernames = event.getAttendeeUNs();
 
                 } catch (NumberFormatException | EventService.EventException e) {
