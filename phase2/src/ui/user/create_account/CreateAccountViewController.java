@@ -17,6 +17,7 @@ import ui.navigation.FXMLFile;
 import ui.user.OrganizerActionPresenter;
 import ui.user.UserActionViewController;
 import ui.user.create_account.create_account_successfully.CreateAccountSucessViewController;
+import ui.user.create_account.rater_agreement.RaterAgreementViewController;
 
 import javax.swing.*;
 import java.net.URL;
@@ -79,6 +80,11 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
     @Override
     public void navigateToCreateAccountSuccessfully() {
         getNavigationController().navigate(CreateAccountSucessViewController.class);
+    }
+
+    @Override
+    public void navigateToRaterAgreementViewController(){
+        getNavigationController().navigate(RaterAgreementViewController.class);
     }
 
     public void OkButtonAction(ActionEvent actionEvent) {
