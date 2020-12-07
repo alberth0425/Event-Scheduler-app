@@ -543,7 +543,7 @@ public class OrganizerController extends UserController {
                             EventService.shared.addSpeakerToPD(speaker, event);
                         } else {
                             assigned = false;
-                            System.out.println("Cannot assign speakers to a party");
+                            System.out.println("Cannot assign speakers to party but the rest is assigned");
                         }
                     } catch (EventService.EventDoesNotExistException e) {
                         System.out.println("Event with event id " + eventId + " does not exist. Speaker assigned " +

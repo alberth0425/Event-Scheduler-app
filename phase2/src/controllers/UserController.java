@@ -77,10 +77,14 @@ abstract public class UserController extends BaseController {
     }
 
     void viewMessages() {
-        List<Message> messages = MessageService.shared.getReceivedMessages(AuthService.shared.getCurrentUser().getUsername());
+        try {
+            List<Message> messages = MessageService.shared.getReceivedMessages(AuthService.shared.getCurrentUser().getUsername());
 
-        for (Message message : messages) {
-            System.out.println("From: " + message.getSenderUsername() + ", content: " + message.getText());
+            for (Message message : messages) {
+                System.out.println("From: " + message.getSenderUsername() + ", content: " + message.getText());
+            }
+        } catch (NullPointerException e){
+            System.out.println("There is no message to view for the current user");
         }
     }
 }
