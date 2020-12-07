@@ -21,14 +21,8 @@ public abstract class Event implements Savable {
         eventCount += 1;
     }
 
-    public Event(String dataEntry){
-        String[] entries = dataEntry.split(Savable.DELIMITER);
-        id = Integer.parseInt(entries[0]);
-        title = entries[1];
-        startingTime = Integer.parseInt(entries[3]);
-        roomNumber = Integer.parseInt(entries[4]);
-        duration = Integer.parseInt(entries[5]);
-        eventCount += 1;
+    public Event(){
+
     }
 
     /**

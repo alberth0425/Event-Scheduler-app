@@ -29,13 +29,17 @@ public class Talk extends Event {
      * @param dataEntry the savable string that contains all the information of this event
      */
     public Talk(String dataEntry) {
-        super(dataEntry);
         String[] entries = dataEntry.split(Savable.DELIMITER);
+        id = Integer.parseInt(entries[0]);
+        title = entries[1];
         speakerUN = entries[2];
+        startingTime = Integer.parseInt(entries[3]);
+        roomNumber = Integer.parseInt(entries[4]);
+        duration = Integer.parseInt(entries[5]);
+        eventCount += 1;
         talkAttendeeUNs = entries.length < 7 ? new ArrayList<>() :
                 new ArrayList<>(Arrays.asList(entries[6].split("\\|")));
     }
-
 
     /**
      *  getter for the speaker username.
@@ -110,6 +114,6 @@ public class Talk extends Event {
     public String toSavableString() {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
                 getSpeakerUsername() + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
-                Savable.DELIMITER + String.join("|", getAttendeeUNs());
+                Savable.DELIMITER + duration + Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
 }

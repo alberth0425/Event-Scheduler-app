@@ -12,8 +12,13 @@ public class Party extends Event{
     }
 
     public Party(String dataEntry){
-        super(dataEntry);
         String[] entries = dataEntry.split(Savable.DELIMITER);
+        id = Integer.parseInt(entries[0]);
+        title = entries[1];
+        startingTime = Integer.parseInt(entries[3]);
+        roomNumber = Integer.parseInt(entries[4]);
+        duration = Integer.parseInt(entries[5]);
+        eventCount += 1;
         partyAttendeeUNs = entries.length < 7 ? new ArrayList<>() :
                 new ArrayList<>(Arrays.asList(entries[6].split("\\|")));
     }
@@ -71,6 +76,6 @@ public class Party extends Event{
     public String toSavableString() {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
                 "null" + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
-                Savable.DELIMITER + String.join("|", getAttendeeUNs());
+                Savable.DELIMITER + duration + Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
 }

@@ -14,8 +14,13 @@ public class PanelDiscussion extends Event {
     }
 
     public PanelDiscussion(String dataEntry){
-        super(dataEntry);
         String[] entries = dataEntry.split(Savable.DELIMITER);
+        id = Integer.parseInt(entries[0]);
+        title = entries[1];
+        startingTime = Integer.parseInt(entries[3]);
+        roomNumber = Integer.parseInt(entries[4]);
+        duration = Integer.parseInt(entries[5]);
+        eventCount += 1;
         speakerUNs = new ArrayList<>(Arrays.asList(entries[2].split("\\|")));
         panelDiscussionAttendeeUNs = entries.length < 7 ? new ArrayList<>() :
                 new ArrayList<>(Arrays.asList(entries[6].split("\\|")));
@@ -49,7 +54,7 @@ public class PanelDiscussion extends Event {
 
     /**
      * add a speaker for this event
-     * @param speakerUN
+     * @param speakerUN the username of the speaker for this event
      */
     public void addSpeakerUN(String speakerUN){
         speakerUNs.add(speakerUN);
@@ -57,7 +62,7 @@ public class PanelDiscussion extends Event {
 
     /**
      * remove a speaker in this event
-     * @param speakerUN
+     * @param speakerUN the username of the speaker for this event
      */
     public void removeSpeakerUN(String speakerUN){
         speakerUNs.remove(speakerUN);
@@ -104,7 +109,8 @@ public class PanelDiscussion extends Event {
     @Override
     public String toSavableString() {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
-                String.join("|",getSpeakerUNs()) + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
+                String.join("|",getSpeakerUNs()) + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER
+                + getRoomNumber() + duration + Savable.DELIMITER +
                 Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
 

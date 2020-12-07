@@ -6,10 +6,10 @@ import java.io.*;
 import java.util.*;
 
 public class PersistenceStorage {
+
     /**
      * Path constants for different Savable classes
      */
-
     public static final String ATTENDEE_STORAGE_PATH = "phase2/src/gateway/attendees.txt";
     public static final String SPEAKER_STORAGE_PATH = "phase2/src/gateway/speakers.txt";
     public static final String ORGANIZER_STORAGE_PATH = "phase2/src/gateway/organizers.txt";

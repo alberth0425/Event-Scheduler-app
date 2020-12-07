@@ -22,6 +22,7 @@ public class OrganizerController extends UserController {
 
     @Override
     void run() {
+        load();
         while (true) {
             System.out.println("Select an action:");
             System.out.println("1. Browse events");
@@ -113,7 +114,7 @@ public class OrganizerController extends UserController {
         } catch (AuthService.InvalidFieldException e) {
             System.out.println("Invalid " + e.getField() + " entered. Speaker does not create successfully");
         } catch (AuthService.UsernameAlreadyTakenException e) {
-            System.out.println("Username " + username + "already taken.");
+            System.out.println("Username " + username + "  already taken.");
         } catch (Exception e) {
             System.out.println("Unknown exception: " + e.toString() + ". Speaker does not create " +
                     "successfully.");
