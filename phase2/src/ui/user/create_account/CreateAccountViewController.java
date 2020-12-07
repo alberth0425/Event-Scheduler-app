@@ -1,27 +1,16 @@
 package ui.user.create_account;
 
-import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.TextField;
 import ui.BaseViewController;
-import ui.message.send_message.SendMessagePresenter;
 import ui.navigation.FXMLFile;
-import ui.user.OrganizerActionPresenter;
 import ui.user.UserActionViewController;
 import ui.user.create_account.create_account_successfully.CreateAccountSucessViewController;
-import ui.user.create_account.rater_agreement.RaterAgreementViewController;
-
-import javax.swing.*;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 @FXMLFile("create_account.fxml")
 public class CreateAccountViewController extends BaseViewController<Void> implements CreateAccountPresenter.CreateAccountView {
@@ -34,6 +23,7 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
     public TextField firstNameTextField;
     public TextField lastNameTextField;
     public Label errorLabel;
+    public CheckBox agreementCheckBox;
 
 
 
@@ -47,6 +37,17 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
             int selectedIndex = (int) newValue;
             userComboBox.getSelectionModel().select(selectedIndex);
             presenter.onSelectUserType(selectedIndex);
+        });
+
+        agreementCheckBox.setVisible(false);
+
+        agreementCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue){
+                    presenter.selectCheckBox(true);
+                }
+            }
         });
 
 
@@ -78,13 +79,20 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
     }
 
     @Override
+    public void setCheckBoxText(String agreement) {
+        agreementCheckBox.setText(agreement);
+    }
+
+
+    @Override
     public void navigateToCreateAccountSuccessfully() {
         getNavigationController().navigate(CreateAccountSucessViewController.class);
     }
 
+
     @Override
-    public void navigateToRaterAgreementViewController(){
-        getNavigationController().navigate(RaterAgreementViewController.class);
+    public void setCheckbox() {
+        agreementCheckBox.setVisible(true);
     }
 
     public void OkButtonAction(ActionEvent actionEvent) {

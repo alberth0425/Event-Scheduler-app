@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import ui.BaseViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
+import ui.user.create_account.CreateAccountViewController;
 
 @FXMLFile("login.fxml")
 public class LoginViewController extends BaseViewController<Void> implements LoginPresenter.LoginView {
@@ -38,5 +39,14 @@ public class LoginViewController extends BaseViewController<Void> implements Log
     @Override
     public void navigateToUserView() {
         getNavigationController().navigate(UserActionViewController.class);
+    }
+
+    @Override
+    public void navigateToCreateAccount() {
+        getNavigationController().navigate(CreateAccountViewController.class);
+    }
+
+    public void registerButtonAction(ActionEvent actionEvent) {
+        presenter.onRegisterButtonPressed();
     }
 }

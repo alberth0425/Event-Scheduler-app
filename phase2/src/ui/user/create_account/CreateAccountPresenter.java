@@ -1,17 +1,14 @@
 package ui.user.create_account;
 
-import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TextField;
-import ui.message.send_message.SendMessagePresenter;
-import ui.rate.RatePresenter;
 import use_cases.AgreementService;
 import use_cases.AuthService;
 
 public class CreateAccountPresenter {
 
     int userTypeIndex = -1;
+    Boolean selectCheckBox = false;
 
     // TODO private?
     public CreateAccountPresenter.CreateAccountView view;
@@ -44,6 +41,8 @@ public class CreateAccountPresenter {
     public void onSelectUserType(int index) {
         userTypeIndex = index;
     }
+
+    public void selectCheckBox(Boolean selected){ selectCheckBox = selected;}
 
 
     /**
@@ -103,23 +102,42 @@ public class CreateAccountPresenter {
                 }
                 break;
             case 3:
-                try{
-                    view.navigateToRaterAgreementViewController();
-                    //Call createUser method in AuthService to create a Rater account.
 
-                    AuthService.shared.createUser(view.getUsername(), view.getPassword(), view.getFirstName(),
-                            view.getLastName(), AuthService.UserType.RATER);
+                view.setError("To become a rater, agreement must be signed.");
 
-                    view.navigateToCreateAccountSuccessfully();
+                view.setCheckbox();
 
-                } catch (AuthService.InvalidFieldException e) {
-                    view.setError("Invalid " + e.getField() + " entered. Rater does not create successfully");
-                } catch (AuthService.UsernameAlreadyTakenException e) {
-                    view.setError("Username " + view.getUsername() + " already taken.");
-                } catch (Exception e) {
-                    view.setError("Unknown exception: " + e.toString() + ". Rater does not create " +
-                            "successfully.");
+                view.setCheckBoxText( "I agree to respect every speaker I rate, " +
+                        "and to rate using professional \n " +
+                        "attitude.");
+
+                if (selectCheckBox){
+                    try{
+                        AgreementService.shared.signAgreement(view.getUsername(), view.getFirstName(), view.getLastName());
+                        try{
+
+                            //Call createUser method in AuthService to create a Rater account.
+
+                            AuthService.shared.createUser(view.getUsername(), view.getPassword(), view.getFirstName(),
+                                    view.getLastName(), AuthService.UserType.RATER);
+
+                            view.navigateToCreateAccountSuccessfully();
+
+                        } catch (AuthService.InvalidFieldException e) {
+                            view.setError("Invalid " + e.getField() + " entered. Rater does not create successfully");
+                        } catch (AuthService.UsernameAlreadyTakenException e) {
+                            view.setError("Username " + view.getUsername() + " already taken.");
+                        } catch (Exception e) {
+                            view.setError("Unknown exception: " + e.toString() + ". Rater does not create " +
+                                    "successfully.");
+                        }
+                    } catch (AgreementService.AgreementAlreadyExistException e) {
+                        view.setError("Agreement and rater already exists, no need to sign again.");
+                    }
+                } else {
+                    view.setError("To become a rater, agreement must be signed.");
                 }
+
                 break;
         }
     }
@@ -134,7 +152,8 @@ public class CreateAccountPresenter {
         String getFirstName();
         String getLastName();
         void setError(String error);
+        void setCheckBoxText(String agreement);
         void navigateToCreateAccountSuccessfully();
-        void navigateToRaterAgreementViewController();
+        void setCheckbox();
     }
 }
