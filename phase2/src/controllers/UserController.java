@@ -19,7 +19,7 @@ abstract public class UserController extends BaseController {
         for (Event event : allEvents) {
             //if the event is a talk
             if(event instanceof Talk) {
-                Talk talk = (Talk) event;
+                Talk talk = EventService.shared.castToTalk(event);
                 //Talk display message
                 try {
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
@@ -37,7 +37,7 @@ abstract public class UserController extends BaseController {
             }
             //if the event is a party
             else if(event instanceof Party) {
-                Party party = (Party) event;
+                Party party = EventService.shared.castToParty(event);
                 try {
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
                             ", From: " + party.getStartingTime() + " - " + party.getEndTime() +
@@ -49,7 +49,7 @@ abstract public class UserController extends BaseController {
             }
             //if the event is a panel discussion
             else{
-                PanelDiscussion pd = (PanelDiscussion) event;
+                PanelDiscussion pd = EventService.shared.castToPD(event);
                 List<String> res = new ArrayList<>();
                 try {
                     //Get the list of speaker names
@@ -58,9 +58,9 @@ abstract public class UserController extends BaseController {
                         res.add(sp.getFullname());
                     }
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
-                            ", Speakers: ["
+                            ", Speakers: "
                             + res.toString() +
-                            "], From: " + pd.getStartingTime() + " - " + pd.getEndTime() +
+                            ", From: " + pd.getStartingTime() + " - " + pd.getEndTime() +
                             ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
                     sb.append(eStr);
                 } catch (AuthService.AuthException e) {

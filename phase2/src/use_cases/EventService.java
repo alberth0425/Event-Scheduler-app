@@ -203,9 +203,9 @@ public class EventService {
     /**
      * Gets a list of events that overlaps with the time range given
      *
-     * @param startTime
-     * @param endTime
-     * @return
+     * @param startTime The start time of the event
+     * @param endTime The end time of the event
+     * @return a list of events that overlap with the given time  interval
      */
     public List<Event> getEventsByTimeInterval(int startTime, int endTime) {
         List<Event> events = new ArrayList<>();
@@ -262,8 +262,8 @@ public class EventService {
     /**
      * get the list of events that a speaker is speaking at
      *
-     * @param username
-     * @return
+     * @param username  username of the speaker
+     * @return a list of Events that has the speaker
      */
     public List<Event> getEventsBySpeaker(String username) {
         List<Event> speakerEvents = new ArrayList<>();
@@ -301,7 +301,6 @@ public class EventService {
      * @param startingTime starting time of the event
      * @param speaker      speaker of the event
      * @param room         room of the event
-     * @return the created event object
      * @throws SpeakerDoubleBookException if the input speaker is already scheduled to another event at the same time
      * @throws RoomDoubleBookException    if the input room is already scheduled to another event at the same time
      */
@@ -336,12 +335,12 @@ public class EventService {
     /**
      * Create a new panel discussion, add the panel discussion to allEvents List.
      *
-     * @param title
-     * @param startingTime
-     * @param speakers
-     * @param room
-     * @throws EventException
-     * @throws RoomService.RoomException
+     * @param title Title of the panel discussion
+     * @param startingTime start time of the panel discussion
+     * @param speakers list of speakers in the panel discussion
+     * @param room the room in which this event takes place
+     * @throws EventException checks for Event Exceptions
+     * @throws RoomService.RoomException checks for Room Exceptions
      */
     public void createPD(String title, int startingTime, List<Speaker> speakers, Room room, int duration)
             throws EventException, RoomService.RoomException {
@@ -370,18 +369,17 @@ public class EventService {
         if (startingTime < 0 || startingTime >= 24 ) throw new InvalidEventTimeException();
         List<String> speakerUNs = getListOfUNsBySpeakers(speakers);
         Event event = new PanelDiscussion(title, speakerUNs, startingTime, room.getRoomNumber(), duration);
-        System.out.println("PD has been created");
         allEvents.add(event);
     }
 
     /**
      * creates a party and put it to the allEvents list
      *
-     * @param title
-     * @param startingTime
-     * @param room
-     * @throws EventException
-     * @throws RoomService.RoomException
+     * @param title The title of party
+     * @param startingTime start time of the party
+     * @param room the room in which this event takes place
+     * @throws EventException checks for Event Exceptions
+     * @throws RoomService.RoomException checks for Room Exceptions
      */
     public void createParty(String title, int startingTime, Room room, int duration)
             throws EventException, RoomService.RoomException {
@@ -412,6 +410,18 @@ public class EventService {
     public int getEventAvailability(Event event) throws RoomService.RoomException {
         Room room = getRoom(event.getRoomNumber());
         return room.getCapacity() - event.getAttendeeUNs().size();
+    }
+
+    public PanelDiscussion castToPD(Event event){
+        return (PanelDiscussion) event;
+    }
+
+    public Talk castToTalk(Event event){
+        return (Talk) event;
+    }
+
+    public Party castToParty(Event event){
+        return (Party) event;
     }
 
     // --- Private helpers ---
@@ -445,9 +455,9 @@ public class EventService {
     /**
      * check for double booking of a speaker for a talk
      *
-     * @param talk
-     * @param newSpeaker
-     * @throws EventException
+     * @param talk a talk
+     * @param newSpeaker the speaker to be put in this talk
+     * @throws EventException checks for Event Exceptions
      */
     private void checkDoubleBookSpeakerTalk(Talk talk, Speaker newSpeaker) throws EventException {
         if (talk.getSpeakerUsername().equals(newSpeaker.getUsername()))
@@ -457,9 +467,9 @@ public class EventService {
     /**
      * check for double booking of a speaker for a panel discussion
      *
-     * @param pd
-     * @param newSpeaker
-     * @throws EventException
+     * @param pd a panel discussion
+     * @param newSpeaker the speaker to be put in this panel discussion
+     * @throws EventException checks for event exceptions
      */
     private void checkDoubleBookSpeakerPD(PanelDiscussion pd, Speaker newSpeaker)
             throws EventException {
@@ -473,8 +483,8 @@ public class EventService {
     /**
      * Private helper for getting a list of speaker usernames
      *
-     * @param speakers
-     * @return
+     * @param speakers a list of speaker objects
+     * @return a list of usernames of the given list of speakers
      */
     private List<String> getListOfUNsBySpeakers(List<Speaker> speakers) {
         List<String> res = new ArrayList<>();

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class PanelDiscussion extends Event {
     private List<String> speakerUNs;
-    private List<String> panelDiscussionAttendeeUNs;
+    private List<String> panelDiscussionAttendeeUNs = new ArrayList<>();
 
     public PanelDiscussion(String title, List<String> speakerUNs, int startingTime, int roomNumber, int duration){
         super(title, startingTime, roomNumber, duration);
@@ -17,11 +17,11 @@ public class PanelDiscussion extends Event {
         String[] entries = dataEntry.split(Savable.DELIMITER);
         id = Integer.parseInt(entries[0]);
         title = entries[1];
+        speakerUNs = new ArrayList<>(Arrays.asList(entries[2].split("\\|")));
         startingTime = Integer.parseInt(entries[3]);
         roomNumber = Integer.parseInt(entries[4]);
         duration = Integer.parseInt(entries[5]);
         eventCount += 1;
-        speakerUNs = new ArrayList<>(Arrays.asList(entries[2].split("\\|")));
         panelDiscussionAttendeeUNs = entries.length < 7 ? new ArrayList<>() :
                 new ArrayList<>(Arrays.asList(entries[6].split("\\|")));
     }
@@ -110,7 +110,7 @@ public class PanelDiscussion extends Event {
     public String toSavableString() {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
                 String.join("|",getSpeakerUNs()) + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER
-                + getRoomNumber() + duration + Savable.DELIMITER +
+                + getRoomNumber() + Savable.DELIMITER + duration + Savable.DELIMITER +
                 Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
 
