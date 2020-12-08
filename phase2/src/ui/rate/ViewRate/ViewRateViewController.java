@@ -20,11 +20,6 @@ public class ViewRateViewController extends BaseViewController<Void> implements 
         rateLabel.setText(Double.toString(speaker.getAverageRate()));
     }
 
-//    public ViewRateViewController(){
-//        Speaker speaker = (Speaker) AuthService.shared.getCurrentUser();
-//        rateLabel.setText(Double.toString(speaker.getAverageRate()));
-//    }
-
     public void backButtonAction(ActionEvent actionEvent) {
         getNavigationController().navigate(UserActionViewController.class);
     }

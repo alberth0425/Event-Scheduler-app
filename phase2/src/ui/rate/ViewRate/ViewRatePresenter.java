@@ -14,8 +14,6 @@ public class ViewRatePresenter {
         this.view = view;
     }
 
-
-
     public interface ViewRateView {
     }
 }
