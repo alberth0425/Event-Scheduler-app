@@ -22,7 +22,8 @@ public class AttendeeController extends UserController {
             System.out.println("4. Cancel event");
             System.out.println("5. Send messages");
             System.out.println("6. View messages");
-            System.out.println("7. Exit");
+            System.out.println("7. Change message status");
+            System.out.println("8. Exit");
 
             Scanner input = new Scanner(System.in);
             String content = input.nextLine();
@@ -52,6 +53,9 @@ public class AttendeeController extends UserController {
                         viewMessages();
                         break;
                     case 7:
+                        changeMessageStatus();
+                        break;
+                    case 8:
                         exit = true;
                         break;
                     default:
@@ -202,4 +206,5 @@ public class AttendeeController extends UserController {
                     " Message does not send successfully.");
         }
     }
+
 }

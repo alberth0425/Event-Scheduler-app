@@ -24,9 +24,13 @@ public class RaterService {
             throw new notSpeakerException();
         }
 
-        if (rate < 1 || rate > 10) throw new rateOutOfBoundException();
+        if (rate < 1 || rate > 10) {
+            throw new rateOutOfBoundException();
+        }
 
-        if (rater.speakerIdRated.contains(String.valueOf(speaker.getId()))) throw new rateRepetitionException();
+        if (rater.speakerIdRated.contains(String.valueOf(speaker.getId()))) {
+            throw new rateRepetitionException();
+        }
 
         ((Speaker) speaker).addRate(rate);
         rater.addSpeakerIdRated(speaker.getId());

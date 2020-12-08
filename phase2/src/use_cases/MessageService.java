@@ -116,4 +116,42 @@ public class MessageService {
         }
     }
 
+    public void deleteMessages(String receiverUN){
+        List<Message> messages = getReceivedMessages(receiverUN);
+        for (Message message : messages) {
+            for (Message m :messageRepository.get(receiverUN)) {
+                if (m.getId().equals(message.getId())){
+                    messageRepository.get(receiverUN).remove(m);
+                }
+            }
+        }
+    }
+
+    public void deleteSingleMessages(String receiverUN, Message message){
+        if (messageRepository.containsKey(receiverUN) && messageRepository.get(receiverUN).contains(message)) {
+            messageRepository.get(receiverUN).remove(message);
+        }
+    }
+
+
+    public void archiveMessage(String receiverUN){
+        List<Message> messages = getReceivedMessages(receiverUN);
+        for (Message message : messages) {
+            message.isArchived = true;
+        }
+    }
+
+    public void unArchiveMessage(String receiverUN){
+        List<Message> messages = getReceivedMessages(receiverUN);
+        for (Message message : messages) {
+            if(message.isArchived){
+                message.isArchived= false;
+            }
+        }
+    }
 }
+
+
+
+
+

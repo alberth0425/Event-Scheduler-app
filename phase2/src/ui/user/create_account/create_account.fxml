@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.user.create_account.CreateAccountViewController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label fx:id="userInfoLabel" text="You have logged in as: Organizer" />
+            <Label fx:id="actionLabel" text="Select a user type to create:" />
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <ComboBox fx:id="userComboBox" prefWidth="150.0" promptText="Create:" />
+               </children>
+            </HBox>
+            <Label fx:id="usernameInfoLabel" text="Please enter your username:" />
+            <TextField fx:id="usernameTextField" promptText="Enter the username" />
+            <Label fx:id="passwordInfoLabel" text="Please enter your password:" />
+            <TextField fx:id="passwordTextField" promptText="Enter the password" />
+            <Label fx:id="firstNameInfoLabel" text="Please enter your first name:" />
+            <TextField fx:id="firstNameTextField" promptText="Enter the first name" />
+            <Label fx:id="lastNameInfoLabel" text="Please enter your last name:" />
+            <TextField fx:id="lastNameTextField" promptText="Enter the last name" />
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
+                  <Button fx:id="okButton" mnemonicParsing="false" onAction="#OkButtonAction" text="Ok" />
+               </children>
+            </HBox>
+
+            <Label fx:id="errorLabel" textFill="RED" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
