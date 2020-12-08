@@ -182,10 +182,14 @@ public class OrganizerController extends UserController {
 
         System.out.println("Please enter the duration: ");
         String duration = scanner.nextLine();
+
+        System.out.println("Please enter the event capacity: ");
+        String capacity = scanner.nextLine();
         try {
             int st = Integer.parseInt(startingTime);
             int rm = Integer.parseInt(roomNumber);
             int d = Integer.parseInt(duration);
+            int c = Integer.parseInt(capacity);
 
             //Get the Speaker by searching the username of the Speaker.
             Speaker sp = (Speaker) AuthService.shared.getUserByUsername(speaker);
@@ -195,7 +199,7 @@ public class OrganizerController extends UserController {
 
             try {
                 //Call createEvent method in EventService to create an Event.
-                EventService.shared.createTalk(title, st, sp, room, d);
+                EventService.shared.createTalk(title, st, sp, room, d, c);
                 System.out.println("Event created successfully.");
 
 
@@ -214,7 +218,10 @@ public class OrganizerController extends UserController {
             } catch (EventService.RoomDoubleBookException e) {
                 System.out.println("The room is not available at this time." +
                         " Event does not create successfully.");
-            } catch (Exception e) {
+            } catch(IllegalArgumentException e){
+                System.out.println("Event capacity must be > 0 and <= " + room.getCapacity());
+            }
+            catch (Exception e) {
                 System.out.println("Unknown Exception: " + e.toString() + ". Event does not create successfully.");
             }
         } catch (AuthService.AuthException e) {
@@ -246,17 +253,21 @@ public class OrganizerController extends UserController {
         System.out.println("Please enter the duration: ");
         String duration = scanner.nextLine();
 
+        System.out.println("Please enter the capacity of the event: ");
+        String capacity = scanner.nextLine();
+
         try {
             int st = Integer.parseInt(startingTime);
             int rm = Integer.parseInt(roomNumber);
             int d = Integer.parseInt(duration);
+            int c = Integer.parseInt(capacity);
 
             //Get the Room by searching the room number.
             Room room = RoomService.shared.getRoom(rm);
 
             try {
                 //Call createEvent method in EventService to create an Event.
-                EventService.shared.createParty(title, st, room, d);
+                EventService.shared.createParty(title, st, room, d, c);
                 System.out.println("Event created successfully.");
 
 
@@ -272,7 +283,10 @@ public class OrganizerController extends UserController {
             } catch (EventService.RoomDoubleBookException e) {
                 System.out.println("The room is not available at this time." +
                         " Event does not create successfully.");
-            } catch (Exception e) {
+            } catch(IllegalArgumentException e){
+                System.out.println("Event capacity must be > 0 and <= " + room.getCapacity());
+            }
+            catch (Exception e) {
                 System.out.println("Unknown Exception: " + e.toString() + ". Event does not create successfully.");
             }
         } catch (NumberFormatException e) {
@@ -320,10 +334,14 @@ public class OrganizerController extends UserController {
             System.out.println("Please enter the duration ");
             String duration = scanner.nextLine();
 
+            System.out.println("Please enter the capacity of the event");
+            String capacity = scanner.nextLine();
+
             try {
                 int st = Integer.parseInt(startingTime);
                 int rm = Integer.parseInt(roomNumber);
                 int d = Integer.parseInt(duration);
+                int c = Integer.parseInt(capacity);
 
                 //Get the list of speakers by searching the list of usernames of the Speakers.
                 List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(speakerUNs);
@@ -333,7 +351,7 @@ public class OrganizerController extends UserController {
 
                 try {
                     //Call createPD method in EventService to create an Event.
-                    EventService.shared.createPD(title, st, speakers, room, d);
+                    EventService.shared.createPD(title, st, speakers, room, d, c);
                     System.out.println("Event created successfully.");
 
                 } catch (EventService.EventDoesNotExistException e) {
@@ -351,7 +369,10 @@ public class OrganizerController extends UserController {
                             " Event does not create successfully.");
                 } catch (EventService.InvalidEndTimeException e) {
                     System.out.println("Event must end before 12 midnight");
-                } catch (Exception e) {
+                } catch(IllegalArgumentException e){
+                    System.out.println("capacity must be > 0 and <= " + room.getCapacity());
+                }
+                catch (Exception e) {
                     System.out.println("Unknown Exception: " + e.toString() + ". Event does not create successfully.");
                 }
             } catch (NumberFormatException e) {

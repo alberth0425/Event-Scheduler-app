@@ -18,8 +18,8 @@ public class Talk extends Event {
      * @param startingTime the starting time of this event
      * @param roomNumber the room number of the room that this event is going to happen
      */
-    public Talk(String title, String speakerUN, int startingTime, int roomNumber, int duration) {
-        super(title, startingTime, roomNumber, duration);
+    public Talk(String title, String speakerUN, int startingTime, int roomNumber, int duration, int capacity) {
+        super(title, startingTime, roomNumber, duration, capacity);
         this.speakerUN = speakerUN;
     }
 
@@ -37,8 +37,9 @@ public class Talk extends Event {
         roomNumber = Integer.parseInt(entries[4]);
         duration = Integer.parseInt(entries[5]);
         eventCount += 1;
-        talkAttendeeUNs = entries.length < 7 ? new ArrayList<>() :
-                new ArrayList<>(Arrays.asList(entries[6].split("\\|")));
+        capacity = Integer.parseInt(entries[6]);
+        talkAttendeeUNs = entries.length < 8 ? new ArrayList<>() :
+                new ArrayList<>(Arrays.asList(entries[7].split("\\|")));
     }
 
     /**
@@ -114,6 +115,7 @@ public class Talk extends Event {
     public String toSavableString() {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
                 getSpeakerUsername() + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
-                Savable.DELIMITER + duration + Savable.DELIMITER + String.join("|", getAttendeeUNs());
+                Savable.DELIMITER + duration + Savable.DELIMITER + getCapacity() + Savable.DELIMITER +
+                String.join("|", getAttendeeUNs());
     }
 }

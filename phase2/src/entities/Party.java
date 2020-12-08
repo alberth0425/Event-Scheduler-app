@@ -7,8 +7,8 @@ import java.util.List;
 public class Party extends Event{
     private List<String> partyAttendeeUNs = new ArrayList<>();
 
-    public Party(String title, int startingTime, int roomNumber, int duration){
-        super(title, startingTime, roomNumber, duration);
+    public Party(String title, int startingTime, int roomNumber, int duration, int capacity){
+        super(title, startingTime, roomNumber, duration, capacity);
     }
 
     public Party(String dataEntry){
@@ -19,8 +19,9 @@ public class Party extends Event{
         roomNumber = Integer.parseInt(entries[4]);
         duration = Integer.parseInt(entries[5]);
         eventCount += 1;
-        partyAttendeeUNs = entries.length < 7 ? new ArrayList<>() :
-                new ArrayList<>(Arrays.asList(entries[6].split("\\|")));
+        capacity = Integer.parseInt(entries[6]);
+        partyAttendeeUNs = entries.length < 8 ? new ArrayList<>() :
+                new ArrayList<>(Arrays.asList(entries[7].split("\\|")));
     }
 
     /**
@@ -76,6 +77,7 @@ public class Party extends Event{
     public String toSavableString() {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
                 "null" + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
-                Savable.DELIMITER + duration + Savable.DELIMITER + String.join("|", getAttendeeUNs());
+                Savable.DELIMITER + duration + Savable.DELIMITER + getCapacity() +
+                Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
 }

@@ -127,8 +127,6 @@ public class SpeakerController extends UserController {
                     } catch (AuthService.AuthException e) {
                         System.out.println("Speaker of event <" + event.getTitle() +
                                 "> with username: <" + talk.getSpeakerUsername() + "> does not exist.");
-                    } catch (RoomService.RoomException e) {
-                        System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
                     } catch (Exception e) {
                         System.out.println("Unknown exception: " + e.toString());
                     }
@@ -139,8 +137,6 @@ public class SpeakerController extends UserController {
                         String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
                                 ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
                         sb.append(eStr);
-                    } catch (RoomService.RoomException e) {
-                        System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
                     } catch (Exception e) {
                         System.out.println("Unknown exception: " + e.toString());
                     }
@@ -163,8 +159,6 @@ public class SpeakerController extends UserController {
                     } catch (AuthService.AuthException e) {
                         System.out.println("One of the speaker usernames" + res + " of event <" + event.getTitle() +
                                 "> does not exist.");
-                    } catch (RoomService.RoomException e) {
-                        System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
                     }
                 }
             }

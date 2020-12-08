@@ -10,13 +10,15 @@ public abstract class Event implements Savable {
     int startingTime;
     int roomNumber;
     int duration; //must be in full hours
+    int capacity;
     //double duration;
 
-    public Event(String title, int startingTime, int roomNumber, int duration){
+    public Event(String title, int startingTime, int roomNumber, int duration, int capacity){
         this.title = title;
         this.startingTime = startingTime;
         this.roomNumber = roomNumber;
         this.duration = duration;
+        this.capacity = capacity;
         id = eventCount;
         eventCount += 1;
     }
@@ -84,8 +86,20 @@ public abstract class Event implements Savable {
 
     public abstract void removeAttendee(String attendeeUN);
 
+    /**
+     * get the end time of this event
+     * @return returns the end time of this event
+     */
     public int getEndTime(){
         return startingTime + duration;
+    }
+
+    public void setCapacity(int capacity){
+        this.capacity = capacity;
+    }
+
+    public int getCapacity(){
+        return capacity;
     }
 
     /**
@@ -97,7 +111,7 @@ public abstract class Event implements Savable {
     public String toSavableString() {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
                 "null" + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
-                Savable.DELIMITER + String.join("|", getAttendeeUNs());
+                Savable.DELIMITER + getCapacity() + Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
 
 }

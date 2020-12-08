@@ -11,7 +11,9 @@ public class SignupService {
      * singleton implementation.
      */
     public static SignupService shared = new SignupService();
-    private SignupService() {}
+
+    private SignupService() {
+    }
 
     /**
      * Fetch and return all events' String representation.
@@ -24,7 +26,7 @@ public class SignupService {
         StringBuilder sb = new StringBuilder();
         for (Event event : allEvents) {
             //if the event is a talk
-            if(event instanceof Talk) {
+            if (event instanceof Talk) {
                 Talk talk = (Talk) event;
                 try {
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
@@ -35,29 +37,25 @@ public class SignupService {
                 } catch (AuthService.AuthException e) {
                     System.out.println("Speaker of event <" + event.getTitle() +
                             "> with username: <" + talk.getSpeakerUsername() + "> does not exist.");
-                } catch (RoomService.RoomException e) {
-                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
                 }
             }
             //if the event is a party
-            else if(event instanceof Party) {
+            else if (event instanceof Party) {
                 Party talk = (Party) event;
-                try {
-                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
-                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
-                    sb.append(eStr);
-                } catch (RoomService.RoomException e) {
-                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
-                }
+
+                String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                sb.append(eStr);
+
             }
             //if the event is a panel discussion
-            else{
+            else {
                 PanelDiscussion pd = (PanelDiscussion) event;
                 List<String> res = new ArrayList<>();
                 try {
                     //Get the list of speaker names
                     List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(pd.getSpeakerUNs());
-                    for (Speaker sp: speakers){
+                    for (Speaker sp : speakers) {
                         res.add(sp.getFullname());
                     }
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
@@ -68,8 +66,6 @@ public class SignupService {
                 } catch (AuthService.AuthException e) {
                     System.out.println("One of the speaker usernames" + res + " of event <" + event.getTitle() +
                             "> does not exist.");
-                } catch (RoomService.RoomException e) {
-                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
                 }
             }
         }
@@ -81,7 +77,7 @@ public class SignupService {
      * Sign up an attendee to an event.
      *
      * @param attendee the attendee
-     * @param event the event
+     * @param event    the event
      * @return true iff sucessfully signed up the attendee to the event
      */
     @SuppressWarnings("UnusedReturnValue")
@@ -102,7 +98,7 @@ public class SignupService {
      * Remove up an attendee from an event.
      *
      * @param attendee the attendee
-     * @param event the event
+     * @param event    the event
      * @return true iff sucessfully removed the attendee from the event
      */
     @SuppressWarnings("UnusedReturnValue")

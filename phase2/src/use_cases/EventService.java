@@ -304,7 +304,7 @@ public class EventService {
      * @throws SpeakerDoubleBookException if the input speaker is already scheduled to another event at the same time
      * @throws RoomDoubleBookException    if the input room is already scheduled to another event at the same time
      */
-    public void createTalk(String title, int startingTime, Speaker speaker, Room room, int duration)
+    public void createTalk(String title, int startingTime, Speaker speaker, Room room, int duration, int capacity)
             throws EventException, RoomService.RoomException {
         //check for all events in the designed time interval for this talk you want to create
         int endTime = startingTime + duration;
@@ -327,8 +327,11 @@ public class EventService {
 
         // Check event starting time
         if (startingTime < 0 || startingTime >= 24) throw new InvalidEventTimeException();
-        // create talk
-        Event talk = new Talk(title, speaker.getUsername(), startingTime, room.getRoomNumber(), duration);
+        //check if capacity is valid
+        if (capacity < 0 || capacity > room.getCapacity()) {
+            throw new IllegalArgumentException();
+        }
+        Event talk = new Talk(title, speaker.getUsername(), startingTime, room.getRoomNumber(), duration, capacity);
         allEvents.add(talk);
     }
 
@@ -342,7 +345,7 @@ public class EventService {
      * @throws EventException checks for Event Exceptions
      * @throws RoomService.RoomException checks for Room Exceptions
      */
-    public void createPD(String title, int startingTime, List<Speaker> speakers, Room room, int duration)
+    public void createPD(String title, int startingTime, List<Speaker> speakers, Room room, int duration, int capacity)
             throws EventException, RoomService.RoomException {
         //check for all events starting at the given time interval
         int endTime = startingTime + duration;
@@ -368,7 +371,12 @@ public class EventService {
         // Check event starting time
         if (startingTime < 0 || startingTime >= 24 ) throw new InvalidEventTimeException();
         List<String> speakerUNs = getListOfUNsBySpeakers(speakers);
-        Event event = new PanelDiscussion(title, speakerUNs, startingTime, room.getRoomNumber(), duration);
+        //check if capacity is valid
+        if (capacity < 0 || capacity > room.getCapacity()) {
+            throw new IllegalArgumentException();
+        }
+        Event event = new PanelDiscussion(title, speakerUNs, startingTime, room.getRoomNumber(), duration, capacity);
+        event.setCapacity(capacity);
         allEvents.add(event);
     }
 
@@ -381,7 +389,7 @@ public class EventService {
      * @throws EventException checks for Event Exceptions
      * @throws RoomService.RoomException checks for Room Exceptions
      */
-    public void createParty(String title, int startingTime, Room room, int duration)
+    public void createParty(String title, int startingTime, Room room, int duration, int capacity)
             throws EventException, RoomService.RoomException {
         //check for all events starting at startingTime
         int endTime = startingTime + duration;
@@ -396,9 +404,38 @@ public class EventService {
 
         //Check event starting time
         if (startingTime < 0 || startingTime >= 24) throw new InvalidEventTimeException();
-        Event party = new Party(title, startingTime, room.getRoomNumber(), duration);
+        //check if capacity is valid
+        if (capacity < 0 || capacity > room.getCapacity()) {
+            throw new IllegalArgumentException();
+        }
+        Event party = new Party(title, startingTime, room.getRoomNumber(), duration, capacity);
         allEvents.add(party);
     }
+
+    /**
+     * set the capacity of this event, make sure the attendees are less than or equal to the room capacity.
+     */
+
+    public void setCapacity(int capacity, Event event) {
+        try {
+            Room room = getRoom(event.getRoomNumber());
+
+            if (capacity < 0 || event.getAttendeeUNs().size() > capacity || capacity > room.getCapacity()) {
+                throw new IllegalArgumentException();
+            }
+
+            event.setCapacity(capacity);
+
+        } catch (RoomService.RoomException e) {
+            throw new IllegalArgumentException();
+        }
+
+    }
+
+    public int getCapacity(Integer eventId) throws EventException {
+        return getEventById(eventId).getCapacity();
+    }
+
 
 
     /**
@@ -407,9 +444,8 @@ public class EventService {
      * @param event the event
      * @return number of seats that are empty in the event's room
      */
-    public int getEventAvailability(Event event) throws RoomService.RoomException {
-        Room room = getRoom(event.getRoomNumber());
-        return room.getCapacity() - event.getAttendeeUNs().size();
+    public int getEventAvailability(Event event) {
+        return event.getCapacity() - event.getAttendeeUNs().size();
     }
 
     public PanelDiscussion castToPD(Event event){

@@ -80,7 +80,7 @@ public class AttendeeController extends UserController {
         System.out.println("The events you signed up for:");
         for (Event event : events) {
             //if the event is a talk
-            if(event instanceof Talk) {
+            if (event instanceof Talk) {
                 Talk talk = (Talk) event;
                 try {
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
@@ -91,28 +91,24 @@ public class AttendeeController extends UserController {
                 } catch (AuthService.AuthException e) {
                     System.out.println("Speaker of event <" + event.getTitle() +
                             "> with username: <" + talk.getSpeakerUsername() + "> does not exist.");
-                } catch (RoomService.RoomException e) {
-                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
                 }
             }
             //if the event is a party
-            else if(event instanceof Party) {
-                try {
-                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
-                            ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
-                    sb.append(eStr);
-                } catch (RoomService.RoomException e) {
-                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
-                }
+            else if (event instanceof Party) {
+
+                String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                        ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
+                sb.append(eStr);
+
             }
             //if the event is a panel discussion
-            else{
+            else {
                 PanelDiscussion pd = (PanelDiscussion) event;
                 List<String> res = new ArrayList<>();
                 try {
                     //Get the list of speaker names
                     List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(pd.getSpeakerUNs());
-                    for (Speaker sp: speakers){
+                    for (Speaker sp : speakers) {
                         res.add(sp.getFullname());
                     }
                     String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
@@ -123,8 +119,6 @@ public class AttendeeController extends UserController {
                 } catch (AuthService.AuthException e) {
                     System.out.println("One of the speaker usernames" + res + " of event <" + event.getTitle() +
                             "> does not exist.");
-                } catch (RoomService.RoomException e) {
-                    System.out.println("Room with room number " + event.getRoomNumber() + " does not exist.");
                 }
             }
         }

@@ -8,8 +8,9 @@ public class PanelDiscussion extends Event {
     private List<String> speakerUNs;
     private List<String> panelDiscussionAttendeeUNs = new ArrayList<>();
 
-    public PanelDiscussion(String title, List<String> speakerUNs, int startingTime, int roomNumber, int duration){
-        super(title, startingTime, roomNumber, duration);
+    public PanelDiscussion(String title, List<String> speakerUNs, int startingTime, int roomNumber, int duration,
+                           int capacity){
+        super(title, startingTime, roomNumber, duration, capacity);
         this.speakerUNs = speakerUNs;
     }
 
@@ -22,8 +23,9 @@ public class PanelDiscussion extends Event {
         roomNumber = Integer.parseInt(entries[4]);
         duration = Integer.parseInt(entries[5]);
         eventCount += 1;
-        panelDiscussionAttendeeUNs = entries.length < 7 ? new ArrayList<>() :
-                new ArrayList<>(Arrays.asList(entries[6].split("\\|")));
+        capacity = Integer.parseInt(entries[6]);
+        panelDiscussionAttendeeUNs = entries.length < 8 ? new ArrayList<>() :
+                new ArrayList<>(Arrays.asList(entries[7].split("\\|")));
     }
 
     /**
@@ -111,7 +113,7 @@ public class PanelDiscussion extends Event {
         return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
                 String.join("|",getSpeakerUNs()) + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER
                 + getRoomNumber() + Savable.DELIMITER + duration + Savable.DELIMITER +
-                Savable.DELIMITER + String.join("|", getAttendeeUNs());
+                getCapacity() + Savable.DELIMITER + String.join("|", getAttendeeUNs());
     }
 
 }
