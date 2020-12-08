@@ -3,12 +3,11 @@ package ui.user;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ui.event.EventPresenter;
-import ui.rate.ViewSpeakerRate.ViewSpeakerRatePresenter;
 import use_cases.AuthService;
 
 public class SpeakerActionPresenter extends UserActionPresenter {
     private final ObservableList<String> actionList = FXCollections.observableArrayList(
-            "Browse events", "My events", "Messages", "View my rate", "Log out"
+            "Browse events", "My events", "Messages", "Log out"
     );
 
     public SpeakerActionPresenter(UserActionView view) {
@@ -37,9 +36,6 @@ public class SpeakerActionPresenter extends UserActionPresenter {
                 getView().navigateToMessages();
                 break;
             case 3:
-                getView().navigateToViewSpeakerRate();
-                break;
-            case 4:
                 getView().navigateToLogin();
                 break;
             default:

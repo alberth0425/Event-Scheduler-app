@@ -11,7 +11,6 @@ import ui.login.LoginViewController;
 import ui.message.MessageViewController;
 import ui.rate.RateViewController;
 import ui.navigation.FXMLFile;
-import ui.rate.ViewSpeakerRate.ViewSpeakerRateViewController;
 import ui.room.RoomViewController;
 import ui.user.create_account.CreateAccountViewController;
 import ui.user.create_event.createEventViewController;
@@ -52,11 +51,6 @@ public class UserActionViewController extends BaseViewController<Void> implement
     @Override
     public void navigateToMessages() {
         getNavigationController().navigate(MessageViewController.class);
-    }
-
-    @Override
-    public void navigateToViewSpeakerRate() {
-        getNavigationController().navigate(ViewSpeakerRateViewController.class);
     }
 
     @Override
