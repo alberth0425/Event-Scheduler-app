@@ -14,7 +14,12 @@
                </font></Label>
             <TextField fx:id="usernameTextField" promptText="Username" />
             <PasswordField fx:id="passwordTextField" promptText="Password" />
-            <Button mnemonicParsing="false" onAction="#loginButtonAction" text="Log In" />
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#loginButtonAction" text="Log In" />
+                  <Button fx:id="registerButton" mnemonicParsing="false" onAction="#registerButtonAction" text="Register" />
+               </children>
+            </HBox>
             <Label fx:id="errorLabel" textFill="RED" />
          </children></VBox>
    </children>

@@ -25,10 +25,15 @@ public class LoginPresenter {
         }
     }
 
+    public void onRegisterButtonPressed() {
+        view.navigateToCreateAccount();
+    }
+
     public interface LoginView {
         String getUsername();
         String getPassword();
         void setError(String error);
         void navigateToUserView();
+        void navigateToCreateAccount();
     }
 }
