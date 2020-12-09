@@ -12,7 +12,10 @@ import use_cases.EventService;
 import use_cases.RaterService;
 import use_cases.RoomService;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class createEventPresenter {
 
@@ -38,12 +41,24 @@ public class createEventPresenter {
 
     public void onSelectEventType(int index){
         eventTypeIndex = index;
+
+        switch (eventTypeIndex) {
+            case 0:
+                view.setSpeakerUNVisible(true);
+                view.setSpeakerUNPrompt("Please enter the speaker's username");
+                break;
+            case 1:
+                view.setSpeakerUNVisible(false);
+                break;
+            case 2:
+                view.setSpeakerUNVisible(true);
+                view.setSpeakerUNPrompt("Please enter speakers' usernames, separated by comma");
+                break;
+        }
     }
 
-    public void onConfirmButtonPressed(){handleConfirmButton(eventTypeIndex);}
-
-    public void handleConfirmButton(int index){
-        switch(index){
+    public void onConfirmButtonPressed(){
+        switch (eventTypeIndex){
             case 0:
                 onConfirmButtonPressedTalk();
                 break;
@@ -133,7 +148,10 @@ public class createEventPresenter {
             int startingTime = view.getStartingTime();
             int capacity = view.getCapacity();
             int duration = view.getDuration();
-            List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(view.getSpeakerUNs());
+            List<String> speakerUNs = Arrays.stream(view.getSpeakerUN().split(","))
+                    .map(String::trim)
+                    .collect(Collectors.toList());
+            List<Speaker> speakers = AuthService.shared.getListOfSpeakersByUNs(speakerUNs);
             Room room = RoomService.shared.getRoom(view.getRoomNumber());
 
             EventService.shared.createPD(title, startingTime, speakers, room, duration, capacity);
@@ -166,10 +184,11 @@ public class createEventPresenter {
         int getStartingTime();
         int getCapacity();
         String getSpeakerUN();
-        List<String> getSpeakerUNs();
         int getRoomNumber();
         int getDuration();
         void setError(String error);
+        void setSpeakerUNPrompt(String prompt);
+        void setSpeakerUNVisible(boolean visible);
         void navigateToSuccessCreateEvent();
     }
 }

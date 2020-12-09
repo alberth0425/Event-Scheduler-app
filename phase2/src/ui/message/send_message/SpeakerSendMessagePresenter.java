@@ -3,7 +3,6 @@ package ui.message.send_message;
 import entities.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import sun.jvm.hotspot.oops.Array;
 import use_cases.AuthService;
 import use_cases.EventService;
 

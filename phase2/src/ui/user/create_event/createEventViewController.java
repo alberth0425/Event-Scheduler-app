@@ -20,23 +20,21 @@ public class createEventViewController extends BaseViewController<Void> implemen
     public TextField roomNumberTextField;
     public TextField capacityTextField;
     public TextField durationTextField;
-    public TextField speakerUNsTextField;
     public ComboBox<String> eventComboBox;
     public Label errorLabel;
 
     private final createEventPresenter presenter = new createEventPresenter(this);
+    public Label speakerUNPromptLabel;
 
     @Override
     public void initializeWithParameters(Void parameters) {
-
         eventComboBox.setItems(presenter.getEventTypes());
         eventComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             int selectedIndex = (int) newValue;
             eventComboBox.getSelectionModel().select(selectedIndex);
             presenter.onSelectEventType(selectedIndex);
         });
-
-
+        eventComboBox.getSelectionModel().select(0);
     }
 
     public void confirmButtonAction(ActionEvent actionEvent) {
@@ -68,16 +66,6 @@ public class createEventViewController extends BaseViewController<Void> implemen
     }
 
     @Override
-    public List<String> getSpeakerUNs() {
-        List<String> speakerUNs = new ArrayList<>();
-        String[] speakerUNsArray = speakerUNsTextField.toString().split(",");
-        for (String un: speakerUNsArray){
-            speakerUNs.add(un);
-        }
-        return speakerUNs;
-    }
-
-    @Override
     public int getRoomNumber() {
         return Integer.parseInt(roomNumberTextField.getText());
     }
@@ -90,6 +78,21 @@ public class createEventViewController extends BaseViewController<Void> implemen
     @Override
     public void setError(String error) {
         errorLabel.setText(error);
+    }
+
+    @Override
+    public void setSpeakerUNPrompt(String prompt) {
+        speakerUNPromptLabel.setText(prompt);
+    }
+
+    @Override
+    public void setSpeakerUNVisible(boolean visible) {
+        speakerUNPromptLabel.setVisible(visible);
+        speakerUNTextField.setVisible(visible);
+
+        // Set whether layout is managed by VBox
+        speakerUNPromptLabel.setManaged(visible);
+        speakerUNTextField.setManaged(visible);
     }
 
     @Override

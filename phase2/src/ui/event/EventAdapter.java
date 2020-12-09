@@ -64,8 +64,7 @@ public class EventAdapter {
             return EventService.shared.castToTalk(event).getSpeakerUsername();
         }
         else if(event instanceof PanelDiscussion){
-            List<String> speakerUNs = EventService.shared.castToPD(event).getSpeakerUNs();
-            return speakerUNs.toString();
+            return String.join(", ", EventService.shared.castToPD(event).getSpeakerUNs());
         }
         else{
             return "No speakers in parties";
