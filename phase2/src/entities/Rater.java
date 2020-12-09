@@ -20,17 +20,17 @@ public class Rater extends User {
         super(username, password, firstName, lastName);
     }
 
-    /**
-     * construct organizer from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents rater
-     */
-    public Rater(String dataEntry) {
-        super(dataEntry);
-        //convert from list of strings to list of integers for speakerIdRated.
-        this.speakerIdRated = dataEntry.split(DELIMITER).length < 6 ? new ArrayList<>() :
-                new ArrayList<>(Arrays.asList(dataEntry.split(DELIMITER)[5].split("\\|")));
-    }
+//    /**
+//     * construct organizer from a dataEntry.
+//     *
+//     * @param dataEntry the savable string that represents rater
+//     */
+//    public Rater(String dataEntry) {
+//        super(dataEntry);
+//        //convert from list of strings to list of integers for speakerIdRated.
+//        this.speakerIdRated = dataEntry.split(DELIMITER).length < 6 ? new ArrayList<>() :
+//                new ArrayList<>(Arrays.asList(dataEntry.split(DELIMITER)[5].split("\\|")));
+//    }
 
     public List<String> getSpeakerIdRated() {
         return speakerIdRated;

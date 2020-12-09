@@ -19,18 +19,18 @@ public class Agreement implements Savable {
         this.lastName = lastName;
     }
 
-    /**
-     * construct agreement from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents this user
-     *                  the order of the string is: id, raterUserName, firstname, lastname
-     */
-    public Agreement(String dataEntry) {
-        String[] entries = dataEntry.split(DELIMITER);
-        this.raterUserName = entries[0];
-        this.firstName = entries[1];
-        this.lastName = entries[2];
-    }
+//    /**
+//     * construct agreement from a dataEntry.
+//     *
+//     * @param dataEntry the savable string that represents this user
+//     *                  the order of the string is: id, raterUserName, firstname, lastname
+//     */
+//    public Agreement(String dataEntry) {
+//        String[] entries = dataEntry.split(DELIMITER);
+//        this.raterUserName = entries[0];
+//        this.firstName = entries[1];
+//        this.lastName = entries[2];
+//    }
 
     /**
      *  getter for the username.

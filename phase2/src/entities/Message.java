@@ -111,6 +111,20 @@ public class Message implements Savable {
     }
 
     /**
+     * set message to archived
+     */
+    public void setArchived(){
+        isArchived = true;
+    }
+
+    /**
+     * set message to unarchived
+     */
+    public void setUnarchived(){
+        isArchived = false;
+    }
+
+    /**
      * turn the information of this message into a savable string.
      *
      * @return a savable string
@@ -118,6 +132,6 @@ public class Message implements Savable {
     @Override
     public String toSavableString() {
         return MessageFormat.format("\"message_id\": \"{0}\",\"text\": \"{1}\",\"sender_un\": \"{2}\", " +
-                "\"receiver_un\": \"{3}\",\"timestamp\": {4}", id, text, senderUsername, receiverUsername, Long.toString(timeStamp));
+                "\"receiver_un\": \"{3}\",\"timestamp\": {4},\"isArchived\": {5}", id, text, senderUsername, receiverUsername, Long.toString(timeStamp), isArchived);
     }
 }
