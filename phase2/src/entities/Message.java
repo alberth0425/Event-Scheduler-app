@@ -10,8 +10,9 @@ public class Message implements Savable {
     private final String text;
     private final String senderUsername;
     private final String receiverUsername;
-    private final int id;           // TODO: change this to a string ID
+    private final String id;           // TODO: change this to a string ID
     private long timeStamp;         // message send time in millisecond
+    public boolean isArchived;
 
     /**
      * constructor for the message class
@@ -30,8 +31,9 @@ public class Message implements Savable {
         timeStamp = date.getTime();
 
         // Set id
-        id = messageCount;
+        id = Integer.toString(messageCount);
         messageCount += 1;
+        isArchived = false;
     }
 
     /**
@@ -104,7 +106,7 @@ public class Message implements Savable {
      *
      * @return the id of this message
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 

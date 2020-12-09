@@ -14,6 +14,7 @@ public class Event implements Savable {
     private String speakerUN;
     private List<String> attendeeUNs = new ArrayList<>();
     private String uuid;
+    private int capacity;
 
     /**
      * constructor for the event class.
@@ -23,11 +24,12 @@ public class Event implements Savable {
      * @param startingTime the starting time of this event
      * @param roomNumber the room number of the room that this event is going to happen
      */
-    public Event(String title, String speakerUN, int startingTime, int roomNumber) {
+    public Event(String title, String speakerUN, int startingTime, int roomNumber, int capacity) {
         this.title = title;
         this.speakerUN = speakerUN;
         this.roomNumber = roomNumber;
         this.startingTime = startingTime;
+        this.capacity = capacity;
 
         uuid = UUID.randomUUID().toString();
     }
@@ -110,6 +112,25 @@ public class Event implements Savable {
     }
 
     /**
+     *  getter for the capacity of the room.
+     *
+     * @return the capacity of the room.
+     */
+    public int getCapacity(){
+        return capacity;
+    }
+
+    /**
+     * setter for the capacity of the room
+     *
+     * @param capacity the number of people this room can hold
+     */
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+
+    /**
      * setter of the room number.
      * @param roomNumber set the room number of where this event is going to happen
      */
@@ -147,6 +168,7 @@ public class Event implements Savable {
                 ", speakerUN='" + speakerUN + '\'' +
                 ", attendeeUNs=" + attendeeUNs +
                 ", uuid=" + uuid +
+                ", capacity=" + capacity +
                 '}';
     }
 
@@ -168,7 +190,8 @@ public class Event implements Savable {
         String attendeesStr = attendeeUNBuilder.toString();
 
         return MessageFormat.format("\"room_number\": {0},\"speaker_un\": \"{1}\",\"id\": \"{2}\", " +
-                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\"",roomNumber, speakerUN, uuid, attendeesStr, startingTime, title);
+                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\",\"capacity\": {6}",
+                roomNumber, speakerUN, uuid, attendeesStr, startingTime, title, capacity);
 
     }
 }
