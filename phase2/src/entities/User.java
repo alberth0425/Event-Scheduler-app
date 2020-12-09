@@ -101,7 +101,7 @@ public class User implements Savable {
             return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
                     "\"last_name\": \"{3}\",\"user_type\": \"{4}\"",username, password, firstName, lastName, type);
         } else if (this instanceof Speaker) {
-            type = "Speaker";
+            type = "speaker";
 
             StringBuilder rateBuilder = new StringBuilder();
             rateBuilder.append("[");
@@ -119,7 +119,7 @@ public class User implements Savable {
                     username, password, firstName, lastName, type, rateStr);
 
         } else if (this instanceof Rater) {
-            type = "Rater";
+            type = "rater";
 
             StringBuilder rateBuilder = new StringBuilder();
             rateBuilder.append("[");

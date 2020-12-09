@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main extends Application {
     @Override
@@ -23,14 +24,13 @@ public class Main extends Application {
         Scene scene = NavigationController.initialize(LoginViewController.class);
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(event -> save());
         primaryStage.show();
     }
 
     public static void main(String[] args) {
         launch(args);
     }
-
-    // TODO: temporary code, remove when DB is done in persistent storage
 
     public static void load() {
         // Initialize entity lists
