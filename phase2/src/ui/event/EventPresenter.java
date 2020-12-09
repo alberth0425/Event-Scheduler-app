@@ -16,58 +16,127 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class EventPresenter {
-    private final EventView view;
+    protected final EventPresenter.EventView view;
 
-    private final ObservableList<EventAdapter> eventList = FXCollections.observableArrayList();
+    protected final ObservableList<EventAdapter> eventList = FXCollections.observableArrayList();
 
-    private final EventFilter filter;
+    protected final EventPresenter.EventFilter filter;
 
-    /**
-     * Construct the event presenter with given view and event filter.
-     *
-     * @param view the view using this presenter
-     * @param filter the type of filter to apply to the event list
-     */
-    public EventPresenter(EventView view, EventFilter filter) {
+    public EventPresenter(EventPresenter.EventView view, TalkPresenter.EventFilter filter){
         this.view = view;
         this.filter = filter;
 
         refreshEvents();
     }
 
-    /**
-     * Get the list of events to display.
-     *
-     * @return a list of EventAdapter
-     */
-    public ObservableList<EventAdapter> getEventList() {
-        return eventList;
-    }
+    protected List<TalkPresenter.EventAction> getAttendeeEventActions(int index) {
+        List<TalkPresenter.EventAction> actions = new ArrayList<>();
+        Attendee user = (Attendee) AuthService.shared.getCurrentUser();
 
-    /**
-     * Get the list of table columns to display based on the current user type.
-     *
-     * @return a list of EventTableColumn
-     */
-    public List<EventTableColumn> getTableColumns() {
-        List<EventTableColumn> columns = new ArrayList<>();
+        if (index != -1) {
+            Event event = eventList.get(index).getEvent();
 
-        Collections.addAll(columns,
-                new EventTableColumn("ID", "id"),
-                new EventTableColumn("Title", "title"),
-                new EventTableColumn("Speaker", "speaker"),
-                new EventTableColumn("Room", "room"),
-                new EventTableColumn("Time", "time"),
-                new EventTableColumn("Capacity", "capacity"),
-                new EventTableColumn("Speaker rate", "rate")
-        );
-
-        User user = AuthService.shared.getCurrentUser();
-        if (user instanceof Attendee) {
-            columns.add(new EventTableColumn("Signed Up", "signedUp"));
+            // TODO: refactor things like this into use case
+            if (event.getAttendeeUNs().contains(user.getUsername())) {
+                // User signed up for this event
+                actions.add(new TalkPresenter.EventAction("Cancel sign up", () -> {
+                    try {
+                        EventService.shared.removeEventAttendee(user, event);
+                        refresh();
+                    } catch (EventService.EventException e) {
+                        System.out.println("Failed to cancel sign up: " + e.getMessage());
+                    }
+                }));
+            } else {
+                actions.add(new TalkPresenter.EventAction("Sign up", () -> {
+                    try {
+                        EventService.shared.addEventAttendee(user, event);
+                        refresh();
+                    } catch (EventService.EventException | RoomService.RoomException e) {
+                        System.out.println("Failed to sign up: " + e.getMessage());
+                    }
+                }));
+            }
         }
 
-        return columns;
+        return actions;
+    }
+
+    public static class EventAction {
+        protected final String name;
+        protected final EventActionCallback callback;
+
+        protected EventAction(String name, EventActionCallback callback) {
+            this.name = name;
+            this.callback = callback;
+        }
+
+        /**
+         * Get the name of the event action.
+         *
+         * @return the name
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * Run the event action.
+         */
+        public void call() {
+            callback.run();
+        }
+    }
+
+
+    protected void refresh() {
+        refreshEvents();
+        // Table view is updated automatically when list changes
+        view.refreshActionButtons();
+    }
+
+
+    protected void refreshEvents() {
+        Stream<Event> events = EventService.shared.getAllEvents().stream();
+        String currentUsername = AuthService.shared.getCurrentUser().getUsername();
+
+        // Apply event filters
+        if (filter != null) {
+            switch (filter) {
+                case ALL:
+                    break;
+                case SIGNED_UP:
+                    events = events.filter(event -> event.getAttendeeUNs().contains(currentUsername));
+                    break;
+                case GIVING_SPEECH:
+                    events = events.filter(event -> {
+                        if (event instanceof Talk){
+                            return EventService.shared.castToTalk(event).getSpeakerUsername().equals(currentUsername);
+                        } else if (event instanceof PanelDiscussion){
+                            return EventService.shared.castToPD(event).getSpeakerUNs().contains(currentUsername);
+                        }
+                        return false;
+                    });
+
+                    break;
+            }
+        }
+
+        List<EventAdapter> eventList = events
+                .map(event -> {
+                    try {
+                        // Map Event to EventAdapter
+                        Room room = RoomService.shared.getRoom(event.getRoomNumber());
+                        return new EventAdapter(event, room, AuthService.shared.getCurrentUser().getUsername());
+                    } catch (RoomService.RoomException e) {
+                        System.out.println("Event's room does not exist. This shouldn't happen.");
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        this.eventList.setAll(eventList);
     }
 
     /**
@@ -90,38 +159,6 @@ public class EventPresenter {
         return actions;
     }
 
-    private List<EventAction> getAttendeeEventActions(int index) {
-        List<EventAction> actions = new ArrayList<>();
-        Attendee user = (Attendee) AuthService.shared.getCurrentUser();
-
-        if (index != -1) {
-            Event event = eventList.get(index).getEvent();
-
-            // TODO: refactor things like this into use case
-            if (event.getAttendeeUNs().contains(user.getUsername())) {
-                // User signed up for this event
-                actions.add(new EventAction("Cancel sign up", () -> {
-                    try {
-                        EventService.shared.removeEventAttendee(user, event);
-                        refresh();
-                    } catch (EventService.EventException e) {
-                        System.out.println("Failed to cancel sign up: " + e.getMessage());
-                    }
-                }));
-            } else {
-                actions.add(new EventAction("Sign up", () -> {
-                    try {
-                        EventService.shared.addEventAttendee(user, event);
-                        refresh();
-                    } catch (EventService.EventException | RoomService.RoomException e) {
-                        System.out.println("Failed to sign up: " + e.getMessage());
-                    }
-                }));
-            }
-        }
-
-        return actions;
-    }
 
     private List<EventAction> getOrganizerEventActions(int index) {
         List<EventAction> actions = new ArrayList<>();
@@ -135,7 +172,7 @@ public class EventPresenter {
                 view.displayTextField("Speaker ID", speakerId -> {
                     try {
                         Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(speakerId);
-                        EventService.shared.setEventSpeaker(speaker, event);
+                        EventService.shared.setTalkSpeaker(speaker, event);
                         refresh();
                         return null;
 
@@ -174,82 +211,51 @@ public class EventPresenter {
         return actions;
     }
 
-    private void refresh() {
-        refreshEvents();
-        // Table view is updated automatically when list changes
-        view.refreshActionButtons();
+    /**
+     * Get the list of events to display.
+     *
+     * @return a list of EventAdapter
+     */
+    public ObservableList<EventAdapter> getEventList() {
+        return eventList;
     }
 
-    private void refreshEvents() {
-        Stream<Event> events = EventService.shared.getAllEvents().stream();
-        String currentUsername = AuthService.shared.getCurrentUser().getUsername();
+    /**
+     * Get the list of table columns to display based on the current user type.
+     *
+     * @return a list of EventTableColumn
+     */
+    public List<EventTableColumn> getTableColumns() {
+        List<EventTableColumn> columns = new ArrayList<>();
 
-        // Apply event filters
-        if (filter != null) {
-            switch (filter) {
-                case ALL:
-                    break;
-                case SIGNED_UP:
-                    events = events.filter(event -> event.getAttendeeUNs().contains(currentUsername));
-                    break;
-                case GIVING_SPEECH:
-                    events = events.filter(event -> event.getSpeakerUsername().equals(currentUsername));
-                    break;
-            }
+        Collections.addAll(columns,
+                new EventTableColumn("ID", "id"),
+                new EventTableColumn("Title", "title"),
+                new EventTableColumn("Speaker", "speaker"),
+                new EventTableColumn("Room", "room"),
+                new EventTableColumn("Start Time", "startTime"),
+                new EventTableColumn("End Time", "endTime"),
+                new EventTableColumn("Capacity", "capacity"),
+                new EventTableColumn("Speaker rate", "rate")
+        );
+
+        User user = AuthService.shared.getCurrentUser();
+        if (user instanceof Attendee) {
+            columns.add(new EventTableColumn("Signed Up", "signedUp"));
         }
 
-        List<EventAdapter> eventList = events
-                .map(event -> {
-                    try {
-                        // Map Event to EventAdapter
-                        Room room = RoomService.shared.getRoom(event.getRoomNumber());
-                        return new EventAdapter(event, room, AuthService.shared.getCurrentUser().getUsername());
-                    } catch (RoomService.RoomException e) {
-                        System.out.println("Event's room does not exist. This shouldn't happen.");
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        this.eventList.setAll(eventList);
+        return columns;
     }
 
-    public static class EventAction {
-        private final String name;
-        private final EventActionCallback callback;
-
-        private EventAction(String name, EventActionCallback callback) {
-            this.name = name;
-            this.callback = callback;
-        }
-
-        /**
-         * Get the name of the event action.
-         *
-         * @return the name
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * Run the event action.
-         */
-        public void call() {
-            callback.run();
-        }
-    }
-
-    private interface EventActionCallback {
-        void run();
+    public enum EventFilter {
+        ALL, SIGNED_UP, GIVING_SPEECH,
     }
 
     public static class EventTableColumn {
         private final String name;
         private final String field;
 
-        private EventTableColumn(String name, String field) {
+        protected EventTableColumn(String name, String field) {
             this.name = name;
             this.field = field;
         }
@@ -273,8 +279,8 @@ public class EventPresenter {
         }
     }
 
-    public enum EventFilter {
-        ALL, SIGNED_UP, GIVING_SPEECH,
+    protected interface EventActionCallback {
+        void run();
     }
 
     public interface EventView {
@@ -290,4 +296,5 @@ public class EventPresenter {
 
         void navigateToCreateEvent();
     }
+
 }

@@ -28,6 +28,6 @@ public abstract class BaseViewController<P> {
      * @param navigationController the navigation controller that this view controller uses
      */
     public void setNavigationController(NavigationController navigationController) {
-        this.navigationController = navigationController;
+        BaseViewController.navigationController = navigationController;
     }
 }

@@ -1,14 +1,13 @@
 package ui.message.send_message;
 
-import entities.Attendee;
-import entities.Event;
-import entities.Speaker;
-import entities.User;
+import entities.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import sun.jvm.hotspot.oops.Array;
 import use_cases.AuthService;
 import use_cases.EventService;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,9 +55,21 @@ public class SpeakerSendMessagePresenter extends SendMessagePresenter {
                 try {
                     Integer eventId = Integer.parseInt(receiver);
                     Event event = EventService.shared.getEventById(eventId);
-
-                    if (event.getSpeakerUsername().equals(currentUsername)) {
-                        usernames = event.getAttendeeUNs();
+                    if (event instanceof Talk) {
+                        if (EventService.shared.castToTalk(event).getSpeakerUsername().equals(currentUsername)) {
+                            usernames = event.getAttendeeUNs();
+                        } else {
+                            getView().displayError("You are not giving speech at this event.");
+                            return;
+                        }
+                    }
+                    else if(event instanceof PanelDiscussion){
+                        if (EventService.shared.castToPD(event).getSpeakerUNs().contains(currentUsername)){
+                            usernames = event.getAttendeeUNs();
+                        } else{
+                            getView().displayError("You are not giving speech at this event.");
+                            return;
+                        }
                     } else {
                         getView().displayError("You are not giving speech at this event.");
                         return;

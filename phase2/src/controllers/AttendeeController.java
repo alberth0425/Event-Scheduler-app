@@ -53,7 +53,7 @@ public class AttendeeController extends UserController {
                         viewMessages();
                         break;
                     case 7:
-                        changeMessageStatus();
+                        //changeMessageStatus();
                         break;
                     case 8:
                         exit = true;

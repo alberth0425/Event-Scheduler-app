@@ -34,8 +34,6 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
     public TextField lastNameTextField;
     public Label errorLabel;
 
-
-
     @Override
     public void initializeWithParameters(Void parameters) {
 
@@ -47,8 +45,6 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
             userComboBox.getSelectionModel().select(selectedIndex);
             presenter.onSelectUserType(selectedIndex);
         });
-
-
     }
 
     @Override
