@@ -4,13 +4,22 @@ import entities.Attendee;
 import entities.Event;
 import entities.Room;
 import entities.Speaker;
+import gateway.PersistenceStorage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 // TODO: double check this
 
 public class EventService {
+
+    public static void main(String[] args) throws IOException {
+        Event e = new Event("Event3", "spk-1", 14, 3);
+        List<Event> events = new ArrayList<>();
+        events.add(e);
+        PersistenceStorage.putRequest(events, Event.class);
+    }
 
     /**
      * singleton implementation.
@@ -53,7 +62,7 @@ public class EventService {
 
         // Check if attendee has another event at the same time
         for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
-            if (e.getId() != event.getId()) {
+            if (!e.getUUID().equals(event.getUUID())) {
                 for (String a : event.getAttendeeUNs()) {
                     if (a.equals(attendee.getUsername())) throw new AttendeeScheduleConflictException();
                 }
@@ -90,7 +99,7 @@ public class EventService {
 
         // Check for double booking
         for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
-            if (e.getRoomNumber() == newRoom.getRoomNumber() && e.getId() != event.getId())
+            if (e.getRoomNumber() == newRoom.getRoomNumber() && !e.getUUID().equals(event.getUUID()))
                 throw new RoomDoubleBookException();
         }
 
@@ -110,7 +119,7 @@ public class EventService {
 
         // Check for double booking
         for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
-            if (e.getSpeakerUsername().equals(newSpeaker.getUsername()) && e.getId() != event.getId())
+            if (e.getSpeakerUsername().equals(newSpeaker.getUsername()) && !e.getUUID().equals(event.getUUID()))
                 throw new SpeakerDoubleBookException();
         }
 
@@ -144,13 +153,13 @@ public class EventService {
     /**
      * Get an event by input id.
      *
-     * @param id id of the event
+     * @param uuid uuid of the event
      * @return the event represented by the input id
      * @throws EventException if all stored events do not have the input id
      */
-    public Event getEventById(Integer id) throws EventException {
+    public Event getEventById(String uuid) throws EventException {
         for (Event event: allEvents) {
-            if (id == event.getId()) return event;
+            if (uuid.equals(event.getUUID())) return event;
         }
 
         throw new EventDoesNotExistException();
@@ -175,8 +184,8 @@ public class EventService {
 
     /**
      * get the list of events that a speaker is speaking at
-     * @param username
-     * @return
+     * @param username speaker username
+     * @return list of events by the input speaker
      */
     public List<Event> getEventsBySpeaker(String username){
         List<Event> events = new ArrayList<>();
@@ -196,11 +205,10 @@ public class EventService {
      * @param startingTime starting time of the event
      * @param speaker speaker of the event
      * @param room room of the event
-     * @return the created event object
      * @throws SpeakerDoubleBookException if the input speaker is already scheduled to another event at the same time
      * @throws RoomDoubleBookException if the input room is already scheduled to another event at the same time
      */
-    public Event createEvent(String title, int startingTime, Speaker speaker, Room room, int capacity) throws EventException,
+    public void createEvent(String title, int startingTime, Speaker speaker, Room room) throws EventException,
             RoomService.RoomException {
         // Check double booking exceptions (both speaker and room)
         for (Event event : this.getEventsByStartTime(startingTime)) {
@@ -211,25 +219,11 @@ public class EventService {
 
         // Check event starting time
         if (startingTime < 9 || startingTime >= 17) throw new InvalidEventTimeException();
-        if (capacity > room.getCapacity()) throw new RoomNotEnoughException();
 
-        Event event = new Event(title, speaker.getUsername(), startingTime, room.getRoomNumber(), capacity);
+        Event event = new Event(title, speaker.getUsername(), startingTime, room.getRoomNumber());
         allEvents.add(event);
 
-        return event;
     }
-
-
-    /**
-     * Cancel event by given event id
-     *
-     * @param id the event id
-     */
-    public void cancelEvent(int id) throws EventException {
-        Event event = getEventById(id);
-        allEvents.remove(event);
-    }
-
 
     /**
      * Get the number of empty seats of a given event.
@@ -256,31 +250,6 @@ public class EventService {
 
     // --- Custom Exceptions ---
 
-
-    /**
-     * set the capacity of this event, make sure the attendees are less than or equal to the room capacity.
-     */
-
-    public void setCapacity(int capacity, Event event) {
-        try {
-            Room room = getRoom(event.getRoomNumber());
-
-            if (capacity < 0 || event.getAttendeeUNs().size() > capacity || capacity > room.getCapacity()) {
-                throw new IllegalArgumentException();
-            }
-
-            event.setCapacity(capacity);
-
-        } catch (RoomService.RoomException e) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    public int getCapacity(Integer eventId) throws EventException {
-        return getEventById(eventId).getCapacity();
-    }
-
     public static class EventException extends Exception {}
     public static class InvalidEventTimeException extends EventException {}
     public static class EventDoesNotExistException extends EventException {}
@@ -288,5 +257,5 @@ public class EventService {
     public static class SpeakerDoubleBookException extends EventException {}
     public static class RoomFullException extends EventException {}
     public static class AttendeeScheduleConflictException extends EventException {}
-    public static class RoomNotEnoughException extends EventException {}
+
 }

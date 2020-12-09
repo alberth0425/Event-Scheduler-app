@@ -54,8 +54,8 @@ public class SpeakerSendMessagePresenter extends SendMessagePresenter {
                 break;
             case 1:
                 try {
-                    Integer eventId = Integer.parseInt(receiver);
-                    Event event = EventService.shared.getEventById(eventId);
+//                    Integer eventId = Integer.parseInt(receiver);
+                    Event event = EventService.shared.getEventById(receiver);
 
                     if (event.getSpeakerUsername().equals(currentUsername)) {
                         usernames = event.getAttendeeUNs();

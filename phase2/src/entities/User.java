@@ -1,5 +1,7 @@
 package entities;
 
+import java.text.MessageFormat;
+
 public class User implements Savable {
     protected static int numUser;
 
@@ -24,22 +26,6 @@ public class User implements Savable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = numUser;
-
-        numUser += 1;
-    }
-
-    /**
-     * construct user from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents this user
-     *                  the order of the string is: id, username, password, first name and last name
-     */
-    public User(String dataEntry) {
-        this.id = Integer.parseInt(dataEntry.split(DELIMITER)[0]);
-        this.username = dataEntry.split(DELIMITER)[1];
-        this.password = dataEntry.split(DELIMITER)[2];
-        this.firstName = dataEntry.split(DELIMITER)[3];
-        this.lastName = dataEntry.split(DELIMITER)[4];
 
         numUser += 1;
     }
@@ -105,6 +91,40 @@ public class User implements Savable {
      */
     @Override
     public String toSavableString() {
-        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName;
+        String type;
+        if (this instanceof Attendee) {
+            type = "attendee";
+        } else if (this instanceof Organizer) {
+            type = "organizer";
+        } else if (this instanceof Speaker) {
+            type = "speaker";
+        } else {
+            type = "undetermined";
+        }
+        return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
+                "\"last_name\": \"{3}\",\"user_type\": \"{4}\"",username, password, firstName, lastName, type);
+
+    }
+
+    @Override
+    public String toString() {
+        String userType;
+        if (this instanceof Attendee) {
+            userType = "Attendee";
+        } else if (this instanceof Organizer) {
+            userType = "Organizer";
+        } else if (this instanceof Speaker) {
+            userType = "Speaker";
+        } else {
+            userType = "Unkown User";
+        }
+
+        return userType + "{" +
+                "password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }
