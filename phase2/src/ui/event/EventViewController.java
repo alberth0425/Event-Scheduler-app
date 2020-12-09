@@ -7,9 +7,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ui.BaseViewController;
-import ui.event.create_event.CreateEventViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
+import ui.user.create_event.createEventViewController;
 import ui.util.TextFieldPrompt;
 
 import java.util.ArrayList;
@@ -105,6 +105,6 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
 
     @Override
     public void navigateToCreateEvent() {
-        getNavigationController().navigate(CreateEventViewController.class);
+        getNavigationController().navigate(createEventViewController.class);
     }
 }
