@@ -6,6 +6,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import ui.BaseViewController;
 import ui.navigation.FXMLFile;
+import ui.register.RegisterViewController;
 import ui.user.UserActionViewController;
 import ui.user.create_account.CreateAccountViewController;
 
@@ -43,7 +44,7 @@ public class LoginViewController extends BaseViewController<Void> implements Log
 
     @Override
     public void navigateToCreateAccount() {
-        getNavigationController().navigate(CreateAccountViewController.class);
+        getNavigationController().navigate(RegisterViewController.class);
     }
 
     public void registerButtonAction(ActionEvent actionEvent) {
