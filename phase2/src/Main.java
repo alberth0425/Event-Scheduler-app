@@ -23,6 +23,8 @@ public class Main extends Application {
 
         Scene scene = NavigationController.initialize(LoginViewController.class);
         primaryStage.setTitle("Hello World");
+        primaryStage.setWidth(800);
+        primaryStage.setHeight(600);
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event -> save());
         primaryStage.show();
@@ -56,6 +58,9 @@ public class Main extends Application {
 
         // Create messages Hashmap and set to MessageService
         HashMap<String, List<Message>> messageRepository = new HashMap<>();
+
+        // TODO: initialize contact book?
+
         for (Message message : messages) {
             String username = message.getReceiverUsername();
             if (!messageRepository.containsKey(username)) {

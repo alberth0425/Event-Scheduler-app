@@ -1,19 +1,17 @@
 package use_cases;
 
-import entities.Attendee;
-import entities.Event;
-import entities.Room;
-import entities.Speaker;
+import entities.*;
 import gateway.PersistenceStorage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 // TODO: double check this
 
 public class EventService {
-    
+
     /**
      * singleton implementation.
      */
@@ -106,17 +104,74 @@ public class EventService {
      * @param event the event
      * @throws EventException if the event does not exists, i.e., is not in allEvents List
      */
-    public void setEventSpeaker(Speaker newSpeaker, Event event) throws EventException {
-        // Check that the event exists, i.e., is in allEvents List
+    public void setTalkSpeaker(Speaker newSpeaker, Event event) throws EventException {
+        // Check that the event exists, i.e., is in allEvents List and the event is not a party
         validateEvent(event);
+        checkEventIsTalk(event);
+
+        // Check for double booking of speaker
+        for (Event e : getEventsByTimeInterval(event.getStartingTime(), event.getEndTime())) {
+            if (e instanceof Talk) {
+                Talk talk = (Talk) e;
+                checkDoubleBookSpeakerTalk(talk, newSpeaker);
+            } else if (e instanceof PanelDiscussion) {
+                PanelDiscussion pd = (PanelDiscussion) e;
+                checkDoubleBookSpeakerPD(pd, newSpeaker);
+            }
+        }
+        Talk t = (Talk) event;
+        t.setSpeakerUN(newSpeaker.getUsername());
+    }
+
+    public void addSpeakerToPD(Speaker newSpeaker, Event event) throws EventException {
+        //check that event exists
+        validateEvent(event);
+        //check that event is a panel discussion
+        checkEventIsPD(event);
 
         // Check for double booking
-        for (Event e : this.getEventsByStartTime(event.getStartingTime())) {
-            if (e.getSpeakerUsername().equals(newSpeaker.getUsername()) && !e.getUUID().equals(event.getUUID()))
-                throw new SpeakerDoubleBookException();
+        for (Event e : getEventsByTimeInterval(event.getStartingTime(), event.getEndTime())) {
+            if (e instanceof Talk) {
+                Talk talk = (Talk) e;
+                checkDoubleBookSpeakerTalk(talk, newSpeaker);
+            } else if (e instanceof PanelDiscussion) {
+                PanelDiscussion pd = (PanelDiscussion) e;
+                checkDoubleBookSpeakerPD(pd, newSpeaker);
+            }
+        }
+        //assign the speaker to event
+        PanelDiscussion pd = (PanelDiscussion) event;
+        pd.addSpeakerUN(newSpeaker.getUsername());
+
+    }
+
+    public void setPDSpeaker(List<Speaker> newSpeakers, Event event) throws EventException {
+        //check that event exists
+        validateEvent(event);
+        //check that event is a panel discussion
+        checkEventIsPD(event);
+
+        //check for double booking
+        for (Event e : getEventsByTimeInterval(event.getStartingTime(), event.getEndTime())) {
+            if (e instanceof Talk) {
+                Talk talk = (Talk) e;
+                for (Speaker speaker : newSpeakers) {
+                    checkDoubleBookSpeakerTalk(talk, speaker);
+                }
+            } else if (e instanceof PanelDiscussion) {
+                PanelDiscussion pd = (PanelDiscussion) e;
+                for (Speaker speaker : newSpeakers) {
+                    checkDoubleBookSpeakerPD(pd, speaker);
+                }
+            }
         }
 
-        event.setSpeakerUN(newSpeaker.getUsername());
+        PanelDiscussion pd = (PanelDiscussion) event;
+        List<String> speakerUNs = new ArrayList<>();
+        for (Speaker sp : newSpeakers) {
+            speakerUNs.add(sp.getUsername());
+        }
+        pd.setSpeakerUN(speakerUNs);
     }
 
     /**
@@ -140,6 +195,33 @@ public class EventService {
             if (event.getStartingTime() == time) events.add(event);
         }
 
+        return events;
+    }
+
+    /**
+     * Gets a list of events that overlaps with the time range given
+     *
+     * @param startTime The start time of the event
+     * @param endTime The end time of the event
+     * @return a list of events that overlap with the given time  interval
+     */
+    public List<Event> getEventsByTimeInterval(int startTime, int endTime) {
+        List<Event> events = new ArrayList<>();
+        for (Event event : allEvents) {
+            if (event.getStartingTime() == startTime && event.getEndTime() == endTime) {
+                events.add(event);
+            } else if (event.getStartingTime() <= startTime && event.getEndTime() >= endTime) {
+                events.add(event);
+            } else if (event.getStartingTime() <= startTime && event.getEndTime() > startTime &&
+                    event.getEndTime() <= endTime) {
+                events.add(event);
+            } else if (event.getStartingTime() >= startTime && event.getEndTime() <= endTime) {
+                events.add(event);
+            } else if (event.getStartingTime() >= startTime && event.getStartingTime() < endTime
+                    && event.getEndTime() >= endTime) {
+                events.add(event);
+            }
+        }
         return events;
     }
 
@@ -180,14 +262,32 @@ public class EventService {
      * @param username speaker username
      * @return list of events by the input speaker
      */
-    public List<Event> getEventsBySpeaker(String username){
-        List<Event> events = new ArrayList<>();
-        for (Event event: allEvents){
-            if (event.getSpeakerUsername().equals(username))
-                events.add(event);
+    public List<Event> getEventsBySpeaker(String username) {
+        List<Event> speakerEvents = new ArrayList<>();
+        List<Event> resultEvents = new ArrayList<>();
+
+        //get list of events with speakers
+        for (Event e : allEvents) {
+            if (e instanceof Talk | e instanceof PanelDiscussion)
+                speakerEvents.add(e);
         }
 
-        return events;
+        for (Event event : speakerEvents) {
+            if (event instanceof Talk) {
+                if (((Talk) event).getSpeakerUsername().equals(username))
+                    resultEvents.add(event);
+            }
+            //match the speaker with
+            else if (event instanceof PanelDiscussion) {
+                for (String speakerUN : ((PanelDiscussion) event).getSpeakerUNs()) {
+                    if (speakerUN.equals(username)) {
+                        resultEvents.add(event);
+                        break;
+                    }
+                }
+            }
+        }
+        return resultEvents;
     }
 
 
@@ -201,22 +301,114 @@ public class EventService {
      * @throws SpeakerDoubleBookException if the input speaker is already scheduled to another event at the same time
      * @throws RoomDoubleBookException if the input room is already scheduled to another event at the same time
      */
-    public void createEvent(String title, int startingTime, Speaker speaker, Room room, int capacity) throws EventException,
-            RoomService.RoomException {
-        // Check double booking exceptions (both speaker and room)
-        for (Event event : this.getEventsByStartTime(startingTime)) {
-            if (event.getSpeakerUsername().equals(speaker.getUsername())) throw new SpeakerDoubleBookException();
+    public void createTalk(String title, int startingTime, Speaker speaker, Room room, int duration, int capacity)
+            throws EventException, RoomService.RoomException {
+        //check for all events in the designed time interval for this talk you want to create
+        int endTime = startingTime + duration;
+        //check if event ends before midnight
+        validateEndTime(endTime);
+
+        for (Event event : getEventsByTimeInterval(startingTime, endTime)) {
+            //check for double booking of room
             if (getRoom(event.getRoomNumber()).getRoomNumber() == room.getRoomNumber()) throw new
                     RoomDoubleBookException();
+            //check for double booking of speaker
+            if (event instanceof Talk) {
+                Talk talk = (Talk) event;
+                checkDoubleBookSpeakerTalk(talk, speaker);
+            } else if (event instanceof PanelDiscussion) {
+                PanelDiscussion pd = (PanelDiscussion) event;
+                checkDoubleBookSpeakerPD(pd, speaker);
+            }
         }
 
-        // Check event starting time and capacity
-        if (startingTime < 9 || startingTime >= 17) throw new InvalidEventTimeException();
-        if (capacity > room.getCapacity()) throw new RoomNotEnoughException();
+        // Check event starting time
+        if (startingTime < 0 || startingTime >= 24) throw new InvalidEventTimeException();
+        //check if capacity is valid
+        if (capacity < 0 || capacity > room.getCapacity()) {
+            throw new IllegalArgumentException();
+        }
+        Event talk = new Talk(title, speaker.getUsername(), startingTime, room.getRoomNumber(), duration, capacity);
+        allEvents.add(talk);
+    }
 
-        Event event = new Event(title, speaker.getUsername(), startingTime, room.getRoomNumber(), capacity);
+    /**
+     * Create a new panel discussion, add the panel discussion to allEvents List.
+     *
+     * @param title Title of the panel discussion
+     * @param startingTime start time of the panel discussion
+     * @param speakers list of speakers in the panel discussion
+     * @param room the room in which this event takes place
+     * @throws EventException checks for Event Exceptions
+     * @throws RoomService.RoomException checks for Room Exceptions
+     */
+    public void createPD(String title, int startingTime, List<Speaker> speakers, Room room, int duration, int capacity)
+            throws EventException, RoomService.RoomException {
+        //check for all events starting at the given time interval
+        int endTime = startingTime + duration;
+        validateEndTime(endTime);
+        for (Event event : getEventsByTimeInterval(startingTime, endTime)) {
+            //check for double booking of room
+            if (getRoom(event.getRoomNumber()).getRoomNumber() == room.getRoomNumber()) throw new
+                    RoomDoubleBookException();
+            //check for double booking of speaker
+            if (event instanceof Talk) {
+                Talk talk = (Talk) event;
+                for (Speaker speaker : speakers) {
+                    checkDoubleBookSpeakerTalk(talk, speaker);
+                }
+            } else if (event instanceof PanelDiscussion) {
+                PanelDiscussion pd = (PanelDiscussion) event;
+                for (Speaker speaker : speakers) {
+                    checkDoubleBookSpeakerPD(pd, speaker);
+                }
+            }
+        }
+
+        // Check event starting time
+        if (startingTime < 0 || startingTime >= 24 ) throw new InvalidEventTimeException();
+        List<String> speakerUNs = getListOfUNsBySpeakers(speakers);
+        //check if capacity is valid
+        if (capacity < 0 || capacity > room.getCapacity()) {
+            throw new IllegalArgumentException();
+        }
+        Event event = new PanelDiscussion(title, speakerUNs, startingTime, room.getRoomNumber(), duration, capacity);
+        event.setCapacity(capacity);
         allEvents.add(event);
 
+    }
+
+
+    /**
+     * creates a party and put it to the allEvents list
+     *
+     * @param title The title of party
+     * @param startingTime start time of the party
+     * @param room the room in which this event takes place
+     * @throws EventException checks for Event Exceptions
+     * @throws RoomService.RoomException checks for Room Exceptions
+     */
+    public void createParty(String title, int startingTime, Room room, int duration, int capacity)
+            throws EventException, RoomService.RoomException {
+        //check for all events starting at startingTime
+        int endTime = startingTime + duration;
+        //check if event ends before 12 midnight
+        validateEndTime(endTime);
+
+        for (Event event : getEventsByTimeInterval(startingTime, endTime)) {
+            //check for double booking of room
+            if (getRoom(event.getRoomNumber()).getRoomNumber() == room.getRoomNumber())
+                throw new RoomDoubleBookException();
+        }
+
+        //Check event starting time
+        if (startingTime < 0 || startingTime >= 24) throw new InvalidEventTimeException();
+        //check if capacity is valid
+        if (capacity < 0 || capacity > room.getCapacity()) {
+            throw new IllegalArgumentException();
+        }
+        Event party = new Party(title, startingTime, room.getRoomNumber(), duration, capacity);
+        allEvents.add(party);
     }
 
     /**
@@ -227,17 +419,6 @@ public class EventService {
     public void cancelEvent(String id) throws EventException {
         Event event = getEventById(id);
         allEvents.remove(event);
-    }
-
-    /**
-     * Get the number of empty seats of a given event.
-     *
-     * @param event the event
-     * @return number of seats that are empty in the event's room
-     */
-    public int getEventAvailability(Event event) throws RoomService.RoomException {
-        Room room = getRoom(event.getRoomNumber());
-        return room.getCapacity() - event.getAttendeeUNs().size();
     }
 
     /**
@@ -264,6 +445,27 @@ public class EventService {
         return getEventById(eventId).getCapacity();
     }
 
+    /**
+     * Get the number of empty seats of a given event.
+     *
+     * @param event the event
+     * @return number of seats that are empty in the event's room
+     */
+    public int getEventAvailability(Event event) {
+        return event.getCapacity() - event.getAttendeeUNs().size();
+    }
+
+    public PanelDiscussion castToPD(Event event){
+        return (PanelDiscussion) event;
+    }
+
+    public Talk castToTalk(Event event){
+        return (Talk) event;
+    }
+
+    public Party castToParty(Event event){
+        return (Party) event;
+    }
 
     // --- Private helpers ---
 
@@ -277,6 +479,66 @@ public class EventService {
         if (!allEvents.contains(event)) throw new EventDoesNotExistException();
     }
 
+    private void checkEventIsTalk(Event event) throws EventException {
+        if (event instanceof Party | event instanceof PanelDiscussion)
+            throw new NotATalkException();
+    }
+
+    private void checkEventIsPD(Event event) throws EventException {
+        if (event instanceof Party | event instanceof Talk)
+            throw new NotAPanelDiscussionException();
+    }
+
+    private void validateEndTime(int endTime) throws EventException{
+        if (endTime > 24){
+            throw new InvalidEndTimeException();
+        }
+    }
+
+    /**
+     * check for double booking of a speaker for a talk
+     *
+     * @param talk a talk
+     * @param newSpeaker the speaker to be put in this talk
+     * @throws EventException checks for Event Exceptions
+     */
+    private void checkDoubleBookSpeakerTalk(Talk talk, Speaker newSpeaker) throws EventException {
+        if (talk.getSpeakerUsername().equals(newSpeaker.getUsername()))
+            throw new SpeakerDoubleBookException();
+    }
+
+    /**
+     * check for double booking of a speaker for a panel discussion
+     *
+     * @param pd a panel discussion
+     * @param newSpeaker the speaker to be put in this panel discussion
+     * @throws EventException checks for event exceptions
+     */
+    private void checkDoubleBookSpeakerPD(PanelDiscussion pd, Speaker newSpeaker)
+            throws EventException {
+        for (String speakerUN : pd.getSpeakerUNs()) {
+            if (speakerUN.equals(newSpeaker.getUsername())) {
+                throw new SpeakerDoubleBookException();
+            }
+        }
+    }
+
+    /**
+     * Private helper for getting a list of speaker usernames
+     *
+     * @param speakers a list of speaker objects
+     * @return a list of usernames of the given list of speakers
+     */
+    private List<String> getListOfUNsBySpeakers(List<Speaker> speakers) {
+        List<String> res = new ArrayList<>();
+        for (Speaker speaker : speakers) {
+            res.add(speaker.getUsername());
+        }
+        return res;
+    }
+
+    // --- Custom Exceptions ---
+
     // --- Custom Exceptions ---
 
     public static class EventException extends Exception {}
@@ -287,4 +549,9 @@ public class EventService {
     public static class RoomFullException extends EventException {}
     public static class AttendeeScheduleConflictException extends EventException {}
     public static class RoomNotEnoughException extends EventException {}
+    public static class NotATalkException extends EventException {}
+    public static class NotAPanelDiscussionException extends EventException {}
+    public static class NotEnoughSpeakersException extends EventException {}
+    public static class CannotAddSpeakerToPartyException extends EventException {}
+    public static class InvalidEndTimeException extends EventException {}
 }

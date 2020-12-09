@@ -7,9 +7,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import ui.BaseViewController;
+import ui.user.create_event.createEventViewController;
 import ui.navigation.FXMLFile;
 import ui.user.UserActionViewController;
-import ui.user.create_event.createEventViewController;
 import ui.util.TextFieldPrompt;
 
 import java.util.ArrayList;

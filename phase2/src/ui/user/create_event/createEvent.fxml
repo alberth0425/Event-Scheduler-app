@@ -4,21 +4,24 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.user.create_event.createEventViewController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.user.create_event.createEventViewController">
    <children>
-       <VBox layoutX="14.0" prefHeight="391.0" prefWidth="491.0" spacing="10" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+       <VBox layoutX="14.0" prefHeight="351.0" prefWidth="491.0" spacing="10" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
            <Label text="Create Event">
             <font>
-               <Font size="18.0" />
+               <Font size="15.0" />
             </font></Label>
+         <ComboBox fx:id="eventComboBox" promptText="Event type" />
            <Label text="Please enter the event title" />
            <TextField fx:id="eventTitleTextField" promptText="event title" />
            <Label text="Please enter the starting time" />
            <TextField fx:id="startingTimeTextField" promptText="starting time" />
-           <Label text="Please enter the speaker username" />
+           <Label fx:id="speakerUNPromptLabel" text="Please enter the speaker username" />
            <TextField fx:id="speakerUNTextField" promptText="speaker's username" />
            <Label text="Please enter the room number" />
            <TextField fx:id="roomNumberTextField" promptText="room number" />
+           <Label text="Please enter the duration" />
+           <TextField fx:id="durationTextField" promptText="duration" />
            <Label text="Please enter the event capacity" />
            <TextField fx:id="capacityTextField" promptText="capacity" />
            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">

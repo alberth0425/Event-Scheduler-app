@@ -1,10 +1,12 @@
 package ui.event;
 
-import entities.Event;
-import entities.Room;
-import entities.Speaker;
+import entities.*;
 import use_cases.AuthService;
 import use_cases.EventService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class EventAdapter {
     private final Event event;
@@ -22,6 +24,7 @@ public class EventAdapter {
         this.event = event;
         this.room = room;
         this.currentUsername = currentUsername;
+
     }
 
     /**
@@ -57,8 +60,17 @@ public class EventAdapter {
      * @return string displaying the speaker of the event
      */
     public String getSpeaker() {
-        return event.getSpeakerUsername();
+        if (event instanceof Talk){
+            return EventService.shared.castToTalk(event).getSpeakerUsername();
+        }
+        else if(event instanceof PanelDiscussion){
+            return String.join(", ", EventService.shared.castToPD(event).getSpeakerUNs());
+        }
+        else{
+            return "No speakers in parties";
+        }
     }
+
 
     /**
      * Get the room number of the event.
@@ -74,8 +86,16 @@ public class EventAdapter {
      *
      * @return the starting time string of the event
      */
-    public String getTime() {
+    public String getStartTime() {
         return Integer.toString(event.getStartingTime());
+    }
+
+    /**
+     * Get the end time of the event
+     * @return the end time in string of the event
+     */
+    public String getEndTime(){
+        return Integer.toString(event.getEndTime());
     }
 
     /**
@@ -93,8 +113,36 @@ public class EventAdapter {
      * @return the rate of the speaker
      */
     public String getRate() throws AuthService.AuthException {
-        Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(event.getSpeakerUsername());
-        return Double.toString(speaker.getAverageRate());
+        if (event instanceof Talk) {
+            Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(
+                    EventService.shared.castToTalk(event).getSpeakerUsername());
+            return Double.toString(speaker.getAverageRate());
+        }
+        return "NaN";
+    }
+
+    /**
+     *
+     * @return The list of ratings for the speakers in this panel discussion
+     * @throws AuthService.AuthException
+     */
+    public List<String> getRates() throws AuthService.AuthException{
+        if (event instanceof PanelDiscussion){
+            List<Speaker> speakers = new ArrayList<>();
+            List<String> ratings = new ArrayList<>();
+            PanelDiscussion pd = EventService.shared.castToPD(event);
+            //get the list of speakers
+            for (String s: pd.getSpeakerUNs()){
+                Speaker speaker = (Speaker) AuthService.shared.getUserByUsername(s);
+                speakers.add(speaker);
+            }
+            //get the list of speaker ratings
+            for (Speaker s: speakers){
+                ratings.add(Double.toString(s.getAverageRate()));
+            }
+            return ratings;
+        }
+        return Arrays.asList("Event not a Panel Discussion");
     }
 
     /**

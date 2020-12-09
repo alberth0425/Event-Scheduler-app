@@ -22,7 +22,6 @@ public class CreateAccountPresenter {
      *
      * @return the list of user types
      */
-
     public ObservableList<String> getUserTypes() {
         return FXCollections.observableArrayList(
                 "Create Speaker",

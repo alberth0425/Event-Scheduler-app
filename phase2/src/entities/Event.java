@@ -5,30 +5,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-public class Event implements Savable {
-
+public abstract class Event implements Savable {
     private final String title;
     private int roomNumber;
     private final int startingTime;
-    private String speakerUN;
+    int duration; //must be in full hours
     private List<String> attendeeUNs = new ArrayList<>();
     private String uuid;
     private int capacity;
+    //double duration;
 
     /**
      * constructor for the event class.
      *
      * @param title the title of this event
-     * @param speakerUN the speaker username of this event
      * @param startingTime the starting time of this event
      * @param roomNumber the room number of the room that this event is going to happen
      */
-    public Event(String title, String speakerUN, int startingTime, int roomNumber, int capacity) {
+    public Event(String title, int startingTime, int roomNumber, int duration, int capacity) {
         this.title = title;
-        this.speakerUN = speakerUN;
         this.roomNumber = roomNumber;
         this.startingTime = startingTime;
+        this.duration = duration;
         this.capacity = capacity;
 
         uuid = UUID.randomUUID().toString();
@@ -60,15 +60,6 @@ public class Event implements Savable {
     }
 
     /**
-     *  getter for the speaker username.
-     *
-     * @return the username of the speaker for this event
-     */
-    public String getSpeakerUsername() {
-        return this.speakerUN;
-    }
-
-    /**
      *  getter for the start time of the event.
      *
      * @return the the start time of the even
@@ -87,50 +78,6 @@ public class Event implements Savable {
     }
 
     /**
-     *  getter for the attendees' username.
-     *
-     * @return the username of all the attndees of this event
-     */
-    public List<String> getAttendeeUNs() {
-        return attendeeUNs;
-    }
-
-    /**
-     * add a new attendee to this event.
-     * @param attendeeUN the username of this attendee
-     */
-    public void addAttendee(String attendeeUN) {
-        attendeeUNs.add(attendeeUN);
-    }
-
-    /**
-     * remove an attendee from this event.
-     * @param attendeeUN the username of this attendee
-     */
-    public void removeAttendee(String attendeeUN) {
-        attendeeUNs.remove(attendeeUN);
-    }
-
-    /**
-     *  getter for the capacity of the room.
-     *
-     * @return the capacity of the room.
-     */
-    public int getCapacity(){
-        return capacity;
-    }
-
-    /**
-     * setter for the capacity of the room
-     *
-     * @param capacity the number of people this room can hold
-     */
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-
-    /**
      * setter of the room number.
      * @param roomNumber set the room number of where this event is going to happen
      */
@@ -138,12 +85,31 @@ public class Event implements Savable {
         this.roomNumber = roomNumber;
     }
 
+    public abstract List<String> getSpeakerUNs();
+
     /**
-     * setter for the speaker username.
-     * @param speakerUN the username of the speaker for this event
+     * Get the list of attendees of this event.
+     * @return list of attendee usernames
      */
-    public void setSpeakerUN(String speakerUN) {
-        this.speakerUN = speakerUN;
+    public List<String> getAttendeeUNs() {
+        return attendeeUNs;
+    }
+
+    /**
+     * Add a new attendee to this event.
+     * @param attendeeUN the username of this attendee
+     */
+    public void addAttendee(String attendeeUN) {
+        attendeeUNs.add(attendeeUN);
+    }
+
+    /**
+     * Remove an attendee from this event.
+     * @param attendeeUN the username of this attendee
+     */
+
+    public void removeAttendee(String attendeeUN) {
+        attendeeUNs.remove(attendeeUN);
     }
 
     /**
@@ -155,17 +121,27 @@ public class Event implements Savable {
     }
 
     /**
-     * turn the information of this event into a string.
-     *
-     * @return the string that contains all the information of this event
+     * get the end time of this event
+     * @return returns the end time of this event
      */
+    public int getEndTime(){
+        return startingTime + duration;
+    }
+
+    public void setCapacity(int capacity){
+        this.capacity = capacity;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
                 "title='" + title + '\'' +
                 ", roomNumber=" + roomNumber +
                 ", startingTime=" + startingTime +
-                ", speakerUN='" + speakerUN + '\'' +
                 ", attendeeUNs=" + attendeeUNs +
                 ", uuid=" + uuid +
                 ", capacity=" + capacity +
@@ -179,6 +155,8 @@ public class Event implements Savable {
      */
     @Override
     public String toSavableString() {
+        // TODO: need to save speaker list too
+
         StringBuilder attendeeUNBuilder = new StringBuilder();
         attendeeUNBuilder.append("[");
         for (String un : attendeeUNs) {
@@ -189,9 +167,21 @@ public class Event implements Savable {
         attendeeUNBuilder.append("]");
         String attendeesStr = attendeeUNBuilder.toString();
 
-        return MessageFormat.format("\"room_number\": {0},\"speaker_un\": \"{1}\",\"id\": \"{2}\", " +
-                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\",\"capacity\": {6}",
-                roomNumber, speakerUN, uuid, attendeesStr, startingTime, title, capacity);
+        String speakerUNs = "[" + getSpeakerUNs().stream().map(un -> "\"" + un + "\"").collect(Collectors.joining(",")) + "]";
+
+        String eventType;
+        if (this instanceof Talk) {
+            eventType = "talk";
+        } else if (this instanceof Party) {
+            eventType = "party";
+        } else {
+            eventType = "panel_discussion";
+        }
+
+        return MessageFormat.format("\"room_number\": {0},\"speaker_uns\": {1},\"id\": \"{2}\", " +
+                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\",\"capacity\": {6},\"event_type\": \"{7}\"," +
+                "\"duration\": {8}",
+                roomNumber, speakerUNs, uuid, attendeesStr, startingTime, title, capacity, eventType, duration);
 
     }
 }
