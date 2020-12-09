@@ -1,19 +1,19 @@
-package ui.user.create_account;
+package ui.register;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ui.user.create_account.CreateAccountPresenter;
 import use_cases.AgreementService;
 import use_cases.AuthService;
 
-public class CreateAccountPresenter {
-
+public class RegisterPresenter {
     int userTypeIndex = -1;
     Boolean selectCheckBox = false;
 
     // TODO private?
-    public CreateAccountPresenter.CreateAccountView view;
+    public RegisterPresenterView  view;
 
-    public CreateAccountPresenter(CreateAccountView view) {
+    public RegisterPresenter(RegisterPresenterView view) {
         this.view = view;
     }
 
@@ -22,6 +22,7 @@ public class CreateAccountPresenter {
      *
      * @return the list of user types
      */
+
     public ObservableList<String> getUserTypes() {
         return FXCollections.observableArrayList(
                 "Create Speaker",
@@ -55,7 +56,7 @@ public class CreateAccountPresenter {
                     AuthService.shared.createUser(view.getUsername(), view.getPassword(), view.getFirstName(),
                             view.getLastName(), AuthService.UserType.SPEAKER);
 
-                    view.navigateToCreateAccountSuccessfully();
+                    view.navigateToRegisterSuccess();
 
                 } catch (AuthService.InvalidFieldException e) {
                     view.setError("Invalid " + e.getField() + " entered. Speaker does not create successfully");
@@ -72,7 +73,7 @@ public class CreateAccountPresenter {
                     AuthService.shared.createUser(view.getUsername(), view.getPassword(), view.getFirstName(),
                             view.getLastName(), AuthService.UserType.ORGANIZER);
 
-                    view.navigateToCreateAccountSuccessfully();
+                    view.navigateToRegisterSuccess();
 
                 } catch (AuthService.InvalidFieldException e) {
                     view.setError("Invalid " + e.getField() + " entered. Organizer does not create successfully");
@@ -89,7 +90,7 @@ public class CreateAccountPresenter {
                     AuthService.shared.createUser(view.getUsername(), view.getPassword(), view.getFirstName(),
                             view.getLastName(), AuthService.UserType.ATTENDEE);
 
-                    view.navigateToCreateAccountSuccessfully();
+                    view.navigateToRegisterSuccess();
 
                 } catch (AuthService.InvalidFieldException e) {
                     view.setError("Invalid " + e.getField() + " entered. Attendee does not create successfully");
@@ -120,7 +121,7 @@ public class CreateAccountPresenter {
                             AuthService.shared.createUser(view.getUsername(), view.getPassword(), view.getFirstName(),
                                     view.getLastName(), AuthService.UserType.RATER);
 
-                            view.navigateToCreateAccountSuccessfully();
+                            view.navigateToRegisterSuccess();
 
                         } catch (AuthService.InvalidFieldException e) {
                             view.setError("Invalid " + e.getField() + " entered. Rater does not create successfully");
@@ -145,14 +146,14 @@ public class CreateAccountPresenter {
         handleOkButton(userTypeIndex);
     }
 
-    public interface CreateAccountView {
+    public interface RegisterPresenterView {
         String getUsername();
         String getPassword();
         String getFirstName();
         String getLastName();
         void setError(String error);
         void setCheckBoxText(String agreement);
-        void navigateToCreateAccountSuccessfully();
+        void navigateToRegisterSuccess();
         void setCheckbox();
     }
 }

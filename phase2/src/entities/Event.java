@@ -1,30 +1,55 @@
 package entities;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class Event implements Savable {
-    int id;
-    static int eventCount;
-    String title;
-    int startingTime;
-    int roomNumber;
+    private final String title;
+    private int roomNumber;
+    private final int startingTime;
     int duration; //must be in full hours
-    int capacity;
+    private String speakerUN;
+    private List<String> attendeeUNs = new ArrayList<>();
+    private String uuid;
+    private int capacity;
     //double duration;
 
-    public Event(String title, int startingTime, int roomNumber, int duration, int capacity){
+    /**
+     * constructor for the event class.
+     *
+     * @param title the title of this event
+     * @param speakerUN the speaker username of this event
+     * @param startingTime the starting time of this event
+     * @param roomNumber the room number of the room that this event is going to happen
+     */
+    public Event(String title, String speakerUN, int startingTime, int roomNumber, int capacity) {
         this.title = title;
-        this.startingTime = startingTime;
+        this.speakerUN = speakerUN;
         this.roomNumber = roomNumber;
+        this.startingTime = startingTime;
         this.duration = duration;
         this.capacity = capacity;
-        id = eventCount;
-        eventCount += 1;
+
+        uuid = UUID.randomUUID().toString();
     }
 
-    public Event(){
+    /**
+     *  getter for the uuid.
+     *
+     * @return the uuid of the event
+     */
+    public String getUUID() {
+        return uuid;
+    }
 
+    /**
+     *  setter for the uuid.
+     */
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
     }
 
     /**
@@ -37,12 +62,12 @@ public abstract class Event implements Savable {
     }
 
     /**
-     *  getter for the id.
+     *  getter for the speaker username.
      *
-     * @return the id of the event
+     * @return the username of the speaker for this event
      */
-    public int getId() {
-        return id;
+    public String getSpeakerUsername() {
+        return this.speakerUN;
     }
 
     /**
@@ -87,6 +112,14 @@ public abstract class Event implements Savable {
     public abstract void removeAttendee(String attendeeUN);
 
     /**
+     * setter for attendee usernames list, should only be used in PersistenceStorage
+     * @param attendeeUNs the list of attendee user names
+     */
+    public void setAttendeeUNs(List<String> attendeeUNs) {
+        this.attendeeUNs = attendeeUNs;
+    }
+
+    /**
      * get the end time of this event
      * @return returns the end time of this event
      */
@@ -98,8 +131,21 @@ public abstract class Event implements Savable {
         this.capacity = capacity;
     }
 
-    public int getCapacity(){
+    public int getCapacity() {
         return capacity;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "title='" + title + '\'' +
+                ", roomNumber=" + roomNumber +
+                ", startingTime=" + startingTime +
+                ", speakerUN='" + speakerUN + '\'' +
+                ", attendeeUNs=" + attendeeUNs +
+                ", uuid=" + uuid +
+                ", capacity=" + capacity +
+                '}';
     }
 
     /**
@@ -109,9 +155,21 @@ public abstract class Event implements Savable {
      */
     @Override
     public String toSavableString() {
-        return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
-                "null" + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
-                Savable.DELIMITER + getCapacity() + Savable.DELIMITER + String.join("|", getAttendeeUNs());
-    }
+        // TODO: need to save speaker list too
 
+        StringBuilder attendeeUNBuilder = new StringBuilder();
+        attendeeUNBuilder.append("[");
+        for (String un : attendeeUNs) {
+            attendeeUNBuilder.append(MessageFormat.format("\"{0}\",", un));
+        }
+        // If there are at least 1 attendee, remove the last ","
+        if (attendeeUNs.size() >= 1) attendeeUNBuilder.deleteCharAt(attendeeUNBuilder.length() - 1);
+        attendeeUNBuilder.append("]");
+        String attendeesStr = attendeeUNBuilder.toString();
+
+        return MessageFormat.format("\"room_number\": {0},\"speaker_un\": \"{1}\",\"id\": \"{2}\", " +
+                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\",\"capacity\": {6}",
+                roomNumber, speakerUN, uuid, attendeesStr, startingTime, title, capacity);
+
+    }
 }

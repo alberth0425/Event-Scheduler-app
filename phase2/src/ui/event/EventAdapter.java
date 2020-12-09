@@ -37,12 +37,12 @@ public class EventAdapter {
     }
 
     /**
-     * Get the event ID.
+     * Get the event UUID.
      *
-     * @return the event ID string
+     * @return the event UUID string
      */
     public String getId() {
-        return Integer.toString(event.getId());
+        return event.getUUID();
     }
 
     /**

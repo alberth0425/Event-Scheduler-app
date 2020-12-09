@@ -1,4 +1,4 @@
-package ui.user.create_account;
+package ui.register;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -9,13 +9,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import ui.BaseViewController;
 import ui.navigation.FXMLFile;
+import ui.register.RegisterSuccess.RegisterSuccessViewController;
 import ui.user.UserActionViewController;
+import ui.user.create_account.CreateAccountPresenter;
 import ui.user.create_account.create_account_successfully.CreateAccountSucessViewController;
 
-@FXMLFile("create_account.fxml")
-public class CreateAccountViewController extends BaseViewController<Void> implements CreateAccountPresenter.CreateAccountView {
-
-    private CreateAccountPresenter presenter = new CreateAccountPresenter(this);
+@FXMLFile("register.fxml")
+public class RegisterViewController extends BaseViewController<Void> implements RegisterPresenter.RegisterPresenterView {
+    private RegisterPresenter presenter = new RegisterPresenter(this);
 
     public ComboBox<String> userComboBox;
     public TextField usernameTextField;
@@ -85,8 +86,8 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
 
 
     @Override
-    public void navigateToCreateAccountSuccessfully() {
-        getNavigationController().navigate(CreateAccountSucessViewController.class);
+    public void navigateToRegisterSuccess() {
+        getNavigationController().navigate(RegisterSuccessViewController.class);
     }
 
 
@@ -102,6 +103,4 @@ public class CreateAccountViewController extends BaseViewController<Void> implem
     public void backButtonAction(ActionEvent actionEvent) {
         getNavigationController().navigate(UserActionViewController.class);
     }
-
 }
-

@@ -1,150 +1,204 @@
 package gateway;
 
 import entities.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 public class PersistenceStorage {
-
     /**
      * Path constants for different Savable classes
      */
-    public static final String ATTENDEE_STORAGE_PATH = "phase2/src/gateway/attendees.txt";
-    public static final String SPEAKER_STORAGE_PATH = "phase2/src/gateway/speakers.txt";
-    public static final String ORGANIZER_STORAGE_PATH = "phase2/src/gateway/organizers.txt";
-    public static final String ROOM_STORAGE_PATH = "phase2/src/gateway/rooms.txt";
-    public static final String MESSAGE_STORAGE_PATH = "phase2/src/gateway/messages.txt";
-    public static final String CONTACT_BOOK_PATH = "phase2/src/gateway/contact_book.txt";
-    public static final String RATER_STORAGE_PATH= "phase2/src/gateway/raters.txt";
-    public static final String AGREEMENT_STORAGE_PATH= "phase2/src/gateway/agreements.txt";
-    public static final String TALK_STORAGE_PATH= "phase2/src/gateway/talks.txt";
-    public static final String PD_STORAGE_PATH= "phase2/src/gateway/PDs.txt";
-    public static final String PARTY_STORAGE_PATH= "phase2/src/gateway/parties.txt";
-    /**
-     * Save input entries as a csv/txt file to the input path.
-     *
-     * @param entries to-be-saved entries, need to implement `Savable`
-     * @param path path of the saved file
-     */
-    public static void saveEntities(List<Savable> entries, String path) {
-        try {
-            PrintWriter pw = getPrinterWriter(path);
-
-            for (Savable e : entries) {
-                pw.println(e.toSavableString());
-            }
-            pw.flush();
-            pw.close();
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
+    private static final String USER_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/users";
+    private static final String ROOM_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/rooms";
+    private static final String EVENT_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/events";
+    private static final String MESSAGE_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/messages";
 
     /**
-     * Fetch all entries from a csv/txt file and return the entries as an `ArrayList`.
-     *
-     * @param path path of the file, should use `returnType`'s corresponding static path constant
-     * @param returnType type of the entries in the file
-     * @param <T> type of the entries in the file
-     * @return an `ArrayList` of fetched `T`s
+     * Print out the request in to the console from the input URL
+     * @param returnType the type of wanted entities
+     * @throws IOException throws Input/Output exception
      */
     @SuppressWarnings("unchecked")
-    public static <T> List<T> readEntities(String path, Class<T> returnType) {
-        List<T> res = new ArrayList<>();
-        try {
-            File eventFile = new File(path);
-            Scanner eventScanner = new Scanner(eventFile);
+    public static <T> List<T> getRequest(Class<T> returnType) throws IOException {
+        StringBuilder returnedString = new StringBuilder();
+        URL urlForInformation = getURLByClass(returnType);
+        HttpURLConnection con = (HttpURLConnection) urlForInformation.openConnection();
 
-            while (eventScanner.hasNext()) {
-                String nl = eventScanner.nextLine().trim();
-                if (returnType.equals(Talk.class)) {
-                    res.add((T) new Talk(nl));
-                } else if(returnType.equals(Party.class)){
-                    res.add((T) new Party(nl));
-                } else if (returnType.equals(PanelDiscussion.class)){
-                    res.add((T) new PanelDiscussion(nl));
-                } else if (returnType.equals(Attendee.class)) {
-                    res.add((T) new Attendee(nl));
-                } else if (returnType.equals(Speaker.class)) {
-                    res.add((T) new Speaker(nl));
-                } else if (returnType.equals(Organizer.class)) {
-                    res.add((T) new Organizer(nl));
-                } else if (returnType.equals(Room.class)) {
-                    res.add((T) new Room(nl));
-                } else if (returnType.equals(Message.class)) {
-                    res.add((T) new Message(nl));
-                } else if (returnType.equals(Rater.class)) {
-                    res.add((T) new Rater(nl));
-                } else if (returnType.equals(Agreement.class)) {
-                    res.add((T) new Agreement(nl));
-                }
-            }
-            return res;
+        // Request setup
+        con.setRequestMethod("GET");
+        con.setConnectTimeout(6000); // 6 secs
+        con.setReadTimeout(6000); // 6 secs
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return res;
-        }
+        BufferedReader output = new BufferedReader(new InputStreamReader(con.getResponseCode() > 299 ? con.getErrorStream() : con.getInputStream()));
+        String line;
+        while ((line = output.readLine())!=null) returnedString.append(line);
+        output.close();
+        con.disconnect();
+
+        if (returnType.equals(User.class)) {
+            return (List<T>) parseToUserList(returnedString.toString());
+        } else if (returnType.equals(Room.class)) {
+            return (List<T>) parseToRoomList(returnedString.toString());
+        } else if (returnType.equals(Event.class)) {
+            return (List<T>) parseToEventList(returnedString.toString());
+        } else if (returnType.equals(Message.class)) {
+            return (List<T>) parseToMessageList(returnedString.toString());
+        } else return new ArrayList<>();
     }
 
     /**
-     * Save input contact book as a csv/txt file to the input path.
      *
-     * @param contactBook to-be-saved contact book
-     * @param path path of the saved file
+     * @param list the list of all inputs
+     * @param inputType the type of the input. Could be user, room, message or event.
+     * @param <T> The generic type.
+     * @throws IOException catch input output exceptions.
      */
-    public static void saveContactBook(HashMap<String, List<String>> contactBook, String path) {
-        try {
-            PrintWriter pw = getPrinterWriter(path);
+    public static <T> void putRequest(List<T> list, Class<T> inputType) throws IOException {
 
-            for (Map.Entry<String, List<String>> me : contactBook.entrySet()) {
-                pw.println(me.getKey() + Savable.DELIMITER + String.join(Savable.DELIMITER, me.getValue()));
+        URL url = getURLByClass(inputType);
+
+        assert url != null;
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+        //Request setup
+        con.setRequestMethod("PUT");
+        con.setDoOutput(true);
+        con.addRequestProperty("Content-Type", "text/plain");
+        con.setConnectTimeout(6000); // 6 secs
+        con.setReadTimeout(6000); // 6 secs
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        ArrayList<String> returnedList = new ArrayList<>();
+        if (inputType.equals(User.class)) {
+            for (T user: list) {
+                returnedList.add("{" + ((User)user).toSavableString() + "}");
             }
-            pw.flush();
-            pw.close();
-            System.out.println("All entries saved to path: " + path);
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Fetch all contacts from a csv/txt file and return the contact book as an `HashMap<String, List<String>>`.
-     *
-     * @param path path of the file
-     * @return a `HashMap<String, List<String>>` representing the fetched contact book
-     */
-    public static HashMap<String, List<String>> readContactBook(String path) {
-        HashMap<String, List<String>> res = new HashMap<>();
-
-        try {
-            File eventFile = new File(path);
-            Scanner eventScanner = new Scanner(eventFile);
-
-            while (eventScanner.hasNext()) {
-                String[] usernames = eventScanner.nextLine().trim().split(Savable.DELIMITER);
-                List<String> contacts = Arrays.asList(Arrays.copyOfRange(usernames, 1, usernames.length));
-                String user = usernames[0];
-                res.put(user, contacts);
+        } else if (inputType.equals(Event.class)) {
+            for (T event: list) {
+                returnedList.add("{" + ((Event)event).toSavableString() + "}");
             }
-            return res;
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return res;
+        } else if (inputType.equals(Room.class)) {
+            for (T room: list) {
+                returnedList.add("{" + ((Room)room).toSavableString() + "}");
+            }
+        } else {
+            for (T message: list) {
+                returnedList.add("{" + ((Message)message).toSavableString() + "}");
+            }
         }
-    }
 
+        writer.write(returnedList.toString());
+        writer.flush();
+        writer.close();
+        con.getResponseCode();
+        con.disconnect();
+    }
 
     // --- Private Helpers ---
-    private static PrintWriter getPrinterWriter(String path) throws IOException {
-        FileWriter fw = new FileWriter(path, false);
-        BufferedWriter bw = new BufferedWriter(fw);
 
-        return new PrintWriter(bw);
+    private static List<User> parseToUserList(String response) {
+        ArrayList<User> userList = new ArrayList<>();
+        JSONArray users = new JSONArray(response);
+        for (int i = 0; i < users.length(); i++) {
+            JSONObject user = users.getJSONObject(i);
+
+            switch (user.getString("user_type")) {
+                case "attendee":
+                    userList.add(new Attendee(user.getString("username"), user.getString("password")
+                            , user.getString("first_name"), user.getString("last_name")));
+                    break;
+                case "speaker":
+                    // parse all rate from JSONArray to List<String>
+                    JSONArray allRateRaw = (JSONArray) user.get("rate");
+                    List<String> allRate = new ArrayList<>();
+                    for (int j = 0; j < allRateRaw.length(); j++) allRate.add(allRateRaw.getString(j));
+
+                    Speaker speaker = new Speaker(user.getString("username"), user.getString("password")
+                            , user.getString("first_name"), user.getString("last_name"));
+                    speaker.setAllRate(allRate);
+                    userList.add(speaker);
+                    break;
+                case "organizer":
+                    userList.add(new Organizer(user.getString("username"), user.getString("password")
+                            , user.getString("first_name"), user.getString("last_name")));
+                    break;
+                case "rater":
+                    // parse all speaker id rated from JSONArray to List<String>
+                    JSONArray speakerRatedRaw = (JSONArray) user.get("speaker_id_rated");
+                    List<String> speakerRated = new ArrayList<>();
+                    for (int j = 0; j < speakerRatedRaw.length(); j++) speakerRated.add(speakerRatedRaw.getString(j));
+
+                    Rater rater = new Rater(user.getString("username"), user.getString("password")
+                            , user.getString("first_name"), user.getString("last_name"));
+                    rater.setSpeakerIdRated(speakerRated);
+                    userList.add(rater);
+                    break;
+            }
+        }
+        return userList;
     }
-    
+
+    private static List<Room> parseToRoomList(String response) {
+        ArrayList<Room> roomList = new ArrayList<>();
+        JSONArray rooms = new JSONArray(response);
+        for (int i = 0; i < rooms.length(); i++) {
+            JSONObject room = rooms.getJSONObject(i);
+            roomList.add(new Room(room.getInt("capacity"), room.getInt( "room_number")));
+        }
+        return roomList;
+    }
+
+    private static List<Event> parseToEventList(String response) {
+        ArrayList<Event> eventList = new ArrayList<>();
+        JSONArray events = new JSONArray(response);
+        for (int i = 0; i < events.length(); i++) {
+            JSONObject event = events.getJSONObject(i);
+// TODO; handle multipple types of events like user
+            // parse attendee usernames from JSONArray to List<String>
+            JSONArray attendeeUNsRaw = (JSONArray) event.get("attendee_uns");
+            List<String> attendeeUNs = new ArrayList<>();
+            for (int j = 0; j < attendeeUNsRaw.length(); j++) attendeeUNs.add(attendeeUNsRaw.getString(j));
+
+            Event evObj = new Event(event.getString("title"), event.getString( "speaker_un"),
+                    event.getInt("starting_time"), event.getInt("room_number"), event.getInt("capacity"));
+            evObj.setAttendeeUNs(attendeeUNs);
+            evObj.setUUID(event.getString("id"));
+            eventList.add(evObj);
+        }
+        return eventList;
+    }
+
+    private static List<Message> parseToMessageList(String response) {
+        ArrayList<Message> messagesList = new ArrayList<>();
+        JSONArray messages = new JSONArray(response);
+        for (int i = 0; i < messages.length(); i++) {
+            JSONObject message = messages.getJSONObject(i);
+            Message msg = new Message(message.getString("text"), message.getString( "sender_un"),
+                    message.getString("receiver_un"));
+            msg.setTimeStamp(message.getLong("timestamp"));
+            msg.setUUID(message.getString("message_id"));
+            messagesList.add(msg);
+        }
+        return messagesList;
+    }
+
+    private static <T> URL getURLByClass(Class<T> tClass) throws MalformedURLException {
+        URL resUrl = null;
+        if (tClass.equals(User.class)) {
+            resUrl = new URL(USER_DB_URL);
+        } else if (tClass.equals(Event.class)) {
+            resUrl = new URL(EVENT_DB_URL);
+        } else if (tClass.equals(Room.class)) {
+            resUrl = new URL(ROOM_DB_URL);
+        } else if (tClass.equals(Message.class)) {
+            resUrl = new URL(MESSAGE_DB_URL);
+        }
+        return resUrl;
+    }
 }

@@ -5,11 +5,16 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ui.login.LoginViewController;
 import ui.navigation.NavigationController;
-import use_cases.*;
+import use_cases.AuthService;
+import use_cases.EventService;
+import use_cases.MessageService;
+import use_cases.RoomService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main extends Application {
     @Override
@@ -19,6 +24,7 @@ public class Main extends Application {
         Scene scene = NavigationController.initialize(LoginViewController.class);
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(event -> save());
         primaryStage.show();
     }
 
@@ -26,34 +32,32 @@ public class Main extends Application {
         launch(args);
     }
 
-    // TODO: temporary code, remove when DB is done in persistent storage
+    public static void load() {
+        // TODO: save/load different type of events
+        // probably need to change read/write for tosavablestring
 
-    void load() {
-        List<Attendee> attendees = PersistenceStorage.readEntities(PersistenceStorage.ATTENDEE_STORAGE_PATH, Attendee.class);
-        List<Organizer> organizers = PersistenceStorage.readEntities(PersistenceStorage.ORGANIZER_STORAGE_PATH, Organizer.class);
-        List<Speaker> speakers = PersistenceStorage.readEntities(PersistenceStorage.SPEAKER_STORAGE_PATH, Speaker.class);
-        List<Rater> raters = PersistenceStorage.readEntities(PersistenceStorage.RATER_STORAGE_PATH, Rater.class);
-        List<Talk> talks = PersistenceStorage.readEntities(PersistenceStorage.TALK_STORAGE_PATH, Talk.class);
-        List<Party> parties = PersistenceStorage.readEntities(PersistenceStorage.PARTY_STORAGE_PATH, Party.class);
-        List<PanelDiscussion> PDs = PersistenceStorage.readEntities(PersistenceStorage.PD_STORAGE_PATH, PanelDiscussion.class);
+        // Initialize entity lists
+        List<User> users = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
+        List<Room> rooms = new ArrayList<>();
+        try {
+            users = PersistenceStorage.getRequest(User.class);
+            messages = PersistenceStorage.getRequest(Message.class);
+            events = PersistenceStorage.getRequest(Event.class);
+            rooms = PersistenceStorage.getRequest(Room.class);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
 
-        HashMap<String, User> users = new HashMap<>();
-        for (User user : attendees) {
-            users.put(user.getUsername(), user);
+        // Create users HashMap and set to AuthService
+        HashMap<String, User> usersMap = new HashMap<>();
+        for (User user : users) {
+            usersMap.put(user.getUsername(), user);
         }
-        for (User user : organizers) {
-            users.put(user.getUsername(), user);
-        }
-        for (User user : speakers) {
-            users.put(user.getUsername(), user);
-        }
-        for (User user : raters) {
-            users.put(user.getUsername(), user);
-        }
-        AuthService.shared.setUsers(users);
+        AuthService.shared.setUsers(usersMap);
 
-        List<Message> messages = PersistenceStorage.readEntities(PersistenceStorage.MESSAGE_STORAGE_PATH, Message.class);
-
+        // Create messages Hashmap and set to MessageService
         HashMap<String, List<Message>> messageRepository = new HashMap<>();
 
         // TODO: initialize contact book?
@@ -67,86 +71,32 @@ public class Main extends Application {
         }
         MessageService.shared.setMessageRepository(messageRepository);
 
-        //load events
-        List<Event> events = new ArrayList<>();
-        events.addAll(talks);
-        events.addAll(parties);
-        events.addAll(PDs);
-
+        // Store events into EventService
         EventService.shared.setAllEvents(events);
 
-        List<Room> rooms = PersistenceStorage.readEntities(PersistenceStorage.ROOM_STORAGE_PATH, Room.class);
-
-        HashMap<Integer, Room> roomHashMap = new HashMap<>();
+        // Create rooms Hashmap and set to RoomService
+        HashMap<Integer, Room> roomsMap = new HashMap<>();
         for (Room room: rooms) {
-            roomHashMap.put(room.getRoomNumber(), room);
+            roomsMap.put(room.getRoomNumber(), room);
         }
-        RoomService.shared.setRooms(roomHashMap);
-
-        List<Agreement> agreements =
-                PersistenceStorage.readEntities(PersistenceStorage.AGREEMENT_STORAGE_PATH, Agreement.class);
-
-        HashMap<String, Agreement> agreementHashMap = new HashMap<>();
-
-        for (Agreement agreement: agreements) {
-            agreementHashMap.put(agreement.getUsername(), agreement);
-        }
-        AgreementService.shared.setAgreements(agreementHashMap);
+        RoomService.shared.setRooms(roomsMap);
     }
 
-    void save() {
-        // save all events to the storage
-        List<Event> events = new ArrayList<>(EventService.shared.getAllEvents());
-        List<Savable> talks = new ArrayList<>();
-        List<Savable> parties = new ArrayList<>();
-        List<Savable> PDs = new ArrayList<>();
-        for (Event event: events){
-            if (event instanceof Talk){
-                talks.add(event);
-            } else if(event instanceof Party){
-                parties.add(event);
-            } else{
-                PDs.add(event);
-            }
+    public static void save() {
+        // get lists of to-be-saved entities
+        List<Event> events = EventService.shared.getAllEvents();
+        List<User> users = AuthService.shared.getAllUsers();
+        List<Room> rooms = RoomService.shared.getAllRooms();
+        List<Message> messages = MessageService.shared.getAllMessages();
+
+        // save lists of entities to remote DB
+        try {
+            PersistenceStorage.putRequest(events, Event.class);
+            PersistenceStorage.putRequest(users, User.class);
+            PersistenceStorage.putRequest(rooms, Room.class);
+            PersistenceStorage.putRequest(messages, Message.class);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-        PersistenceStorage.saveEntities(talks,PersistenceStorage.TALK_STORAGE_PATH);
-        PersistenceStorage.saveEntities(parties,PersistenceStorage.PARTY_STORAGE_PATH);
-        PersistenceStorage.saveEntities(PDs,PersistenceStorage.PD_STORAGE_PATH);
-
-        // save all users to the storage
-        List<User> users = new ArrayList<>(AuthService.shared.getAllUsers());
-        List<Savable> attendees = new ArrayList<>();
-        List<Savable> organizers = new ArrayList<>();
-        List<Savable> speakers = new ArrayList<>();
-        List<Savable> raters = new ArrayList<>();
-
-        for (User u : users) {
-            if (u instanceof Attendee) {
-                attendees.add(u);
-            } else if (u instanceof Organizer) {
-                organizers.add(u);
-            } else if (u instanceof Speaker) {
-                speakers.add(u);
-            } else if (u instanceof Rater) {
-                raters.add(u);
-            }
-        }
-        PersistenceStorage.saveEntities(attendees,PersistenceStorage.ATTENDEE_STORAGE_PATH);
-        PersistenceStorage.saveEntities(organizers,PersistenceStorage.ORGANIZER_STORAGE_PATH);
-        PersistenceStorage.saveEntities(speakers,PersistenceStorage.SPEAKER_STORAGE_PATH);
-        PersistenceStorage.saveEntities(raters, PersistenceStorage.RATER_STORAGE_PATH);
-
-        // save all rooms to the storage
-        List<Savable> rooms = new ArrayList<>(RoomService.shared.getAllRooms());
-        PersistenceStorage.saveEntities(rooms,PersistenceStorage.ROOM_STORAGE_PATH);
-
-        // save all messages to the storage
-        List<Savable> messages = new ArrayList<>(MessageService.shared.getAllMessages());
-        PersistenceStorage.saveEntities(messages,PersistenceStorage.MESSAGE_STORAGE_PATH);
-
-        // save all agreements to the storage
-        List<Savable> agreements = new ArrayList<>(AgreementService.shared.getAllAgreements());
-        PersistenceStorage.saveEntities(agreements,PersistenceStorage.AGREEMENT_STORAGE_PATH);
-
     }
 }

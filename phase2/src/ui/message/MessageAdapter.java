@@ -35,7 +35,7 @@ public class MessageAdapter {
      * @return the ID string of the message
      */
     public String getId() {
-        return message.getId();
+        return message.getUUID();
     }
 
     /**

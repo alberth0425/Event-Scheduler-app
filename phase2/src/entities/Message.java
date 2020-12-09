@@ -1,17 +1,19 @@
 package entities;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 public class Message implements Savable {
+//    private static int messageCount;
 
     private final String text;
     private final String senderUsername;
     private final String receiverUsername;
-    private final long timeStamp;  // message send time in millisecond
-    private final String id;
-    public boolean isArchived; // if this message is archived or not
+    private String uuid;           // TODO: change this to a string ID
+    private long timeStamp;         // message send time in millisecond
+    public boolean isArchived;
 
     /**
      * constructor for the message class
@@ -30,26 +32,10 @@ public class Message implements Savable {
         timeStamp = date.getTime();
 
         // Set id
-        UUID uuid = UUID.randomUUID();
-        id = uuid.toString();
-
+        uuid = UUID.randomUUID().toString();
+//        id = Integer.toString(messageCount);
+//        messageCount += 1;
         isArchived = false;
-
-    }
-
-    /**
-     * construct message from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents a message
-     */
-    public Message(String dataEntry) {
-        String[] entries = dataEntry.split(DELIMITER);
-        this.id = entries[0];
-        this.text = entries[1];
-        this.senderUsername = entries[2];
-        this.receiverUsername = entries[3];
-        this.timeStamp = Long.parseLong(entries[4]);
-
     }
 
     /**
@@ -89,6 +75,13 @@ public class Message implements Savable {
     }
 
     /**
+     * setter for the timeStamp.
+     */
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    /**
      * Get formatted timestamp, format: dd/MM/yyyy HH:mm:ss
      * @return formatted String representation of the message timestamp
      */
@@ -99,13 +92,32 @@ public class Message implements Savable {
         return dateFormat.format(date);
     }
 
+    @Override
+    public String toString() {
+        return "Message{" +
+                "text='" + text + '\'' +
+                ", senderUsername='" + senderUsername + '\'' +
+                ", receiverUsername='" + receiverUsername + '\'' +
+                ", timeStamp=" + timeStamp +
+                ", id=" + uuid +
+                '}';
+    }
+
     /**
-     * getter for the id of this message.
+     * getter for the uuid of this message.
      *
-     * @return the id of this message
+     * @return the uuid of this message
      */
-    public String getId() {
-        return id;
+    public String getUUID() {
+        return uuid;
+    }
+
+    /**
+     * setter for the uuid of this message.
+     *
+     */
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
     }
 
     /**
@@ -129,7 +141,7 @@ public class Message implements Savable {
      */
     @Override
     public String toSavableString() {
-        return id + DELIMITER + text + DELIMITER + senderUsername + DELIMITER + receiverUsername + DELIMITER + timeStamp
-                + DELIMITER + isArchived;
+        return MessageFormat.format("\"message_id\": \"{0}\",\"text\": \"{1}\",\"sender_un\": \"{2}\", " +
+                "\"receiver_un\": \"{3}\",\"timestamp\": {4},\"isArchived\": {5}", uuid, text, senderUsername, receiverUsername, Long.toString(timeStamp), isArchived);
     }
 }

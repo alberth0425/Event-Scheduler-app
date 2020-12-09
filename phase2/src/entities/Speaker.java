@@ -1,5 +1,6 @@
 package entities;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,16 +20,6 @@ public class Speaker extends User {
         super(username, password, firstName, lastName);
     }
 
-    /**
-     * construct speaker from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents speaker
-     */
-    public Speaker(String dataEntry) {
-        super(dataEntry);
-        this.allRate = dataEntry.split(DELIMITER).length < 6 ? new ArrayList<>() :
-                new ArrayList<>(Arrays.asList(dataEntry.split(DELIMITER)[5].split("\\|")));
-    }
 
     /**
      * add rate to the allRate list.
@@ -37,6 +28,14 @@ public class Speaker extends User {
      */
     public void addRate(int rate) {
         allRate.add(String.valueOf(rate));
+
+    }
+
+    /**
+     * set all rate.
+     */
+    public void setAllRate(List<String> allRate) {
+        this.allRate = allRate;
 
     }
 
@@ -53,15 +52,5 @@ public class Speaker extends User {
         return sum/allRate.size();
     }
 
-    /**
-     * turn the information of this speaker into a savable string.
-     *
-     * @return a savable string that contains all the information of this speaker
-     */
-    @Override
-    public String toSavableString() {
-        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
-                DELIMITER + String.join("|", allRate);
-    }
 }
 

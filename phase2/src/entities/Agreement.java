@@ -1,6 +1,6 @@
 package entities;
 
-public class Agreement implements Savable {
+public class Agreement {
 
     protected String raterUserName;
     protected String firstName;
@@ -19,18 +19,18 @@ public class Agreement implements Savable {
         this.lastName = lastName;
     }
 
-    /**
-     * construct agreement from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents this user
-     *                  the order of the string is: id, raterUserName, firstname, lastname
-     */
-    public Agreement(String dataEntry) {
-        String[] entries = dataEntry.split(DELIMITER);
-        this.raterUserName = entries[0];
-        this.firstName = entries[1];
-        this.lastName = entries[2];
-    }
+//    /**
+//     * construct agreement from a dataEntry.
+//     *
+//     * @param dataEntry the savable string that represents this user
+//     *                  the order of the string is: id, raterUserName, firstname, lastname
+//     */
+//    public Agreement(String dataEntry) {
+//        String[] entries = dataEntry.split(DELIMITER);
+//        this.raterUserName = entries[0];
+//        this.firstName = entries[1];
+//        this.lastName = entries[2];
+//    }
 
     /**
      *  getter for the username.
@@ -48,16 +48,6 @@ public class Agreement implements Savable {
      */
     public String getFullName() {
         return firstName + " " + lastName;
-    }
-
-    /**
-     * turn the information of this user into a savable string.
-     *
-     * @return a savable string in the order of: raterUserName, firstname, lastname
-     */
-    @Override
-    public String toSavableString() {
-        return raterUserName + DELIMITER + firstName + DELIMITER + lastName;
     }
 
     /**
