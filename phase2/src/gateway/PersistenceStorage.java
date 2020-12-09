@@ -148,7 +148,7 @@ public class PersistenceStorage {
             for (int j = 0; j < attendeeUNsRaw.length(); j++) attendeeUNs.add(attendeeUNsRaw.getString(j));
 
             Event evObj = new Event(event.getString("title"), event.getString( "speaker_un"),
-                    event.getInt("starting_time"), event.getInt("room_number"));
+                    event.getInt("starting_time"), event.getInt("room_number"), event.getInt("capacity"));
             evObj.setAttendeeUNs(attendeeUNs);
             evObj.setUUID(event.getString("id"));
             eventList.add(evObj);

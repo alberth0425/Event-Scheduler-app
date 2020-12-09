@@ -19,16 +19,6 @@ public class Speaker extends User {
         super(username, password, firstName, lastName);
     }
 
-    /**
-     * construct speaker from a dataEntry.
-     *
-     * @param dataEntry the savable string that represents speaker
-     */
-    public Speaker(String dataEntry) {
-        super(dataEntry);
-        this.allRate = dataEntry.split(DELIMITER).length < 6 ? new ArrayList<>() :
-                new ArrayList<>(Arrays.asList(dataEntry.split(DELIMITER)[5].split("\\|")));
-    }
 
     /**
      * add rate to the allRate list.
