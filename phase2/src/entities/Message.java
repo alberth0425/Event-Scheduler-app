@@ -3,14 +3,15 @@ package entities;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 public class Message implements Savable {
-    private static int messageCount;
+//    private static int messageCount;
 
     private final String text;
     private final String senderUsername;
     private final String receiverUsername;
-    private final String id;           // TODO: change this to a string ID
+    private String uuid;           // TODO: change this to a string ID
     private long timeStamp;         // message send time in millisecond
     public boolean isArchived;
 
@@ -31,8 +32,9 @@ public class Message implements Savable {
         timeStamp = date.getTime();
 
         // Set id
-        id = Integer.toString(messageCount);
-        messageCount += 1;
+        uuid = UUID.randomUUID().toString();
+//        id = Integer.toString(messageCount);
+//        messageCount += 1;
         isArchived = false;
     }
 
@@ -97,17 +99,25 @@ public class Message implements Savable {
                 ", senderUsername='" + senderUsername + '\'' +
                 ", receiverUsername='" + receiverUsername + '\'' +
                 ", timeStamp=" + timeStamp +
-                ", id=" + id +
+                ", id=" + uuid +
                 '}';
     }
 
     /**
-     * getter for the id of this message.
+     * getter for the uuid of this message.
      *
-     * @return the id of this message
+     * @return the uuid of this message
      */
-    public String getId() {
-        return id;
+    public String getUUID() {
+        return uuid;
+    }
+
+    /**
+     * setter for the uuid of this message.
+     *
+     */
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
     }
 
     /**
@@ -132,6 +142,6 @@ public class Message implements Savable {
     @Override
     public String toSavableString() {
         return MessageFormat.format("\"message_id\": \"{0}\",\"text\": \"{1}\",\"sender_un\": \"{2}\", " +
-                "\"receiver_un\": \"{3}\",\"timestamp\": {4},\"isArchived\": {5}", id, text, senderUsername, receiverUsername, Long.toString(timeStamp), isArchived);
+                "\"receiver_un\": \"{3}\",\"timestamp\": {4},\"isArchived\": {5}", uuid, text, senderUsername, receiverUsername, Long.toString(timeStamp), isArchived);
     }
 }

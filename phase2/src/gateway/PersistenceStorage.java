@@ -114,12 +114,30 @@ public class PersistenceStorage {
                             , user.getString("first_name"), user.getString("last_name")));
                     break;
                 case "speaker":
-                    userList.add(new Speaker(user.getString("username"), user.getString("password")
-                            , user.getString("first_name"), user.getString("last_name")));
+                    // parse all rate from JSONArray to List<String>
+                    JSONArray allRateRaw = (JSONArray) user.get("rate");
+                    List<String> allRate = new ArrayList<>();
+                    for (int j = 0; j < allRateRaw.length(); j++) allRate.add(allRateRaw.getString(j));
+
+                    Speaker speaker = new Speaker(user.getString("username"), user.getString("password")
+                            , user.getString("first_name"), user.getString("last_name"));
+                    speaker.setAllRate(allRate);
+                    userList.add(speaker);
                     break;
                 case "organizer":
                     userList.add(new Organizer(user.getString("username"), user.getString("password")
                             , user.getString("first_name"), user.getString("last_name")));
+                    break;
+                case "rater":
+                    // parse all speaker id rated from JSONArray to List<String>
+                    JSONArray speakerRatedRaw = (JSONArray) user.get("speaker_id_rated");
+                    List<String> speakerRated = new ArrayList<>();
+                    for (int j = 0; j < speakerRatedRaw.length(); j++) speakerRated.add(speakerRatedRaw.getString(j));
+
+                    Rater rater = new Rater(user.getString("username"), user.getString("password")
+                            , user.getString("first_name"), user.getString("last_name"));
+                    rater.setSpeakerIdRated(speakerRated);
+                    userList.add(rater);
                     break;
             }
         }
@@ -164,6 +182,7 @@ public class PersistenceStorage {
             Message msg = new Message(message.getString("text"), message.getString( "sender_un"),
                     message.getString("receiver_un"));
             msg.setTimeStamp(message.getLong("timestamp"));
+            msg.setUUID(message.getString("message_id"));
             messagesList.add(msg);
         }
         return messagesList;

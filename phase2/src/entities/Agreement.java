@@ -1,6 +1,6 @@
 package entities;
 
-public class Agreement implements Savable {
+public class Agreement {
 
     protected String raterUserName;
     protected String firstName;
@@ -48,16 +48,6 @@ public class Agreement implements Savable {
      */
     public String getFullName() {
         return firstName + " " + lastName;
-    }
-
-    /**
-     * turn the information of this user into a savable string.
-     *
-     * @return a savable string in the order of: raterUserName, firstname, lastname
-     */
-    @Override
-    public String toSavableString() {
-        return raterUserName + DELIMITER + firstName + DELIMITER + lastName;
     }
 
     /**

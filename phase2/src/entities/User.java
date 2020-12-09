@@ -94,15 +94,54 @@ public class User implements Savable {
         String type;
         if (this instanceof Attendee) {
             type = "attendee";
+            return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
+                    "\"last_name\": \"{3}\",\"user_type\": \"{4}\"",username, password, firstName, lastName, type);
         } else if (this instanceof Organizer) {
             type = "organizer";
+            return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
+                    "\"last_name\": \"{3}\",\"user_type\": \"{4}\"",username, password, firstName, lastName, type);
         } else if (this instanceof Speaker) {
-            type = "speaker";
+            type = "Speaker";
+
+            StringBuilder rateBuilder = new StringBuilder();
+            rateBuilder.append("[");
+            for (String rate : ((Speaker) this).allRate) {
+                rateBuilder.append(MessageFormat.format("\"{0}\",", rate));
+            }
+
+            // If there are at least 1 attendee, remove the last ","
+            if (((Speaker) this).allRate.size() >= 1) rateBuilder.deleteCharAt(rateBuilder.length() - 1);
+            rateBuilder.append("]");
+            String rateStr = rateBuilder.toString();
+
+            return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
+                    "\"last_name\": \"{3}\",\"user_type\": \"{4}\",\"rate\": {5}",
+                    username, password, firstName, lastName, type, rateStr);
+
+        } else if (this instanceof Rater) {
+            type = "Rater";
+
+            StringBuilder rateBuilder = new StringBuilder();
+            rateBuilder.append("[");
+            for (String id : ((Rater) this).speakerIdRated) {
+                rateBuilder.append(MessageFormat.format("\"{0}\",", id));
+            }
+
+            // If there are at least 1 attendee, remove the last ","
+            if (((Rater) this).speakerIdRated.size() >= 1) rateBuilder.deleteCharAt(rateBuilder.length() - 1);
+            rateBuilder.append("]");
+            String speakerIdRatedStr = rateBuilder.toString();
+
+            return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
+                            "\"last_name\": \"{3}\",\"user_type\": \"{4}\",\"speaker_id_rated\": {5}",
+                    username, password, firstName, lastName, type, speakerIdRatedStr);
+
         } else {
             type = "undetermined";
+            return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
+                    "\"last_name\": \"{3}\",\"user_type\": \"{4}\"",username, password, firstName, lastName, type);
         }
-        return MessageFormat.format("\"username\": \"{0}\",\"password\": \"{1}\",\"first_name\": \"{2}\", " +
-                "\"last_name\": \"{3}\",\"user_type\": \"{4}\"",username, password, firstName, lastName, type);
+
 
     }
 
@@ -111,20 +150,76 @@ public class User implements Savable {
         String userType;
         if (this instanceof Attendee) {
             userType = "Attendee";
+            return userType + "{" +
+                    "password='" + password + '\'' +
+                    ", username='" + username + '\'' +
+                    ", id=" + id +
+                    ", firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    '}';
         } else if (this instanceof Organizer) {
             userType = "Organizer";
+            return userType + "{" +
+                    "password='" + password + '\'' +
+                    ", username='" + username + '\'' +
+                    ", id=" + id +
+                    ", firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    '}';
         } else if (this instanceof Speaker) {
             userType = "Speaker";
-        } else {
-            userType = "Unkown User";
-        }
 
-        return userType + "{" +
-                "password='" + password + '\'' +
-                ", username='" + username + '\'' +
-                ", id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
+            StringBuilder rateBuilder = new StringBuilder();
+            rateBuilder.append("[");
+            for (String rate : ((Speaker) this).allRate) {
+                rateBuilder.append(MessageFormat.format("\"{0}\",", rate));
+            }
+
+            // If there are at least 1 attendee, remove the last ","
+            if (((Speaker) this).allRate.size() >= 1) rateBuilder.deleteCharAt(rateBuilder.length() - 1);
+            rateBuilder.append("]");
+            String rateStr = rateBuilder.toString();
+
+            return userType + "{" +
+                    "password='" + password + '\'' +
+                    ", username='" + username + '\'' +
+                    ", id=" + id +
+                    ", firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    ", rate='" + rateStr + '\'' +
+                    '}';
+        } else if (this instanceof Rater) {
+            userType = "Rater";
+
+            StringBuilder rateBuilder = new StringBuilder();
+            rateBuilder.append("[");
+            for (String id : ((Rater) this).speakerIdRated) {
+                rateBuilder.append(MessageFormat.format("\"{0}\",", id));
+            }
+
+            // If there are at least 1 attendee, remove the last ","
+            if (((Rater) this).speakerIdRated.size() >= 1) rateBuilder.deleteCharAt(rateBuilder.length() - 1);
+            rateBuilder.append("]");
+            String speakerIdRatedStr = rateBuilder.toString();
+
+            return userType + "{" +
+                    "password='" + password + '\'' +
+                    ", username='" + username + '\'' +
+                    ", id=" + id +
+                    ", firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    ", speaker rated='" + speakerIdRatedStr + '\'' +
+                    '}';
+
+        } else {
+            userType = "Unknown User";
+            return userType + "{" +
+                    "password='" + password + '\'' +
+                    ", username='" + username + '\'' +
+                    ", id=" + id +
+                    ", firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    '}';
+        }
     }
 }

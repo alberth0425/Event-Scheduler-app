@@ -1,5 +1,6 @@
 package entities;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +32,14 @@ public class Speaker extends User {
     }
 
     /**
+     * set all rate.
+     */
+    public void setAllRate(List<String> allRate) {
+        this.allRate = allRate;
+
+    }
+
+    /**
      * return the average rate the speaker received.
      *
      * @return average rate the speaker received
@@ -43,15 +52,5 @@ public class Speaker extends User {
         return sum/allRate.size();
     }
 
-    /**
-     * turn the information of this speaker into a savable string.
-     *
-     * @return a savable string that contains all the information of this speaker
-     */
-    @Override
-    public String toSavableString() {
-        return id + DELIMITER + username + DELIMITER + password + DELIMITER + firstName + DELIMITER + lastName +
-                DELIMITER + String.join("|", allRate);
-    }
 }
 

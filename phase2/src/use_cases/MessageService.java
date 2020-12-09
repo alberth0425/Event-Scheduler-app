@@ -120,7 +120,7 @@ public class MessageService {
         List<Message> messages = getReceivedMessages(receiverUN);
         for (Message message : messages) {
             for (Message m :messageRepository.get(receiverUN)) {
-                if (m.getId().equals(message.getId())){
+                if (m.getUUID().equals(message.getUUID())){
                     messageRepository.get(receiverUN).remove(m);
                 }
             }
