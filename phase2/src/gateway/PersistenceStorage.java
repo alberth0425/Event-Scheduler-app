@@ -159,14 +159,36 @@ public class PersistenceStorage {
         JSONArray events = new JSONArray(response);
         for (int i = 0; i < events.length(); i++) {
             JSONObject event = events.getJSONObject(i);
-// TODO; handle multipple types of events like user
+
             // parse attendee usernames from JSONArray to List<String>
             JSONArray attendeeUNsRaw = (JSONArray) event.get("attendee_uns");
             List<String> attendeeUNs = new ArrayList<>();
             for (int j = 0; j < attendeeUNsRaw.length(); j++) attendeeUNs.add(attendeeUNsRaw.getString(j));
 
-            Event evObj = new Event(event.getString("title"), event.getString( "speaker_un"),
-                    event.getInt("starting_time"), event.getInt("room_number"), event.getInt("capacity"));
+            JSONArray speakerUNsRaw = (JSONArray) event.get("speaker_uns");
+            List<String> speakerUNs = new ArrayList<>();
+            for (int j = 0; j < speakerUNsRaw.length(); j++) speakerUNs.add(speakerUNsRaw.getString(j));
+
+            Event evObj;
+
+            switch (event.getString("event_type")) {
+                case "talk":
+                    evObj = new Talk(event.getString("title"), speakerUNs.get(0),
+                            event.getInt("starting_time"), event.getInt("room_number"), event.getInt("duration"),
+                            event.getInt("capacity"));
+                    break;
+                case "panel_discussion":
+                    evObj = new PanelDiscussion(event.getString("title"), speakerUNs,
+                            event.getInt("starting_time"), event.getInt("room_number"), event.getInt("duration"),
+                            event.getInt("capacity"));
+                    break;
+                default:  // i.e. "party"
+                    evObj = new Party(event.getString("title"),
+                            event.getInt("starting_time"), event.getInt("room_number"), event.getInt("duration"),
+                            event.getInt("capacity"));
+                    break;
+            }
+
             evObj.setAttendeeUNs(attendeeUNs);
             evObj.setUUID(event.getString("id"));
             eventList.add(evObj);

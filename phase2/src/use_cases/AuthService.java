@@ -79,6 +79,10 @@ public class AuthService {
                 Attendee attendee = new Attendee(username, password, firstName, lastName);
                 users.put(username, attendee);
                 break;
+            case RATER:
+                Rater rater = new Rater(username, password, firstName, lastName);
+                users.put(username, rater);
+                break;
         }
     }
 
@@ -218,7 +222,8 @@ public class AuthService {
     public enum UserType {
         ATTENDEE,
         ORGANIZER,
-        SPEAKER
+        SPEAKER,
+        RATER
     }
 
     public static class InvalidFieldException extends AuthException {

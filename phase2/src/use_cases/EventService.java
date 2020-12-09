@@ -422,17 +422,6 @@ public class EventService {
     }
 
     /**
-     * Get the number of empty seats of a given event.
-     *
-     * @param event the event
-     * @return number of seats that are empty in the event's room
-     */
-    public int getEventAvailability(Event event) throws RoomService.RoomException {
-        Room room = getRoom(event.getRoomNumber());
-        return room.getCapacity() - event.getAttendeeUNs().size();
-    }
-
-    /**
      * set the capacity of this event, make sure the attendees are less than or equal to the room capacity.
      */
 
@@ -455,31 +444,6 @@ public class EventService {
     public int getCapacity(String eventId) throws EventException {
         return getEventById(eventId).getCapacity();
     }
-
-
-    // --- Private helpers ---
-
-    /**
-     * Check if an event is in allEvents list, if not, throw an exception.
-     *
-     * @param event the event
-     * @throws EventException if the event is not in allEvents list
-     */
-    private void validateEvent(Event event) throws EventException {
-        if (!allEvents.contains(event)) throw new EventDoesNotExistException();
-    }
-
-    // --- Custom Exceptions ---
-
-    public static class EventException extends Exception {}
-    public static class InvalidEventTimeException extends EventException {}
-    public static class EventDoesNotExistException extends EventException {}
-    public static class RoomDoubleBookException extends EventException {}
-    public static class SpeakerDoubleBookException extends EventException {}
-    public static class RoomFullException extends EventException {}
-    public static class AttendeeScheduleConflictException extends EventException {}
-    public static class RoomNotEnoughException extends EventException {}
-
 
     /**
      * Get the number of empty seats of a given event.
@@ -575,38 +539,19 @@ public class EventService {
 
     // --- Custom Exceptions ---
 
-    public static class EventException extends Exception {
-    }
+    // --- Custom Exceptions ---
 
-    public static class InvalidEventTimeException extends EventException {
-    }
-
-    public static class EventDoesNotExistException extends EventException {
-    }
-
-    public static class RoomDoubleBookException extends EventException {
-    }
-
-    public static class SpeakerDoubleBookException extends EventException {
-    }
-
-    public static class RoomFullException extends EventException {
-    }
-
-    public static class AttendeeScheduleConflictException extends EventException {
-    }
-
-    public static class NotATalkException extends EventException {
-    }
-
-    public static class NotAPanelDiscussionException extends EventException {
-    }
-
-    public static class NotEnoughSpeakersException extends EventException {
-    }
-
-    public static class CannotAddSpeakerToPartyException extends EventException {
-    }
-
-    public static class InvalidEndTimeException extends EventException{}
+    public static class EventException extends Exception {}
+    public static class InvalidEventTimeException extends EventException {}
+    public static class EventDoesNotExistException extends EventException {}
+    public static class RoomDoubleBookException extends EventException {}
+    public static class SpeakerDoubleBookException extends EventException {}
+    public static class RoomFullException extends EventException {}
+    public static class AttendeeScheduleConflictException extends EventException {}
+    public static class RoomNotEnoughException extends EventException {}
+    public static class NotATalkException extends EventException {}
+    public static class NotAPanelDiscussionException extends EventException {}
+    public static class NotEnoughSpeakersException extends EventException {}
+    public static class CannotAddSpeakerToPartyException extends EventException {}
+    public static class InvalidEndTimeException extends EventException {}
 }

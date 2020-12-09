@@ -23,6 +23,8 @@ public class Main extends Application {
 
         Scene scene = NavigationController.initialize(LoginViewController.class);
         primaryStage.setTitle("Hello World");
+        primaryStage.setWidth(800);
+        primaryStage.setHeight(600);
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(event -> save());
         primaryStage.show();
@@ -33,9 +35,6 @@ public class Main extends Application {
     }
 
     public static void load() {
-        // TODO: save/load different type of events
-        // probably need to change read/write for tosavablestring
-
         // Initialize entity lists
         List<User> users = new ArrayList<>();
         List<Message> messages = new ArrayList<>();

@@ -29,7 +29,7 @@ public class SignupService {
             if (event instanceof Talk) {
                 Talk talk = (Talk) event;
                 try {
-                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                    String eStr = "Event ID: " + event.getUUID() + ", Title: " + event.getTitle() +
                             ", Speaker: "
                             + AuthService.shared.getUserByUsername(talk.getSpeakerUsername()).getFullname() +
                             ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
@@ -43,7 +43,7 @@ public class SignupService {
             else if (event instanceof Party) {
                 Party talk = (Party) event;
 
-                String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                String eStr = "Event ID: " + event.getUUID() + ", Title: " + event.getTitle() +
                         ", Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";
                 sb.append(eStr);
 
@@ -58,7 +58,7 @@ public class SignupService {
                     for (Speaker sp : speakers) {
                         res.add(sp.getFullname());
                     }
-                    String eStr = "Event ID: " + event.getId() + ", Title: " + event.getTitle() +
+                    String eStr = "Event ID: " + event.getUUID() + ", Title: " + event.getTitle() +
                             ", Speakers: ["
                             + res.toString() +
                             "], Remaining Seats: " + EventService.shared.getEventAvailability(event) + "\n";

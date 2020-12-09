@@ -7,7 +7,6 @@ import java.util.List;
 public class Talk extends Event {
     //private static int eventCount;
     private String speakerUN;
-    private List<String> talkAttendeeUNs = new ArrayList<>();
     //private final int id; moved to super class
 
     /**
@@ -24,25 +23,6 @@ public class Talk extends Event {
     }
 
     /**
-     * construct event from a dataEntry.
-     *
-     * @param dataEntry the savable string that contains all the information of this event
-     */
-    public Talk(String dataEntry) {
-        String[] entries = dataEntry.split(Savable.DELIMITER);
-        id = Integer.parseInt(entries[0]);
-        title = entries[1];
-        speakerUN = entries[2];
-        startingTime = Integer.parseInt(entries[3]);
-        roomNumber = Integer.parseInt(entries[4]);
-        duration = Integer.parseInt(entries[5]);
-        eventCount += 1;
-        capacity = Integer.parseInt(entries[6]);
-        talkAttendeeUNs = entries.length < 8 ? new ArrayList<>() :
-                new ArrayList<>(Arrays.asList(entries[7].split("\\|")));
-    }
-
-    /**
      *  getter for the speaker username.
      *
      * @return the username of the speaker for this event
@@ -51,35 +31,12 @@ public class Talk extends Event {
         return this.speakerUN;
     }
 
-
-    /**
-     *  getter for a list of attendees' usernames.
-     *
-     * @return a list of username of all the attendees of this event
-     */
     @Override
-    public List<String> getAttendeeUNs() {
-        return talkAttendeeUNs;
+    public List<String> getSpeakerUNs() {
+        List<String> list = new ArrayList<>();
+        list.add(speakerUN);
+        return list;
     }
-
-    /**
-     * add a new attendee to this event.
-     * @param attendeeUN the username of this attendee
-     */
-    @Override
-    public void addAttendee(String attendeeUN) {
-        talkAttendeeUNs.add(attendeeUN);
-    }
-
-    /**
-     * remove an attendee from this event.
-     * @param attendeeUN the username of this attendee
-     */
-    @Override
-    public void removeAttendee(String attendeeUN) {
-        talkAttendeeUNs.remove(attendeeUN);
-    }
-
 
     /**
      * setter for the speaker username.
@@ -87,35 +44,5 @@ public class Talk extends Event {
      */
     public void setSpeakerUN(String speakerUN) {
         this.speakerUN = speakerUN;
-    }
-
-    /**
-     * turn the information of this event into a string.
-     *
-     * @return the string that contains all the information of this event
-     */
-    @Override
-    public String toString() {
-        return "Event{" +
-                "title='" + title + '\'' +
-                ", roomNumber=" + roomNumber +
-                ", startingTime=" + startingTime +
-                ", speakerUN='" + speakerUN + '\'' +
-                ", attendeeUNs=" + talkAttendeeUNs +
-                ", id=" + id +
-                '}';
-    }
-
-    /**
-     * turn the information of this event into a savable string.
-     *
-     * @return a savable string that contains all the information of this event
-     */
-    @Override
-    public String toSavableString() {
-        return getId() + Savable.DELIMITER + getTitle() + Savable.DELIMITER +
-                getSpeakerUsername() + Savable.DELIMITER + getStartingTime() + Savable.DELIMITER + getRoomNumber() +
-                Savable.DELIMITER + duration + Savable.DELIMITER + getCapacity() + Savable.DELIMITER +
-                String.join("|", getAttendeeUNs());
     }
 }

@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public abstract class Event implements Savable {
     private final String title;
     private int roomNumber;
     private final int startingTime;
     int duration; //must be in full hours
-    private String speakerUN;
     private List<String> attendeeUNs = new ArrayList<>();
     private String uuid;
     private int capacity;
@@ -21,13 +21,11 @@ public abstract class Event implements Savable {
      * constructor for the event class.
      *
      * @param title the title of this event
-     * @param speakerUN the speaker username of this event
      * @param startingTime the starting time of this event
      * @param roomNumber the room number of the room that this event is going to happen
      */
-    public Event(String title, String speakerUN, int startingTime, int roomNumber, int capacity) {
+    public Event(String title, int startingTime, int roomNumber, int duration, int capacity) {
         this.title = title;
-        this.speakerUN = speakerUN;
         this.roomNumber = roomNumber;
         this.startingTime = startingTime;
         this.duration = duration;
@@ -62,15 +60,6 @@ public abstract class Event implements Savable {
     }
 
     /**
-     *  getter for the speaker username.
-     *
-     * @return the username of the speaker for this event
-     */
-    public String getSpeakerUsername() {
-        return this.speakerUN;
-    }
-
-    /**
      *  getter for the start time of the event.
      *
      * @return the the start time of the even
@@ -96,20 +85,32 @@ public abstract class Event implements Savable {
         this.roomNumber = roomNumber;
     }
 
-    public abstract List<String> getAttendeeUNs();
+    public abstract List<String> getSpeakerUNs();
 
     /**
-     * An abstract method for adding a new attendee to this event.
-     * @param attendeeUN the username of this attendee
+     * Get the list of attendees of this event.
+     * @return list of attendee usernames
      */
-    public abstract void addAttendee(String attendeeUN);
+    public List<String> getAttendeeUNs() {
+        return attendeeUNs;
+    }
 
     /**
-     * abstract method for removing an attendee from this event.
+     * Add a new attendee to this event.
+     * @param attendeeUN the username of this attendee
+     */
+    public void addAttendee(String attendeeUN) {
+        attendeeUNs.add(attendeeUN);
+    }
+
+    /**
+     * Remove an attendee from this event.
      * @param attendeeUN the username of this attendee
      */
 
-    public abstract void removeAttendee(String attendeeUN);
+    public void removeAttendee(String attendeeUN) {
+        attendeeUNs.remove(attendeeUN);
+    }
 
     /**
      * setter for attendee usernames list, should only be used in PersistenceStorage
@@ -141,7 +142,6 @@ public abstract class Event implements Savable {
                 "title='" + title + '\'' +
                 ", roomNumber=" + roomNumber +
                 ", startingTime=" + startingTime +
-                ", speakerUN='" + speakerUN + '\'' +
                 ", attendeeUNs=" + attendeeUNs +
                 ", uuid=" + uuid +
                 ", capacity=" + capacity +
@@ -167,9 +167,21 @@ public abstract class Event implements Savable {
         attendeeUNBuilder.append("]");
         String attendeesStr = attendeeUNBuilder.toString();
 
-        return MessageFormat.format("\"room_number\": {0},\"speaker_un\": \"{1}\",\"id\": \"{2}\", " +
-                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\",\"capacity\": {6}",
-                roomNumber, speakerUN, uuid, attendeesStr, startingTime, title, capacity);
+        String speakerUNs = "[" + getSpeakerUNs().stream().map(un -> "\"" + un + "\"").collect(Collectors.joining(",")) + "]";
+
+        String eventType;
+        if (this instanceof Talk) {
+            eventType = "talk";
+        } else if (this instanceof Party) {
+            eventType = "party";
+        } else {
+            eventType = "panel_discussion";
+        }
+
+        return MessageFormat.format("\"room_number\": {0},\"speaker_uns\": {1},\"id\": \"{2}\", " +
+                "\"attendee_uns\": {3},\"starting_time\": {4},\"title\": \"{5}\",\"capacity\": {6},\"event_type\": \"{7}\"," +
+                "\"duration\": {8}",
+                roomNumber, speakerUNs, uuid, attendeesStr, startingTime, title, capacity, eventType, duration);
 
     }
 }
