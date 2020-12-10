@@ -16,7 +16,7 @@
                     <font>
                         <Font size="18.0" />
                     </font></Label>
-                <HBox alignment="CENTER" prefHeight="54.0" prefWidth="582.0" spacing="10.0">
+                <HBox alignment="TOP_CENTER" prefHeight="153.0" prefWidth="527.0" spacing="10.0">
                     <children>
                         <Button fx:id="backButton" alignment="CENTER" mnemonicParsing="false" onAction="#backButtonAction" text="Back" />
                     </children></HBox>

@@ -8,6 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import ui.BaseViewController;
+import ui.login.LoginViewController;
 import ui.navigation.FXMLFile;
 import ui.register.RegisterSuccess.RegisterSuccessViewController;
 import ui.user.UserActionViewController;
@@ -101,6 +102,6 @@ public class RegisterViewController extends BaseViewController<Void> implements 
     }
 
     public void backButtonAction(ActionEvent actionEvent) {
-        getNavigationController().navigate(UserActionViewController.class);
+        getNavigationController().navigate(LoginViewController.class);
     }
 }
