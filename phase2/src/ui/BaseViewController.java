@@ -3,7 +3,7 @@ package ui;
 import ui.navigation.NavigationController;
 
 public abstract class BaseViewController<P> {
-    private static NavigationController navigationController;
+    private NavigationController navigationController;
 
     /**
      * Initialize the view controller with given parameter, which is passed by the view controller from which we are
@@ -18,7 +18,7 @@ public abstract class BaseViewController<P> {
      *
      * @return the navigation controller
      */
-    public static NavigationController getNavigationController() {
+    public NavigationController getNavigationController() {
         return navigationController;
     }
 
@@ -28,6 +28,6 @@ public abstract class BaseViewController<P> {
      * @param navigationController the navigation controller that this view controller uses
      */
     public void setNavigationController(NavigationController navigationController) {
-        BaseViewController.navigationController = navigationController;
+        this.navigationController = navigationController;
     }
 }

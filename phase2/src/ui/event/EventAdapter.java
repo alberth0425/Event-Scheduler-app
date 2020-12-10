@@ -60,14 +60,11 @@ public class EventAdapter {
      * @return string displaying the speaker of the event
      */
     public String getSpeaker() {
-        if (event instanceof Talk){
-            return EventService.shared.castToTalk(event).getSpeakerUsername();
-        }
-        else if(event instanceof PanelDiscussion){
-            return String.join(", ", EventService.shared.castToPD(event).getSpeakerUNs());
-        }
-        else{
+        List<String> speakerUNs = event.getSpeakerUNs();
+        if (speakerUNs.isEmpty()) {
             return "No speakers in parties";
+        } else {
+            return String.join(", ", speakerUNs);
         }
     }
 

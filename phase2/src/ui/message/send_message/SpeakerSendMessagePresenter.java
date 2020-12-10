@@ -53,21 +53,8 @@ public class SpeakerSendMessagePresenter extends SendMessagePresenter {
             case 1:
                 try {
                     Event event = EventService.shared.getEventById(receiver);
-                    if (event instanceof Talk) {
-                        if (EventService.shared.castToTalk(event).getSpeakerUsername().equals(currentUsername)) {
-                            usernames = event.getAttendeeUNs();
-                        } else {
-                            getView().displayError("You are not giving speech at this event.");
-                            return;
-                        }
-                    }
-                    else if(event instanceof PanelDiscussion){
-                        if (EventService.shared.castToPD(event).getSpeakerUNs().contains(currentUsername)){
-                            usernames = event.getAttendeeUNs();
-                        } else{
-                            getView().displayError("You are not giving speech at this event.");
-                            return;
-                        }
+                    if (event.getSpeakerUNs().contains(currentUsername)) {
+                        usernames = event.getAttendeeUNs();
                     } else {
                         getView().displayError("You are not giving speech at this event.");
                         return;

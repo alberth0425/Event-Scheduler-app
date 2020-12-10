@@ -109,15 +109,7 @@ public class EventPresenter {
                     events = events.filter(event -> event.getAttendeeUNs().contains(currentUsername));
                     break;
                 case GIVING_SPEECH:
-                    events = events.filter(event -> {
-                        if (event instanceof Talk){
-                            return EventService.shared.castToTalk(event).getSpeakerUsername().equals(currentUsername);
-                        } else if (event instanceof PanelDiscussion){
-                            return EventService.shared.castToPD(event).getSpeakerUNs().contains(currentUsername);
-                        }
-                        return false;
-                    });
-
+                    events = events.filter(event -> event.getSpeakerUNs().contains(currentUsername));
                     break;
             }
         }
