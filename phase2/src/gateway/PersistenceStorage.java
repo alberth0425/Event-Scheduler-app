@@ -19,6 +19,9 @@ public class PersistenceStorage {
     private static final String EVENT_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/events";
     private static final String MESSAGE_DB_URL = "https://icyn81k5kk.execute-api.ca-central-1.amazonaws.com/prod/messages";
 
+    public static void main(String[] args) throws IOException {
+    }
+
     /**
      * Print out the request in to the console from the input URL
      * @param returnType the type of wanted entities
@@ -94,6 +97,26 @@ public class PersistenceStorage {
         }
 
         writer.write(returnedList.toString());
+        writer.flush();
+        writer.close();
+        con.getResponseCode();
+        con.disconnect();
+    }
+
+    public static void deleteEvent(Event event) throws IOException {
+        URL url = new URL(EVENT_DB_URL);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+        //Request setup
+        con.setRequestMethod("DELETE");
+        con.setDoOutput(true);
+        con.addRequestProperty("Content-Type", "text/plain");
+        con.setConnectTimeout(6000); // 6 secs
+        con.setReadTimeout(6000); // 6 secs
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        String request = String.format("{\"id\":\"%s\", \"room_number\":%d}", event.getUUID(), event.getRoomNumber());
+        writer.write(request);
         writer.flush();
         writer.close();
         con.getResponseCode();
