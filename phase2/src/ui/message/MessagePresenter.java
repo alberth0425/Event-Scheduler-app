@@ -1,11 +1,14 @@
 package ui.message;
 
 import entities.*;
+import gateway.PersistenceStorage;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import use_cases.AuthService;
 import use_cases.MessageService;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,8 +96,21 @@ public class MessagePresenter {
             Message message = messages.get(index).getMessage();
 
             actions.add(new MessageAction("Delete Message", () -> {
-                MessageService.shared.deleteSingleMessages(AuthService.shared.getCurrentUser().getUsername(), message);
-                refresh();
+                view.showLoading();
+                // Run in background
+                new Thread(() -> {
+                    try {
+                        PersistenceStorage.deleleMessage(message);
+                        MessageService.shared.deleteSingleMessages(AuthService.shared.getCurrentUser().getUsername(), message);
+                    } catch (IOException e) {
+                        System.out.println("Unknown error.");
+                    }
+
+                    Platform.runLater(() -> {
+                        view.hideLoading();
+                        refresh();
+                    });
+                }).start();
             }));
 
             if (message.isArchived) {
@@ -176,6 +192,7 @@ public class MessagePresenter {
             refreshActionButtons();
         }
 
-
+        void showLoading();
+        void hideLoading();
     }
 }

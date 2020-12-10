@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -31,6 +32,8 @@ public class MessageViewController extends BaseViewController<Void> implements M
 
     // Text field to display above TableView when prompted. Initialized when needed
     private Node promptTextField;
+
+    private ProgressIndicator indicator;
 
     @Override
     public void initializeWithParameters(Void parameters) {
@@ -124,4 +127,18 @@ public class MessageViewController extends BaseViewController<Void> implements M
         messagesTableView.refresh();
     }
 
+    @Override
+    public void showLoading() {
+        messagesTableView.getScene().getRoot().setDisable(true);
+        if (indicator == null) {
+            indicator = new ProgressIndicator();
+            actionHBox.getChildren().add(indicator);
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        messagesTableView.getScene().getRoot().setDisable(false);
+        actionHBox.getChildren().remove(indicator);
+    }
 }

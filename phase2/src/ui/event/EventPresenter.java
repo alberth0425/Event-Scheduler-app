@@ -1,13 +1,17 @@
 package ui.event;
 
 import entities.*;
+import gateway.PersistenceStorage;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ui.util.TextFieldPrompt;
 import use_cases.AuthService;
 import use_cases.EventService;
+import use_cases.MessageService;
 import use_cases.RoomService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -195,8 +199,21 @@ public class EventPresenter {
             }));
 
             actions.add(new EventAction("Cancel event", () -> {
-                // TODO: cancel event after use case is done
-                System.out.println("Cancelling event");
+                view.showLoading();
+                // Run in background
+                new Thread(() -> {
+                    try {
+                        PersistenceStorage.deleteEvent(event);
+                        EventService.shared.cancelEvent(event.getUUID());
+                    } catch (IOException  | EventService.EventException e) {
+                        System.out.println("Unknown error.");
+                    }
+
+                    Platform.runLater(() -> {
+                        view.hideLoading();
+                        refresh();
+                    });
+                }).start();
             }));
         }
 
@@ -287,6 +304,9 @@ public class EventPresenter {
         }
 
         void navigateToCreateEvent();
+
+        void showLoading();
+        void hideLoading();
     }
 
 }

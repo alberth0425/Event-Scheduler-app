@@ -26,6 +26,7 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
 
     // Text field to display above TableView when prompted. Initialized when needed
     private Node promptTextField;
+    private ProgressIndicator indicator;
 
     private EventPresenter presenter;
 
@@ -106,5 +107,20 @@ public class EventViewController extends BaseViewController<EventPresenter.Event
     @Override
     public void navigateToCreateEvent() {
         getNavigationController().navigate(createEventViewController.class);
+    }
+
+    @Override
+    public void showLoading() {
+        eventTableView.getScene().getRoot().setDisable(true);
+        if (indicator == null) {
+            indicator = new ProgressIndicator();
+            actionHBox.getChildren().add(indicator);
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        eventTableView.getScene().getRoot().setDisable(false);
+        actionHBox.getChildren().remove(indicator);
     }
 }

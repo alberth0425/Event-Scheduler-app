@@ -2,7 +2,9 @@ package use_cases;
 
 import entities.Message;
 import entities.User;
+import gateway.PersistenceStorage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

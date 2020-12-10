@@ -1,7 +1,15 @@
 import entities.*;
 import gateway.PersistenceStorage;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.login.LoginViewController;
 import ui.navigation.NavigationController;
@@ -19,15 +27,53 @@ import java.util.stream.Collectors;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        load();
-
-        Scene scene = NavigationController.initialize(LoginViewController.class);
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Project Phase 2");
         primaryStage.setWidth(800);
         primaryStage.setHeight(600);
-        primaryStage.setScene(scene);
-        primaryStage.setOnCloseRequest(event -> save());
+        primaryStage.setOnCloseRequest(event -> {
+            // Display loading indicator
+            primaryStage.getScene().setRoot(createIndicator("Saving data..."));
+
+            new Thread(() -> {
+                save();
+                Platform.exit();
+            }).start();
+
+            // Prevent exit before save is done
+            event.consume();
+        });
+
+        // Show loading screen
+        Scene loadingScene = new Scene(createIndicator("Loading data..."));
+        primaryStage.setScene(loadingScene);
         primaryStage.show();
+
+        new Thread(() -> {
+            load();
+            Platform.runLater(() -> {
+                // Show login screen
+                try {
+                    Scene scene = NavigationController.initialize(LoginViewController.class);
+                    primaryStage.setScene(scene);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }).start();
+    }
+
+    private Parent createIndicator(String text) {
+        ProgressIndicator indicator = new ProgressIndicator();
+        Label label = new Label(text);
+
+        VBox vbox = new VBox(indicator, label);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+
+        HBox hbox = new HBox(vbox);
+        hbox.setAlignment(Pos.CENTER);
+
+        return hbox;
     }
 
     public static void main(String[] args) {
