@@ -1,0 +1,14 @@
+Mandatory extensions:
+    ALL
+
+Optional extensions:
+    1. Enhance the user's messaging experience by allowing them to "mark as unread", delete, or archive messages after reading them.
+    2. Use a database to store the information from your program through specific gateway class(es) so that you do not violate Clean
+    Architecture and still have an Entity layer (details below).
+    3. Replace your text UI with a Graphic User Interface (GUI), which should follow the Model-View-Presenter architecture. See the note below.
+
+Database details:
+    database: the database that we chose to use it AWS DynamoDB, a NoSQL database living remotely in AWS ca-central-1
+    handling: the handling of any requests of reading/writing the database is written in Node.js, and is deployed as AWS Lambda functions
+    gateway : the gateway is deployed using AWS APIGateway, it formats all incoming HTTP requests and communicate with the lambda functions
+              described above, and sends back HTTP responses
