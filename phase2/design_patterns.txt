@@ -1,0 +1,21 @@
+List of Design Patterns
+
+Model-View-Presenter:
+- This pattern is used in the GUI part of our program. For each page, we have
+- View layer:
+    - FXML file, which describes the user interface
+    - ViewController class, binds our code and the UI together. Implements a View interface from the presenter
+- Presenter layer: a presenter class, controls the main flow of the program
+- Model layer: entities and use-cases that are used in the presenter
+
+Adapter:
+- We created EventAdapter and MessageAdapter to "adapt" our previous entities to be used in the GUI
+- These adapters format the entities' data to be better displayed in the GUI
+
+Dependency Injection:
+- Passing in the view as a parameter for presenters
+- When navigating, passing parameters between ViewControllers via NavigationController
+
+Observer:
+- We used the observer pattern for tables and lists in the GUI, which takes an ObservableList as the data source
+- This allows us to add/reorder/remove items from the list, and the TableView/ListView will refresh automatically
