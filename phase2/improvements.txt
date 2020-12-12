@@ -1,0 +1,23 @@
+We have read the discussed the annotations you provided in Phase 1, and we have done some improvements for the 4 "places to improve".
+
+1) "Consider your use of polymorphism in the User class, and its subclasses. Currently I don't see much difference between Attendee,
+Organizer and Speaker. Think a bit more about how they are different if you plan to continue this way (ie, speaker might need to know
+what talk they are presenting, just as an example)"
+
+    - Our newly added Rater class inherits from User but has different attributes and methods, but other places in the program, such as
+    in PersistenceStorage, we used polymorphism to handle all types of Users at once.
+
+2) "In the use case class you can consider creating these sub user classes more effectively through your polymorphism structure too.
+I pointed to specific examples in the annotations below. (ie, you shouldn't need a UserType variable)"
+
+    - We have changed some of our implementations in the use case classes, and we have removed the userType attribute for all Users.
+
+3) "I notice all the entities have a dataEntry method for when data is being loaded from the txt. Consider how you can maybe move that
+to a gateway class that does all the reading once the system runs or once they sign in."
+
+    - We have removed the dataEntry constructor for all entity classes, and all parsings are now being done in PersistenceStorage.
+
+4) "The presenter and controller are currently in the same place. (this is not a big deal now, but for phase 2 please consider
+separating your presenter and controller classes."
+
+    - We removed all old controller classes, re-designed everything for the new GUI, and used MVP this time.
