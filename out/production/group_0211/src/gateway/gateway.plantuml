@@ -1,0 +1,23 @@
+@startuml
+
+title __GATEWAY's Class Diagram__\n
+
+  namespace src.gateway {
+    class src.gateway.PersistenceStorage {
+        {static} + ATTENDEE_STORAGE_PATH : String
+        {static} + CONTACT_BOOK_PATH : String
+        {static} + EVENT_STORAGE_PATH : String
+        {static} + MESSAGE_STORAGE_PATH : String
+        {static} + ORGANIZER_STORAGE_PATH : String
+        {static} + ROOM_STORAGE_PATH : String
+        {static} + SPEAKER_STORAGE_PATH : String
+        {static} + readContactBook()
+        {static} + readEntities()
+        {static} + saveContactBook()
+        {static} + saveEntities()
+        {static} - getPrinterWriter()
+    }
+  }
+
+
+@enduml
